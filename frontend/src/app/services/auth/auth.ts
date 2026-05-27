@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,18 +20,18 @@ export class AuthService {
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login/`, credentials).pipe(
       tap((res: any) => {
-        console.log('Backend response from login:', res);
+        console.log('Login response:', res);
         const token = res.access || res.access_token || res.key;
         if (token) {
-          console.log('Saving access token:', token);
           localStorage.setItem('access_token', token);
-          if (res.refresh) {
-            localStorage.setItem('refresh_token', res.refresh);
-          }
+          if (res.refresh) localStorage.setItem('refresh_token', res.refresh);
+          console.log('Token saved:', token.substring(0, 20) + '...');
         } else {
-          console.error('No access token found in response!', res);
+          console.error('No access token in response!', Object.keys(res));
         }
-      })
+      }),
+      // After token is saved, fetch user profile
+      switchMap(() => this.getUserProfile())
     );
   }
 

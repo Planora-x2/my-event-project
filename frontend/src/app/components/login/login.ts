@@ -42,11 +42,9 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     console.log('Login attempt', this.username);
     this.authService.login({ username: this.username, password: this.password }).subscribe({
-      next: (res) => {
-        console.log('Login successful', res);
-        this.authService.getUserProfile().subscribe(() => {
-          this.router.navigate(['/']);
-        });
+      next: (user) => {
+        console.log('Login successful, user:', user);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         console.error('Login failed', err);
