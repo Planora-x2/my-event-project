@@ -1,0 +1,111 @@
+<div class="event-detail-container animate-fade-in" style="margin-top: 2rem;">
+  
+  <div *ngIf="loading" style="text-align: center; padding: 4rem;">
+    <h3 class="text-muted">Loading event details...</h3>
+  </div>
+
+  <div *ngIf="!loading && event" class="hero-section glass">
+    <div class="hero-image-wrapper">
+      <img [src]="getEventImageUrl(event.image)" alt="Event Banner" class="hero-image">
+    </div>
+    <div class="hero-content">
+      <div class="meta-row">
+        <span class="meta-tag">Event</span>
+        <span class="meta-date">{{ event.date | date:'mediumDate' }}</span>
+      </div>
+      <h1 class="text-gradient" style="font-size: 2.5rem; margin: 1rem 0;">{{ event.title }}</h1>
+      <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6;">
+        {{ event.description }}
+      </p>
+      
+      <div class="venue-info mt-4" *ngIf="event.venue_details">
+        <h4>Venue & Location</h4>
+        <p>{{ event.venue_details.name }}, {{ event.venue_details.address }}</p>
+        <p>Capacity: {{ event.venue_details.capacity }} attendees</p>
+      </div>
+      
+      <div class="booking-section glass mt-4" style="padding: 1.5rem; border-color: rgba(16, 185, 129, 0.2);">
+        <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 1.25rem; font-weight: 600;">Ticket Price</span>
+          <span class="text-gradient" style="font-size: 1.5rem; font-weight: 700;">${{ event.price | number:'1.2-2' }}</span>
+        </div>
+        <div class="action-row" style="display: flex; gap: 1rem;">
+          <input type="number" class="input-field" [(ngModel)]="ticketsToBook" min="1" max="10" style="width: 100px;">
+          <button class="btn btn-primary" style="flex: 1;" (click)="bookTickets()" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Booking...' : 'Book Now' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !event" style="text-align: center; padding: 4rem;">
+    <h3 class="text-muted">Event not found</h3>
+  </div>
+
+  <div class="interaction-section mt-4" style="display: grid; grid-template-columns: 1fr; gap: 2rem;" *ngIf="event">
+    <!-- Comments Section -->
+    <div class="comments-section glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem;">Discussion</h3>
+      <div class="comment-input" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <input type="text" class="input-field" [(ngModel)]="newComment" (keyup.enter)="postComment()" placeholder="Add a comment...">
+        <button class="btn btn-secondary" (click)="postComment()" [disabled]="!newComment.trim()">Post</button>
+      </div>
+      
+      <div class="comment-list">
+        <div *ngIf="comments.length === 0" class="text-muted" style="text-align: center; padding: 2rem 0;">
+          No comments yet. Be the first to start the discussion!
+        </div>
+        <div *ngFor="let comment of comments" class="comment-item" style="padding: 1rem; background: rgba(15, 23, 42, 0.4); border-radius: 8px; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>{{ comment.user_name }}</strong>
+            <span class="text-muted" style="font-size: 0.85rem;">{{ comment.created_at | date:'short' }}</span>
+          </div>
+          <p style="color: var(--text-main); margin: 0;">{{ comment.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Chat Button & Popup -->
+  <ng-container *ngIf="event && !isOrganizer">
+    <!-- Chat FAB -->
+    <button class="chat-fab btn-primary" (click)="toggleChat()">
+      <svg *ngIf="!isChatOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <svg *ngIf="isChatOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+
+    <!-- Chat Popup Widget -->
+    <div *ngIf="isChatOpen" class="chat-popup glass animate-fade-in">
+      <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.1rem;">Live Chat (Organizer)</h3>
+        <button class="btn btn-secondary" style="padding: 0.2rem 0.5rem;" (click)="toggleChat()">✕</button>
+      </div>
+      
+      <div class="chat-messages" #chatScroll style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+        <div *ngIf="chatMessages.length === 0" class="text-muted" style="text-align: center; margin: auto;">
+          Start a private conversation with the organizer.
+        </div>
+        <div *ngFor="let msg of chatMessages" class="message" [ngStyle]="{'align-self': msg.sender_name === currentUser?.username ? 'flex-end' : 'flex-start', 'background': msg.sender_name === currentUser?.username ? 'rgba(16, 185, 129, 0.1)' : 'rgba(79, 70, 229, 0.1)'}" style="padding: 0.75rem; border-radius: 8px; max-width: 85%;">
+          <strong style="font-size: 0.8rem;" [ngStyle]="{'color': msg.sender_name === currentUser?.username ? '#34d399' : '#818cf8'}">
+            {{ msg.sender_name === currentUser?.username ? 'You' : 'Organizer' }}
+          </strong>
+          <p style="margin: 0; font-size: 0.95rem;">{{ msg.message }}</p>
+        </div>
+      </div>
+      <div class="chat-input" style="display: flex; gap: 0.5rem;">
+        <input type="text" class="input-field" [(ngModel)]="newChatMessage" (keyup.enter)="sendChatMessage()" placeholder="Type a message...">
+        <button class="btn btn-primary" (click)="sendChatMessage()" [disabled]="!newChatMessage.trim()">Send</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="event && isOrganizer">
+    <div class="interaction-section mt-4" style="display: block;">
+      <div class="chat-widget glass" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+        <h3 style="margin-bottom: 1rem;">Live Chats</h3>
+        <p class="text-muted">You are the organizer of this event. Please check your Dashboard to reply to attendee messages.</p>
+      </div>
+    </div>
+  </ng-container>
+</div>

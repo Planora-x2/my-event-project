@@ -1,0 +1,57 @@
+<div class="dashboard-container animate-fade-in" style="margin-top: 2rem;">
+  <div class="dashboard-header" style="margin-bottom: 2rem;">
+    <h1 class="text-gradient">Admin Portal</h1>
+    <p class="text-muted">System Overview & Moderation</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="glass text-center" style="padding: 1.5rem;">
+      <h3 style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;">Total Users</h3>
+      <p class="text-gradient" style="font-size: 2.5rem; font-weight: 700; margin: 0;">1,245</p>
+    </div>
+    <div class="glass text-center" style="padding: 1.5rem;">
+      <h3 style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;">Total Clients</h3>
+      <p style="font-size: 2.5rem; font-weight: 700; color: #60A5FA; margin: 0;">42</p>
+    </div>
+    <div class="glass text-center" style="padding: 1.5rem;">
+      <h3 style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;">Active Events</h3>
+      <p style="font-size: 2.5rem; font-weight: 700; color: var(--secondary); margin: 0;">18</p>
+    </div>
+    <div class="glass text-center" style="padding: 1.5rem;">
+      <h3 style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;">Total Bookings</h3>
+      <p style="font-size: 2.5rem; font-weight: 700; color: var(--accent); margin: 0;">3,890</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+    <!-- Users Management -->
+    <div class="glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem;">User Management</h3>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+              <th style="padding: 1rem;">Username</th>
+              <th style="padding: 1rem;">Email</th>
+              <th style="padding: 1rem;">Role</th>
+              <th style="padding: 1rem;">Joined</th>
+              <th style="padding: 1rem;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+              <td style="padding: 1rem;">john_doe</td>
+              <td style="padding: 1rem;">john@example.com</td>
+              <td style="padding: 1rem;"><span class="meta-tag" style="background: rgba(16,185,129,0.1); color: var(--secondary);">USER</span></td>
+              <td style="padding: 1rem;">Oct 12, 2026</td>
+              <td style="padding: 1rem;">
+                <button class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; border-color: var(--error); color: var(--error);">Ban</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

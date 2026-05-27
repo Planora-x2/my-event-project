@@ -1,0 +1,45 @@
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { EventService } from '../../services/event/event';
+
+@Component({
+  selector: 'app-event-list',
+  imports: [RouterModule, CommonModule, FormsModule],
+  templateUrl: './event-list.html',
+  styleUrl: './event-list.css'
+})
+export class EventListComponent implements OnInit {
+  events: any[] = [];
+  locationQuery: string = '';
+
+  constructor(
+    private eventService: EventService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchEvents();
+  }
+
+  fetchEvents(): void {
+    this.eventService.getEvents(this.locationQuery).subscribe({
+      next: (data) => {
+        this.events = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to fetch events', err)
+    });
+  }
+
+  onFilter(): void {
+    this.fetchEvents();
+  }
+
+  getEventImageUrl(url: string | null): string {
+    if (!url) return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:8000${url}`;
+  }
+}

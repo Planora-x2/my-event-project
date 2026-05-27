@@ -1,0 +1,73 @@
+<div class="dashboard-container animate-fade-in" style="margin-top: 2rem;">
+  <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 class="text-gradient">Client Portal</h1>
+      <p class="text-muted">Manage your venues and events</p>
+    </div>
+    <button routerLink="/client-analytics" class="btn btn-secondary">View Analytics & Bookings</button>
+  </div>
+
+  <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <!-- Create Venue Form -->
+    <div class="glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem; color: var(--secondary);">Register New Venue</h3>
+      <form class="auth-form" (ngSubmit)="submitVenue()">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Venue Name</label>
+          <input type="text" class="input-field" [(ngModel)]="venueForm.name" name="venueName" placeholder="e.g. Convention Center" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Address</label>
+          <input type="text" class="input-field" [(ngModel)]="venueForm.address" name="venueAddress" placeholder="Full address" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Capacity</label>
+          <input type="number" class="input-field" [(ngModel)]="venueForm.capacity" name="venueCapacity" placeholder="e.g. 5000" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="input-label">Venue Image</label>
+          <input type="file" class="input-field" (change)="onVenueImageSelected($event)" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-secondary w-100">Save Venue</button>
+      </form>
+    </div>
+
+    <!-- Create Event Form -->
+    <div class="glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Create Event</h3>
+      <form class="auth-form" (ngSubmit)="submitEvent()">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Event Title</label>
+          <input type="text" class="input-field" [(ngModel)]="eventForm.title" name="eventTitle" placeholder="e.g. Global Tech Summit" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Description</label>
+          <textarea class="input-field" [(ngModel)]="eventForm.description" name="eventDescription" placeholder="Event description" rows="2" required></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="input-label">Select Venue</label>
+          <select class="input-field" [(ngModel)]="eventForm.venue" name="eventVenue" required>
+            <option value="">-- Select Venue --</option>
+            <option *ngFor="let v of venues" [value]="v.id">{{ v.name }} ({{ v.capacity }} cap)</option>
+          </select>
+        </div>
+        <div class="form-group" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <div style="flex: 1;">
+            <label class="input-label">Date & Time</label>
+            <input type="datetime-local" class="input-field" [(ngModel)]="eventForm.date" name="eventDate" required>
+          </div>
+          <div style="flex: 1;">
+            <label class="input-label">Ticket Price ($)</label>
+            <input type="number" class="input-field" [(ngModel)]="eventForm.price" name="eventPrice" placeholder="0.00" required>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="input-label">Event Image</label>
+          <input type="file" class="input-field" (change)="onEventImageSelected($event)" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Publish Event</button>
+      </form>
+    </div>
+  </div>
+
+</div>

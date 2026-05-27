@@ -1,0 +1,59 @@
+<div class="hero-banner animate-fade-in">
+  <div class="hero-overlay"></div>
+  <div class="hero-content" style="padding-bottom: 6rem;">
+    <h1 class="hero-title">
+      <span class="text-gradient">Discover</span> Amazing Events
+    </h1>
+    <p class="hero-subtitle">
+      Find and book the best events, concerts, and conferences happening around you.
+    </p>
+  </div>
+</div>
+
+<div class="search-section animate-fade-in" style="animation-delay: 0.1s;">
+  <div class="search-box">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-left: 0.5rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input type="text" [(ngModel)]="locationQuery" (keyup.enter)="onFilter()" class="search-input" placeholder="Search events by location, e.g., 'New York'...">
+    <button (click)="onFilter()" class="btn btn-primary search-btn">Search</button>
+  </div>
+  
+  <div class="trending-tags">
+    <span class="trending-label" style="font-weight: 600; color: var(--text-muted);">Trending Categories:</span>
+    <button class="tag-btn">Concerts</button>
+    <button class="tag-btn">Tech</button>
+    <button class="tag-btn">Workshops</button>
+    <button class="tag-btn">Arts</button>
+  </div>
+</div>
+
+<div class="section-header animate-fade-in" style="animation-delay: 0.2s; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+  <h2 style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin: 0;">Featured Events</h2>
+  <a href="#" class="text-gradient" style="font-weight: 600; text-decoration: none;">View All →</a>
+</div>
+
+<div class="event-grid">
+  <div *ngIf="events.length === 0" class="text-center w-100 mt-4 text-muted">
+    <p>No events found for this location.</p>
+  </div>
+
+  <div *ngFor="let event of events" class="event-card glass animate-fade-in" style="animation-delay: 0.2s;">
+    <div class="card-image-wrapper">
+      <img [src]="getEventImageUrl(event.image)" [alt]="event.title" class="card-image">
+      <div class="card-price">${{ event.price }}</div>
+    </div>
+    <div class="card-content">
+      <div class="card-meta">
+        <span class="meta-tag">Event</span>
+        <span class="meta-date">{{ event.date | date:'mediumDate' }}</span>
+      </div>
+      <h3 class="card-title">{{ event.title }}</h3>
+      <p class="card-venue" *ngIf="event.venue_details">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        {{ event.venue_details.name }}, {{ event.venue_details.address }}
+      </p>
+      <div class="card-actions">
+        <button class="btn btn-secondary w-100" [routerLink]="['/event', event.id]">View Details</button>
+      </div>
+    </div>
+  </div>
+</div>

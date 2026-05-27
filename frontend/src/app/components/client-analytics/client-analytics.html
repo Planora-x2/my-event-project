@@ -1,0 +1,81 @@
+<div class="dashboard-container animate-fade-in" style="margin-top: 2rem;">
+  <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 class="text-gradient">Analytics & Bookings</h1>
+      <p class="text-muted">Track your events performance and view attendees</p>
+    </div>
+    <button routerLink="/client-dashboard" class="btn btn-secondary">Back to Dashboard</button>
+  </div>
+
+  <!-- Charts Dashboard -->
+  <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <div class="glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem; text-align: center;">Bookings per Event</h3>
+      <canvas baseChart [data]="eventChartData" [options]="chartOptions" type="bar"></canvas>
+    </div>
+    <div class="glass" style="padding: 2rem;">
+      <h3 style="margin-bottom: 1.5rem; text-align: center;">Bookings per Venue</h3>
+      <canvas baseChart [data]="venueChartData" [options]="chartOptions" type="bar"></canvas>
+    </div>
+  </div>
+
+  <!-- Booked Users List -->
+  <div class="glass mt-4" style="padding: 2rem; margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1.5rem; color: var(--secondary);">Booked Users Details</h3>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+            <th style="padding: 1rem;">User Name</th>
+            <th style="padding: 1rem;">Email</th>
+            <th style="padding: 1rem;">Event Booked</th>
+            <th style="padding: 1rem;">Venue</th>
+            <th style="padding: 1rem;">Tickets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 1rem;">{{ booking.user_details.first_name }} {{ booking.user_details.last_name }} ({{ booking.user_details.username }})</td>
+            <td style="padding: 1rem;">{{ booking.user_details.email || 'N/A' }}</td>
+            <td style="padding: 1rem;">{{ booking.event_details.title }}</td>
+            <td style="padding: 1rem;">{{ booking.event_details.venue_details.name }}</td>
+            <td style="padding: 1rem;">{{ booking.tickets }}</td>
+          </tr>
+          <tr *ngIf="bookings.length === 0">
+            <td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">No bookings yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Managed Events List -->
+  <div class="glass mt-4" style="padding: 2rem;">
+    <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Your Managed Events</h3>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
+            <th style="padding: 1rem;">Event Title</th>
+            <th style="padding: 1rem;">Date</th>
+            <th style="padding: 1rem;">Venue</th>
+            <th style="padding: 1rem;">Tickets Sold</th>
+            <th style="padding: 1rem;">Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of managedEvents" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 1rem;">{{ event.title }}</td>
+            <td style="padding: 1rem;">{{ event.date | date:'medium' }}</td>
+            <td style="padding: 1rem;">{{ event.venue_details?.name }}</td>
+            <td style="padding: 1rem;">{{ event.ticketsSold }} / {{ event.venue_details?.capacity || 'N/A' }}</td>
+            <td style="padding: 1rem; color: var(--secondary);">${{ event.revenue | number:'1.2-2' }}</td>
+          </tr>
+          <tr *ngIf="managedEvents.length === 0">
+            <td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">No events created yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
