@@ -13,18 +13,32 @@
 
 .auth-bg {
   position: absolute;
-  inset: -10%;
-  background-image: url('/assets/auth_dyn_1.png');
+  inset: -15%;
   background-size: cover;
   background-position: center;
-  animation: liveBackground 30s ease-in-out infinite alternate;
+  animation: fluidElegance 40s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
   z-index: 1;
+  filter: brightness(0.85) contrast(1.1);
 }
 
-@keyframes liveBackground {
-  0%   { transform: scale(1) translate(0, 0); }
-  50%  { transform: scale(1.05) translate(2%, 2%); }
-  100% { transform: scale(1.1) translate(-2%, -2%); }
+.auth-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20,20,20,0.6) 0%, rgba(40,30,25,0.2) 100%);
+  mix-blend-mode: overlay;
+}
+
+@keyframes fluidElegance {
+  0% { 
+    transform: scale(1) translate(0, 0) rotate(0deg); 
+  }
+  50% { 
+    transform: scale(1.08) translate(2%, 3%) rotate(0.5deg); 
+  }
+  100% { 
+    transform: scale(1.15) translate(-2%, -1%) rotate(-0.5deg); 
+  }
 }
 
 .auth-video-bg {
