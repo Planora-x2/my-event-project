@@ -179,6 +179,7 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': None,
     'JWT_AUTH_RETURN_EXPIRATION': False,
     'USER_DETAILS_SERIALIZER': 'users.serializers.CustomUserDetailsSerializer',
+    'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
 }
 
 CHANNEL_LAYERS = {

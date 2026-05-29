@@ -18,8 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import GoogleLogin
+from users.views import GoogleLogin, AdminUserViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.routers import DefaultRouter
+
+admin_router = DefaultRouter()
+admin_router.register(r'users', AdminUserViewSet, basename='admin-user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +36,7 @@ urlpatterns = [
     path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('api/events/', include('events.urls')),
     path('api/interactions/', include('interactions.urls')),
+    path('api/admin/', include(admin_router.urls)),
 ]
 
 if settings.DEBUG:

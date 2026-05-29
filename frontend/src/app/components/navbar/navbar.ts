@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -12,9 +12,15 @@ import { AuthService } from '../../services/auth/auth';
 })
 export class NavbarComponent {
   currentUser$: Observable<any>;
+  isScrolled = false;
 
   constructor(public authService: AuthService, private router: Router) {
     this.currentUser$ = this.authService.currentUser$;
+  }
+
+  @HostListener('window:scroll')
+  onScroll() {
+    this.isScrolled = window.scrollY > 20;
   }
 
   logout() {
@@ -28,8 +34,7 @@ export class NavbarComponent {
     if (file) {
       this.authService.updateProfilePicture(file).subscribe({
         next: (user) => {
-          console.log('Profile picture updated!', user);
-          event.target.value = ''; // Reset file input so same file can be selected again
+          event.target.value = '';
         },
         error: (err) => console.error('Failed to update profile picture', err)
       });
@@ -40,5 +45,26 @@ export class NavbarComponent {
     if (!url) return '';
     if (url.startsWith('http')) return url;
     return `http://localhost:8000${url}`;
+  }
+
+  isThemeSelectorOpen = false;
+  availableThemes = ['rose', 'mint', 'lavender', 'gold'];
+
+  openThemeSelector() {
+    this.isThemeSelectorOpen = true;
+  }
+
+  closeThemeSelector() {
+    this.isThemeSelectorOpen = false;
+  }
+
+  setTheme(theme: string, user: any) {
+    if (!user) return;
+    this.authService.updateThemePreferences(theme, user.is_dark_mode).subscribe();
+  }
+
+  toggleDarkMode(event: any, user: any) {
+    if (!user) return;
+    this.authService.updateThemePreferences(user.theme_color, event.target.checked).subscribe();
   }
 }

@@ -1,31 +1,88 @@
-<nav class="navbar glass">
+<nav class="navbar" [class.scrolled]="isScrolled">
   <div class="nav-container">
-    <a routerLink="/" class="logo text-gradient">EventHub</a>
+    <!-- Logo / Brand -->
+    <a routerLink="/" class="logo" id="nav-logo">
+      <span class="logo-icon">💍</span>
+      <span class="logo-text">
+        <span class="text-gradient">Eternally</span> Yours
+      </span>
+    </a>
+
+    <!-- Authenticated Nav -->
     <div class="nav-links" *ngIf="currentUser$ | async as user; else loggedOut">
-      <a routerLink="/" class="nav-link">Events</a>
-      <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" routerLink="/client-dashboard" class="nav-link">Client Portal</a>
-      <a *ngIf="user.role === 'ADMIN'" routerLink="/admin-dashboard" class="nav-link">Admin Portal</a>
+      <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" id="nav-events">
+        ✦ Weddings
+      </a>
+      <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
+         routerLink="/client-dashboard" class="nav-link" routerLinkActive="active" id="nav-planner">
+        ✦ Planner Portal
+      </a>
+      <a *ngIf="user.role === 'ADMIN'" 
+         routerLink="/admin-dashboard" class="nav-link" routerLinkActive="active" id="nav-admin">
+        ✦ Admin
+      </a>
       
       <div class="user-profile">
-        <label for="profile-upload" class="profile-pic-container">
-          <img *ngIf="user.profile_picture; else defaultPic" [src]="getProfilePicUrl(user.profile_picture)" alt="Profile" class="profile-pic">
+        <label for="profile-upload" class="profile-pic-container" title="Update profile photo">
+          <img *ngIf="user.profile_picture; else defaultPic" 
+               [src]="getProfilePicUrl(user.profile_picture)" 
+               alt="Profile" class="profile-pic">
           <ng-template #defaultPic>
             <div class="profile-pic default-pic">{{ user.username.charAt(0).toUpperCase() }}</div>
           </ng-template>
+          <div class="profile-pic-edit">✎</div>
         </label>
         <input type="file" id="profile-upload" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
         
-        <span class="nav-link">Signed in as <strong>{{ user.username }}</strong></span>
-        <button (click)="logout()" class="btn btn-secondary btn-sm">Logout</button>
+        <div class="user-info" style="position: relative;">
+          <span class="user-name">{{ user.username }}</span>
+          <span class="user-role">{{ user.role | titlecase }}</span>
+        </div>
+
+        <div class="theme-menu-container" style="position: relative;">
+          <button (click)="isThemeSelectorOpen = !isThemeSelectorOpen" class="btn btn-secondary btn-sm" id="theme-btn" title="Theme Settings">
+            🎨
+          </button>
+          
+          <div *ngIf="isThemeSelectorOpen" class="theme-dropdown glass animate-fade-in" style="position: absolute; top: 120%; right: 0; min-width: 200px; padding: 1rem; border-radius: 12px; z-index: 1000; box-shadow: var(--shadow-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+              <span style="font-weight: 600; font-size: 0.9rem;">Theme Colors</span>
+              <button (click)="isThemeSelectorOpen = false" style="background:none; border:none; cursor:pointer;">✕</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+              <button *ngFor="let theme of availableThemes" 
+                      (click)="setTheme(theme, user)"
+                      [class.active-theme]="user.theme_color === theme"
+                      class="theme-color-btn"
+                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s;">
+                {{ theme }}
+              </button>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-size: 0.9rem; font-weight: 600;">Dark Mode</span>
+              <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+                <input type="checkbox" [checked]="user.is_dark_mode" (change)="toggleDarkMode($event, user)" style="opacity: 0; width: 0; height: 0;">
+                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px;"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="logout()" class="btn btn-secondary btn-sm" id="nav-logout">Logout</button>
       </div>
     </div>
     
+    <!-- Guest Nav -->
     <ng-template #loggedOut>
       <div class="nav-links">
-        <a routerLink="/" class="nav-link">Events</a>
+        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          ✦ Weddings
+        </a>
         <div class="auth-buttons">
-          <button routerLink="/login" class="btn btn-secondary">Login</button>
-          <button routerLink="/register" class="btn btn-primary">Sign Up</button>
+          <button routerLink="/login" class="btn btn-secondary" id="nav-login">Sign In</button>
+          <button routerLink="/register" class="btn btn-primary" id="nav-register">Begin Your Journey</button>
         </div>
       </div>
     </ng-template>

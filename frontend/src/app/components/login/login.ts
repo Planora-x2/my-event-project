@@ -24,9 +24,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Select a random dynamic background image from the 3 we created
-    const bgNumber = Math.floor(Math.random() * 3) + 1;
-    this.currentBgImage = `/assets/auth_dyn_${bgNumber}.png`;
+    this.currentBgImage = '/wedding_auth.png';
 
     this.socialAuthService.authState.subscribe((user) => {
       if (user) {

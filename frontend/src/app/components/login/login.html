@@ -1,43 +1,75 @@
-<div class="auth-split-layout animate-fade-in">
-  <div class="auth-form-section">
-    <div class="auth-form-container">
-      <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-main);">Welcome Back</h2>
-      <p class="text-muted" style="margin-bottom: 2.5rem; font-size: 1.1rem;">Log in to manage your events and bookings</p>
+<div class="auth-layout" data-aos="fade-up" data-aos-duration="1000">
+  <div class="auth-bg" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80');"></div>
+  <!-- Left: Form Side -->
+  <div class="auth-form-side">
+    <div class="auth-brand" data-aos="fade-down" data-aos-delay="200">
+      <!-- <a routerLink="/" class="brand-logo">💍 <span class="text-gradient">Eternally Yours</span></a> -->
+    </div>
+    <div class="auth-form-container glass" data-aos="fade-up" data-aos-delay="300">
+      <div class="auth-welcome">
+        <div class="welcome-ornament">✦ ✦ ✦</div>
+        <h1>Welcome Back</h1>
+        <p class="text-muted">Sign in to manage your beautiful celebrations</p>
+      </div>
       
-      <form class="auth-form" (ngSubmit)="onSubmit()">
+      <form class="auth-form" (ngSubmit)="onSubmit()" id="login-form" data-aos="fade-up" data-aos-delay="400">
         <div class="form-group">
-          <label class="input-label">Username</label>
-          <input type="text" class="input-field" placeholder="Enter username" name="username" [(ngModel)]="username" required>
+          <label class="input-label" for="login-username">Username</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input 
+              type="text" 
+              class="input-field input-with-icon" 
+              placeholder="Enter your username" 
+              name="username" 
+              [(ngModel)]="username" 
+              required
+              id="login-username">
+          </div>
         </div>
         
         <div class="form-group">
-          <label class="input-label">Password</label>
-          <input type="password" class="input-field" placeholder="Enter password" name="password" [(ngModel)]="password" required>
+          <label class="input-label" for="login-password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input 
+              type="password" 
+              class="input-field input-with-icon" 
+              placeholder="Enter your password" 
+              name="password" 
+              [(ngModel)]="password" 
+              required
+              id="login-password">
+          </div>
         </div>
         
-        <button type="submit" class="btn btn-primary w-100" style="padding: 1rem; font-size: 1.05rem; margin-top: 1rem;">Log In</button>
+        <button type="submit" class="btn btn-primary w-100 auth-submit-btn" id="login-submit-btn">
+          Sign In to Your Account
+        </button>
         
-        <div class="divider">
-          <span>OR CONTINUE WITH</span>
-        </div>
+        <div class="divider"><span>or continue with</span></div>
         
-        <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+        <div class="social-signin">
           <asl-google-signin-btn type="standard" size="large" width="300"></asl-google-signin-btn>
         </div>
         
-        <p class="text-center mt-4" style="color: var(--text-muted); font-weight: 500;">
-          Don't have an account? <a routerLink="/register" class="text-gradient" style="font-weight: 700;">Sign up</a>
+        <p class="auth-switch">
+          New here? 
+          <a routerLink="/register" class="text-gradient auth-switch-link" id="login-to-register">Begin Your Journey →</a>
         </p>
       </form>
     </div>
   </div>
   
-  <div class="auth-image-section">
-    <div class="auth-dynamic-bg" [ngStyle]="{'background-image': 'url(' + currentBgImage + ')'}"></div>
+  <!-- Right: Image Side -->
+  <div class="auth-image-side" data-aos="fade-left" data-aos-duration="1200">
+    <div class="auth-bg" [ngStyle]="{'background-image': 'url(' + currentBgImage + ')'}"></div>
     <div class="auth-image-overlay">
-      <div class="auth-quote glass">
-        <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">"The best platform for discovering and managing events seamlessly."</h3>
-        <p style="color: var(--text-muted); font-weight: 500;">— EventHub Community</p>
+      <div class="auth-quote glass-gold" data-aos="fade-up" data-aos-delay="600">
+        <div class="quote-flowers">🌸 🌷 🌸</div>
+        <blockquote>"The best platform for discovering and booking the most extraordinary wedding celebrations."</blockquote>
+        <cite>— Eternally Yours Community</cite>
+        <div class="quote-stars">★★★★★</div>
       </div>
     </div>
   </div>

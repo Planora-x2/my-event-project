@@ -1,81 +1,157 @@
-<div class="dashboard-container animate-fade-in" style="margin-top: 2rem;">
-  <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+<div class="analytics-container animate-fade-in">
+
+  <div class="analytics-header">
     <div>
-      <h1 class="text-gradient">Analytics & Bookings</h1>
-      <p class="text-muted">Track your events performance and view attendees</p>
+      <div class="floral-sep">✿</div>
+      <h1 class="page-title"><span class="text-gradient">Wedding</span> Analytics</h1>
+      <p class="text-muted">Track your events performance and attendee details</p>
     </div>
-    <button routerLink="/client-dashboard" class="btn btn-secondary">Back to Dashboard</button>
+    <button routerLink="/client-dashboard" class="btn btn-secondary" id="back-to-dashboard">
+      ← Back to Planner
+    </button>
   </div>
 
-  <!-- Charts Dashboard -->
-  <div class="dashboard-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-    <div class="glass" style="padding: 2rem;">
-      <h3 style="margin-bottom: 1.5rem; text-align: center;">Bookings per Event</h3>
-      <canvas baseChart [data]="eventChartData" [options]="chartOptions" type="bar"></canvas>
+  <!-- Charts -->
+  <div class="charts-grid">
+    <!-- Bar Charts (Scrollable) -->
+    <div class="chart-card glass animate-fade-in" style="animation-delay:0.1s">
+      <h3 class="chart-title">💍 Bookings per Wedding</h3>
+      <div class="scrollable-chart-wrapper">
+        <div class="chart-wrapper" style="min-width: 500px; height: 300px;">
+          <canvas baseChart [data]="eventChartData" [options]="chartOptions" type="bar"></canvas>
+        </div>
+      </div>
     </div>
-    <div class="glass" style="padding: 2rem;">
-      <h3 style="margin-bottom: 1.5rem; text-align: center;">Bookings per Venue</h3>
-      <canvas baseChart [data]="venueChartData" [options]="chartOptions" type="bar"></canvas>
+
+    <div class="chart-card glass animate-fade-in" style="animation-delay:0.15s">
+      <h3 class="chart-title">🏛️ Bookings per Venue</h3>
+      <div class="scrollable-chart-wrapper">
+        <div class="chart-wrapper" style="min-width: 500px; height: 300px;">
+          <canvas baseChart [data]="venueChartData" [options]="chartOptions" type="bar"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donut Charts -->
+    <div class="chart-card glass animate-fade-in" style="animation-delay:0.2s">
+      <h3 class="chart-title">💰 Revenue by Wedding</h3>
+      <div class="chart-wrapper" style="height: 300px;">
+        <canvas baseChart [data]="revenueByEventChartData" [options]="donutChartOptions" type="doughnut"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card glass animate-fade-in" style="animation-delay:0.25s">
+      <h3 class="chart-title">💰 Revenue by Venue</h3>
+      <div class="chart-wrapper" style="height: 300px;">
+        <canvas baseChart [data]="revenueByVenueChartData" [options]="donutChartOptions" type="doughnut"></canvas>
+      </div>
     </div>
   </div>
 
-  <!-- Booked Users List -->
-  <div class="glass mt-4" style="padding: 2rem; margin-bottom: 2rem;">
-    <h3 style="margin-bottom: 1.5rem; color: var(--secondary);">Booked Users Details</h3>
-    <div style="overflow-x: auto;">
-      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+  <!-- Booked Guests Table -->
+  <div class="analytics-card glass animate-fade-in" style="animation-delay:0.2s">
+    <div class="analytics-card-header">
+      <div class="floral-sep">✿</div>
+      <h2 class="analytics-section-title">💌 Guest Bookings</h2>
+      <p class="text-muted" style="font-size:0.85rem">All attendees who have booked your wedding events</p>
+    </div>
+    <div class="table-wrapper">
+      <table class="analytics-table">
         <thead>
-          <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
-            <th style="padding: 1rem;">User Name</th>
-            <th style="padding: 1rem;">Email</th>
-            <th style="padding: 1rem;">Event Booked</th>
-            <th style="padding: 1rem;">Venue</th>
-            <th style="padding: 1rem;">Tickets</th>
+          <tr>
+            <th>Guest Name</th>
+            <th>Email</th>
+            <th>Wedding Event</th>
+            <th>Venue</th>
+            <th>Tickets</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let booking of bookings" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 1rem;">{{ booking.user_details.first_name }} {{ booking.user_details.last_name }} ({{ booking.user_details.username }})</td>
-            <td style="padding: 1rem;">{{ booking.user_details.email || 'N/A' }}</td>
-            <td style="padding: 1rem;">{{ booking.event_details.title }}</td>
-            <td style="padding: 1rem;">{{ booking.event_details.venue_details.name }}</td>
-            <td style="padding: 1rem;">{{ booking.tickets }}</td>
+          <tr *ngFor="let booking of bookings" class="table-row-animate">
+            <td>
+              <div class="guest-cell">
+                <div class="guest-avatar">{{ (booking.user_details.first_name || booking.user_details.username)?.charAt(0)?.toUpperCase() }}</div>
+                <span>{{ booking.user_details.first_name }} {{ booking.user_details.last_name }}
+                  <small class="text-muted">({{ booking.user_details.username }})</small>
+                </span>
+              </div>
+            </td>
+            <td class="text-muted" style="font-size:0.85rem">{{ booking.user_details.email || '—' }}</td>
+            <td>
+              <span class="event-name-cell">{{ booking.event_details.title }}</span>
+            </td>
+            <td class="text-muted" style="font-size:0.85rem">{{ booking.event_details.venue_details?.name || '—' }}</td>
+            <td>
+              <span class="ticket-chip">🎟️ {{ booking.tickets }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'badge-green': booking.status === 'CONFIRMED',
+                'badge-gold': booking.status === 'PENDING',
+                'badge-red': booking.status === 'CANCELLED'
+              }">{{ booking.status }}</span>
+            </td>
           </tr>
           <tr *ngIf="bookings.length === 0">
-            <td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">No bookings yet.</td>
+            <td colspan="6" class="empty-row">
+              <div class="empty-cell">
+                <span>💌</span>
+                <p>No bookings yet. Your wedding events are waiting for guests!</p>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- Managed Events List -->
-  <div class="glass mt-4" style="padding: 2rem;">
-    <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Your Managed Events</h3>
-    <div style="overflow-x: auto;">
-      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+  <!-- Managed Events Summary -->
+  <div class="analytics-card glass animate-fade-in" style="animation-delay:0.25s">
+    <div class="analytics-card-header">
+      <div class="floral-sep">✿</div>
+      <h2 class="analytics-section-title">💍 Your Wedding Events</h2>
+      <p class="text-muted" style="font-size:0.85rem">Performance overview for all your published weddings</p>
+    </div>
+    <div class="table-wrapper">
+      <table class="analytics-table">
         <thead>
-          <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted);">
-            <th style="padding: 1rem;">Event Title</th>
-            <th style="padding: 1rem;">Date</th>
-            <th style="padding: 1rem;">Venue</th>
-            <th style="padding: 1rem;">Tickets Sold</th>
-            <th style="padding: 1rem;">Revenue</th>
+          <tr>
+            <th>Wedding Title</th>
+            <th>Date</th>
+            <th>Venue</th>
+            <th>Tickets Sold</th>
+            <th>Revenue</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let event of managedEvents" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 1rem;">{{ event.title }}</td>
-            <td style="padding: 1rem;">{{ event.date | date:'medium' }}</td>
-            <td style="padding: 1rem;">{{ event.venue_details?.name }}</td>
-            <td style="padding: 1rem;">{{ event.ticketsSold }} / {{ event.venue_details?.capacity || 'N/A' }}</td>
-            <td style="padding: 1rem; color: var(--secondary);">${{ event.revenue | number:'1.2-2' }}</td>
+          <tr *ngFor="let event of managedEvents">
+            <td><span class="event-name-cell">{{ event.title }}</span></td>
+            <td>
+              <span class="date-chip">{{ event.date | date:'MMM d, yyyy' }}</span>
+            </td>
+            <td class="text-muted" style="font-size:0.85rem">{{ event.venue_details?.name || '—' }}</td>
+            <td>
+              <div class="tickets-sold">
+                <span>{{ event.ticketsSold || 0 }}</span>
+                <small class="text-muted">/ {{ event.venue_details?.capacity || '∞' }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="revenue-chip">${{ (event.revenue || 0) | number:'1.2-2' }}</span>
+            </td>
           </tr>
           <tr *ngIf="managedEvents.length === 0">
-            <td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">No events created yet.</td>
+            <td colspan="5" class="empty-row">
+              <div class="empty-cell">
+                <span>💍</span>
+                <p>No events created yet. <a routerLink="/client-dashboard" class="text-gradient">Create your first wedding →</a></p>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+
 </div>

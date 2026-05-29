@@ -58,7 +58,12 @@ export class AuthService {
 
   getUserProfile(): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/`).pipe(
-      tap(user => this.currentUserSubject.next(user)),
+      tap((user: any) => {
+        this.currentUserSubject.next(user);
+        if (user.theme_color) {
+          this.applyThemeToDocument(user.theme_color, user.is_dark_mode);
+        }
+      }),
       catchError(err => {
         this.currentUserSubject.next(null);
         throw err;
@@ -72,5 +77,29 @@ export class AuthService {
     return this.http.patch(`${this.apiUrl}/user/`, formData).pipe(
       tap(user => this.currentUserSubject.next(user))
     );
+  }
+
+  updateThemePreferences(themeColor: string, isDarkMode: boolean): Observable<any> {
+    const payload = {
+      theme_color: themeColor,
+      is_dark_mode: isDarkMode
+    };
+    return this.http.patch(`${this.apiUrl}/user/`, payload).pipe(
+      tap(user => {
+        this.currentUserSubject.next(user);
+        this.applyThemeToDocument(themeColor, isDarkMode);
+      })
+    );
+  }
+
+  applyThemeToDocument(themeColor: string, isDarkMode: boolean) {
+    document.body.setAttribute('data-theme', themeColor);
+    if (isDarkMode) {
+      document.body.setAttribute('data-theme-mode', 'dark');
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.removeAttribute('data-theme-mode');
+      document.body.classList.remove('dark-mode');
+    }
   }
 }

@@ -1,113 +1,313 @@
-<div class="event-detail-container animate-fade-in" style="margin-top: 2rem;">
-  
-  <div *ngIf="loading" style="text-align: center; padding: 4rem;">
-    <h3 class="text-muted">Loading event details...</h3>
+<div class="detail-container animate-fade-in">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-ring">💍</div>
+    <p class="text-muted">Loading wedding details...</p>
   </div>
 
-  <div *ngIf="!loading && event" class="hero-section glass">
-    <div class="hero-image-wrapper">
-      <img [src]="getEventImageUrl(event.image)" alt="Event Banner" class="hero-image">
-    </div>
-    <div class="hero-content">
-      <div class="meta-row">
-        <span class="meta-tag">Event</span>
-        <span class="meta-date">{{ event.date | date:'mediumDate' }}</span>
-      </div>
-      <h1 class="text-gradient" style="font-size: 2.5rem; margin: 1rem 0;">{{ event.title }}</h1>
-      <p class="text-muted" style="font-size: 1.1rem; line-height: 1.6;">
-        {{ event.description }}
-      </p>
-      
-      <div class="venue-info mt-4" *ngIf="event.venue_details">
-        <h4>Venue & Location</h4>
-        <p>{{ event.venue_details.name }}, {{ event.venue_details.address }}</p>
-        <p>Capacity: {{ event.venue_details.capacity }} attendees</p>
-      </div>
-      
-      <div class="booking-section glass mt-4" style="padding: 1.5rem; border-color: rgba(16, 185, 129, 0.2);">
-        <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <span style="font-size: 1.25rem; font-weight: 600;">Ticket Price</span>
-          <span class="text-gradient" style="font-size: 1.5rem; font-weight: 700;">${{ event.price | number:'1.2-2' }}</span>
+  <!-- Event Not Found -->
+  <div *ngIf="!loading && !event" class="empty-state">
+    <div class="empty-icon">🌸</div>
+    <h3>Wedding not found</h3>
+    <p class="text-muted">This event may have been removed or is no longer available.</p>
+    <button class="btn btn-primary" routerLink="/">Browse Weddings</button>
+  </div>
+
+  <!-- Event Content -->
+  <ng-container *ngIf="!loading && event">
+    
+    <!-- Hero Banner -->
+    <div class="event-hero">
+      <img [src]="getEventImageUrl(event.image)" [alt]="event.title" class="event-hero-img">
+      <div class="event-hero-overlay"></div>
+      <div class="event-hero-content">
+        <div class="meta-row">
+          <span class="badge badge-rose">🌸 {{ getCategoryLabel(event.category) }}</span>
+          <span class="hero-date">{{ event.date | date:'EEEE, MMMM d, yyyy' }}</span>
         </div>
-        <div class="action-row" style="display: flex; gap: 1rem;">
-          <input type="number" class="input-field" [(ngModel)]="ticketsToBook" min="1" max="10" style="width: 100px;">
-          <button class="btn btn-primary" style="flex: 1;" (click)="bookTickets()" [disabled]="isSubmitting">
-            {{ isSubmitting ? 'Booking...' : 'Book Now' }}
-          </button>
+        <h1 class="event-hero-title">{{ event.title }}</h1>
+        <div class="hero-venue" *ngIf="event.venue_details">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          {{ event.venue_details.name }}, {{ event.venue_details.address }}
         </div>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="!loading && !event" style="text-align: center; padding: 4rem;">
-    <h3 class="text-muted">Event not found</h3>
-  </div>
+    <!-- Main Content Grid -->
+    <div class="detail-grid">
 
-  <div class="interaction-section mt-4" style="display: grid; grid-template-columns: 1fr; gap: 2rem;" *ngIf="event">
-    <!-- Comments Section -->
-    <div class="comments-section glass" style="padding: 2rem;">
-      <h3 style="margin-bottom: 1.5rem;">Discussion</h3>
-      <div class="comment-input" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-        <input type="text" class="input-field" [(ngModel)]="newComment" (keyup.enter)="postComment()" placeholder="Add a comment...">
-        <button class="btn btn-secondary" (click)="postComment()" [disabled]="!newComment.trim()">Post</button>
-      </div>
-      
-      <div class="comment-list">
-        <div *ngIf="comments.length === 0" class="text-muted" style="text-align: center; padding: 2rem 0;">
-          No comments yet. Be the first to start the discussion!
-        </div>
-        <div *ngFor="let comment of comments" class="comment-item" style="padding: 1rem; background: rgba(15, 23, 42, 0.4); border-radius: 8px; margin-bottom: 1rem;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <strong>{{ comment.user_name }}</strong>
-            <span class="text-muted" style="font-size: 0.85rem;">{{ comment.created_at | date:'short' }}</span>
+      <!-- LEFT: Info Column -->
+      <div class="info-column">
+        
+        <!-- About Section -->
+        <div class="detail-card glass" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-header">
+            <div class="floral-sep">✿</div>
+            <h2 class="card-section-title">About This Celebration</h2>
           </div>
-          <p style="color: var(--text-main); margin: 0;">{{ comment.text }}</p>
+          <p class="event-description">{{ event.description }}</p>
+        </div>
+
+        <!-- Venue & Details -->
+        <div class="detail-card glass" data-aos="fade-up" data-aos-delay="200" *ngIf="event.venue_details">
+          <div class="card-header">
+            <div class="floral-sep">✿</div>
+            <h2 class="card-section-title">Venue Details</h2>
+          </div>
+          <div class="venue-grid">
+            <div class="venue-info-item">
+              <span class="venue-info-icon">🏛️</span>
+              <div>
+                <p class="venue-info-label">Venue Name</p>
+                <p class="venue-info-value">{{ event.venue_details.name }}</p>
+              </div>
+            </div>
+            <div class="venue-info-item">
+              <span class="venue-info-icon">📍</span>
+              <div>
+                <p class="venue-info-label">Location</p>
+                <p class="venue-info-value">{{ event.venue_details.address }}</p>
+              </div>
+            </div>
+            <div class="venue-info-item">
+              <span class="venue-info-icon">👥</span>
+              <div>
+                <p class="venue-info-label">Guest Capacity</p>
+                <p class="venue-info-value">Up to {{ event.venue_details.capacity | number }} guests</p>
+              </div>
+            </div>
+            <div class="venue-info-item">
+              <span class="venue-info-icon">📅</span>
+              <div>
+                <p class="venue-info-label">Event Date & Time</p>
+                <p class="venue-info-value">{{ event.date | date:'medium' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wedding Gallery -->
+        <div class="detail-card glass" data-aos="fade-up" data-aos-delay="300" *ngIf="event.gallery_images && event.gallery_images.length > 0">
+          <div class="card-header">
+            <div class="floral-sep">✿</div>
+            <h2 class="card-section-title">Wedding Gallery</h2>
+          </div>
+          <div class="gallery-grid">
+            <div class="gallery-item" *ngFor="let img of event.gallery_images; let i = index" 
+                 (click)="openLightbox(i)"
+                 data-aos="zoom-in" [attr.data-aos-delay]="(i % 4) * 100">
+              <img [src]="getEventImageUrl(img.image)" [alt]="img.caption || 'Wedding Photo'" class="gallery-thumb" loading="lazy">
+              <div class="gallery-overlay">
+                <span class="view-icon">🔍</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments / Discussion -->
+        <div class="detail-card glass" data-aos="fade-up" data-aos-delay="400">
+          <div class="card-header">
+            <div class="floral-sep">✿</div>
+            <h2 class="card-section-title">Guest Messages</h2>
+          </div>
+
+          <div class="comment-compose">
+            <input 
+              type="text" 
+              class="input-field" 
+              [(ngModel)]="newComment" 
+              (keyup.enter)="postComment()" 
+              placeholder="Leave a warm message for the couple..."
+              id="comment-input">
+            <button class="btn btn-primary" (click)="postComment()" [disabled]="!newComment.trim()" id="post-comment-btn">
+              Send 💌
+            </button>
+          </div>
+
+          <div class="comment-list">
+            <div *ngIf="comments.length === 0" class="comments-empty">
+              <span>💌</span>
+              <p>Be the first to leave a message!</p>
+            </div>
+            <div *ngFor="let comment of comments" class="comment-item" data-aos="fade-up">
+              <div class="comment-avatar">{{ comment.user_name?.charAt(0)?.toUpperCase() || '?' }}</div>
+              <div class="comment-body">
+                <div class="comment-meta">
+                  <strong class="comment-author">{{ comment.user_name }}</strong>
+                  <span class="comment-time">{{ comment.created_at | date:'shortDate' }}</span>
+                </div>
+                <p class="comment-text">{{ comment.text }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Organizer notice -->
+        <div class="detail-card glass organizer-notice animate-fade-in" style="animation-delay:0.35s" *ngIf="isOrganizer">
+          <span class="notice-icon">🎩</span>
+          <div style="flex-grow: 1;">
+            <h4>You're the Wedding Organizer</h4>
+            <p class="text-muted">You can manage this event and upload more gallery photos.</p>
+            
+            <div class="upload-gallery-section" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+              <h5>Add Gallery Photo</h5>
+              <input type="file" (change)="onGalleryFileSelected($event)" accept="image/*" class="input-field" style="margin-bottom: 0.5rem; padding: 0.5rem;">
+              <input type="text" [(ngModel)]="newGalleryCaption" placeholder="Add a sweet caption..." class="input-field" style="margin-bottom: 0.5rem;">
+              <button class="btn btn-primary btn-sm" (click)="uploadGalleryPhoto()" [disabled]="!selectedGalleryFile || isUploadingGallery">
+                <span *ngIf="!isUploadingGallery">Upload Photo</span>
+                <span *ngIf="isUploadingGallery">Uploading...</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
+      <!-- RIGHT: Booking Column -->
+      <div class="booking-column" data-aos="fade-left" data-aos-duration="1000">
+        
+        <!-- Booking Card -->
+        <div class="booking-card glass-gold">
+          <div class="booking-header">
+            <div class="floral-sep">✿</div>
+            <h3 class="booking-title">Reserve Your Seat</h3>
+            <div class="booking-price">
+              <span class="price-per">Per guest</span>
+              <span class="price-main text-gradient">${{ event.price | number:'1.2-2' }}</span>
+            </div>
+          </div>
 
+          <div class="booking-body">
+            <label class="input-label">Number of Tickets</label>
+            <div class="ticket-selector">
+              <button class="ticket-btn" (click)="ticketsToBook = ticketsToBook > 1 ? ticketsToBook - 1 : 1" id="tickets-minus">−</button>
+              <input 
+                type="number" 
+                class="ticket-input input-field" 
+                [(ngModel)]="ticketsToBook" 
+                min="1" 
+                max="20"
+                id="ticket-count">
+              <button class="ticket-btn" (click)="ticketsToBook = ticketsToBook < 20 ? ticketsToBook + 1 : 20" id="tickets-plus">+</button>
+            </div>
 
-  <ng-container *ngIf="event && isOrganizer">
-    <div class="interaction-section mt-4" style="display: block;">
-      <div class="chat-widget glass" style="padding: 2rem; display: flex; flex-direction: column; justify-content: center; text-align: center;">
-        <h3 style="margin-bottom: 1rem;">Live Chats</h3>
-        <p class="text-muted">You are the organizer of this event. Please check your Dashboard to reply to attendee messages.</p>
+            <div class="booking-summary">
+              <div class="summary-row">
+                <span>Ticket × {{ ticketsToBook }}</span>
+                <span>${{ (event.price * ticketsToBook) | number:'1.2-2' }}</span>
+              </div>
+              <div class="summary-total">
+                <span>Total</span>
+                <span class="total-price text-gradient">${{ (event.price * ticketsToBook) | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <button 
+              class="btn btn-primary w-100 book-btn" 
+              (click)="bookTickets()" 
+              [disabled]="isSubmitting"
+              id="book-now-btn">
+              <span *ngIf="!isSubmitting">💍 Book Now</span>
+              <span *ngIf="isSubmitting">⏳ Processing...</span>
+            </button>
+
+            <p class="booking-note">
+              ✦ Secure booking · Instant confirmation · Cancel anytime
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Info Card -->
+        <div class="quick-info-card glass" data-aos="fade-up" data-aos-delay="200">
+          <div class="quick-info-item">
+            <span class="qi-icon">📅</span>
+            <div>
+              <p class="qi-label">Date</p>
+              <p class="qi-value">{{ event.date | date:'MMM d, yyyy' }}</p>
+            </div>
+          </div>
+          <div class="quick-info-item">
+            <span class="qi-icon">🕐</span>
+            <div>
+              <p class="qi-label">Time</p>
+              <p class="qi-value">{{ event.date | date:'h:mm a' }}</p>
+            </div>
+          </div>
+          <div class="quick-info-item" *ngIf="event.venue_details">
+            <span class="qi-icon">👥</span>
+            <div>
+              <p class="qi-label">Max Guests</p>
+              <p class="qi-value">{{ event.venue_details.capacity | number }}</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </ng-container>
 </div>
 
-<!-- Floating Chat Button & Popup — outside container so position:fixed hits viewport -->
+<!-- ═══ FLOATING CHAT (Attendees only) ═══ -->
 <ng-container *ngIf="event && !isOrganizer">
-  <!-- Chat FAB -->
-  <button class="chat-fab btn-primary" (click)="toggleChat()">
-    <svg *ngIf="!isChatOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-    <svg *ngIf="isChatOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+  <button class="chat-fab" (click)="toggleChat()" id="chat-fab-btn" [class.chat-open]="isChatOpen">
+    <span *ngIf="!isChatOpen">💬</span>
+    <span *ngIf="isChatOpen">✕</span>
   </button>
 
-  <!-- Chat Popup Widget -->
-  <div *ngIf="isChatOpen" class="chat-popup glass animate-fade-in">
-    <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
-      <h3 style="margin: 0; font-size: 1.1rem;">Live Chat (Organizer)</h3>
-      <button class="btn btn-secondary" style="padding: 0.2rem 0.5rem;" (click)="toggleChat()">✕</button>
+  <div *ngIf="isChatOpen" class="chat-popup glass animate-fade-in" id="chat-popup">
+    <div class="chat-popup-header">
+      <div class="chat-popup-title">
+        <span class="chat-popup-icon">💌</span>
+        <div>
+          <h4>Message Organizer</h4>
+          <p class="text-muted" style="font-size:0.75rem;">Private conversation</p>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="toggleChat()" id="chat-close-btn">✕</button>
     </div>
 
-    <div class="chat-messages" #chatScroll style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
-      <div *ngIf="chatMessages.length === 0" class="text-muted" style="text-align: center; margin: auto;">
-        Start a private conversation with the organizer.
+    <div class="chat-messages" #chatScroll>
+      <div *ngIf="chatMessages.length === 0" class="chat-empty">
+        <span>💌</span>
+        <p>Start a private conversation with the wedding organizer.</p>
       </div>
-      <div *ngFor="let msg of chatMessages" class="message" [ngStyle]="{'align-self': msg.sender_name === currentUser?.username ? 'flex-end' : 'flex-start', 'background': msg.sender_name === currentUser?.username ? 'rgba(16, 185, 129, 0.1)' : 'rgba(79, 70, 229, 0.1)'}" style="padding: 0.75rem; border-radius: 8px; max-width: 85%;">
-        <strong style="font-size: 0.8rem;" [ngStyle]="{'color': msg.sender_name === currentUser?.username ? '#34d399' : '#818cf8'}">
-          {{ msg.sender_name === currentUser?.username ? 'You' : 'Organizer' }}
-        </strong>
-        <p style="margin: 0; font-size: 0.95rem;">{{ msg.message }}</p>
+      <div *ngFor="let msg of chatMessages" 
+           class="chat-bubble"
+           [class.sent]="msg.sender_name === currentUser?.username"
+           [class.received]="msg.sender_name !== currentUser?.username">
+        <span class="bubble-sender">{{ msg.sender_name === currentUser?.username ? 'You' : 'Organizer' }}</span>
+        <p class="bubble-text">{{ msg.message }}</p>
       </div>
     </div>
-    <div class="chat-input" style="display: flex; gap: 0.5rem;">
-      <input type="text" class="input-field" [(ngModel)]="newChatMessage" (keyup.enter)="sendChatMessage()" placeholder="Type a message...">
-      <button class="btn btn-primary" (click)="sendChatMessage()" [disabled]="!newChatMessage.trim()">Send</button>
+
+    <div class="chat-input-row">
+      <input 
+        type="text" 
+        class="input-field chat-input-field" 
+        [(ngModel)]="newChatMessage" 
+        (keyup.enter)="sendChatMessage()" 
+        placeholder="Type your message..."
+        id="chat-message-input">
+      <button class="btn btn-primary" (click)="sendChatMessage()" [disabled]="!newChatMessage.trim()" id="chat-send-btn">Send</button>
     </div>
   </div>
 </ng-container>
+
+<!-- ═══ GALLERY LIGHTBOX ═══ -->
+<div class="lightbox-overlay animate-fade-in" *ngIf="selectedGalleryIndex !== null" (click)="closeLightbox()">
+  <button class="lightbox-close" (click)="closeLightbox()">✕</button>
+  
+  <button class="lightbox-nav prev" (click)="prevPhoto(); $event.stopPropagation()">❮</button>
+  
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <img [src]="getEventImageUrl(event.gallery_images[selectedGalleryIndex].image)" 
+         class="lightbox-img" 
+         [alt]="event.gallery_images[selectedGalleryIndex].caption || 'Gallery Image'">
+    
+    <div class="lightbox-caption" *ngIf="event.gallery_images[selectedGalleryIndex].caption">
+      <p>{{ event.gallery_images[selectedGalleryIndex].caption }}</p>
+    </div>
+  </div>
+  
+  <button class="lightbox-nav next" (click)="nextPhoto(); $event.stopPropagation()">❯</button>
+</div>

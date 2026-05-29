@@ -12,8 +12,17 @@ class Venue(models.Model):
         return self.name
 
 class Event(models.Model):
+    class Category(models.TextChoices):
+        WEDDING = 'WEDDING', 'Wedding Ceremony'
+        RECEPTION = 'RECEPTION', 'Wedding Reception'
+        ENGAGEMENT = 'ENGAGEMENT', 'Engagement Party'
+        REHEARSAL = 'REHEARSAL', 'Rehearsal Dinner'
+        BRIDAL = 'BRIDAL', 'Bridal Shower'
+        OTHER = 'OTHER', 'Other Celebration'
+
     title = models.CharField(max_length=255)
     description = models.TextField()
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.WEDDING)
     venue = models.ForeignKey(Venue, on_delete=models.SET_NULL, null=True, related_name='events')
     client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, limit_choices_to={'role': 'CLIENT'})
     date = models.DateTimeField()
@@ -38,3 +47,15 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.event.title} ({self.status})"
+
+class EventGalleryImage(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='gallery_images')
+    image = models.ImageField(upload_to='events/gallery/')
+    caption = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Gallery Image for {self.event.title}"

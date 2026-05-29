@@ -44,4 +44,8 @@ export class EventService {
   bookEvent(eventId: number, tickets: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/bookings/`, { event: eventId, tickets: tickets });
   }
+
+  uploadGalleryImage(eventId: number, formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/events/${eventId}/upload_gallery_image/`, formData);
+  }
 }

@@ -1,145 +1,177 @@
-.auth-split-layout {
-  display: flex;
-  position: absolute;
-  top: 60px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  min-height: calc(100vh - 60px);
-  background: var(--background);
-}
-
-.auth-form-section {
-  flex: 1;
+/* ═══ AUTH LAYOUT ════════════════════════════════ */
+.auth-layout {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Fill the space below the fixed navbar */
+  min-height: calc(100vh - 72px);
+  /* Escape the main container padding so it's truly edge-to-edge */
+  margin: -2rem -1rem -2rem -1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-bg {
+  position: absolute;
+  inset: -10%;
+  background-image: url('/assets/auth_dyn_2.png');
+  background-size: cover;
+  background-position: center;
+  animation: liveBackground 30s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes liveBackground {
+  0%   { transform: scale(1) translate(0, 0); }
+  50%  { transform: scale(1.05) translate(2%, 2%); }
+  100% { transform: scale(1.1) translate(-2%, -2%); }
+}
+
+.auth-video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.85; /* Slight dimming so form stands out */
+}
+
+/* ── Form Side ───────────────────── */
+.auth-form-side {
+  flex: none;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 2rem;
-  background: var(--surface);
+  background: transparent;
+  position: relative; /* REQUIRED for z-index to work! */
+  z-index: 2;
+}
+
+.brand-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
 }
 
 .auth-form-container {
   width: 100%;
-  max-width: 440px;
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
 
-.auth-image-section {
-  flex: 1.2;
+.auth-welcome {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.welcome-ornament {
+  color: var(--accent);
+  letter-spacing: 0.5em;
+  font-size: 0.7rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.auth-welcome h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+
+.auth-welcome p {
+  font-size: 0.92rem;
+}
+
+/* ── Input Wrapper with icon ──────── */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.input-wrapper {
   position: relative;
-  overflow: hidden;
-  display: none; /* hidden on small screens */
 }
 
-@media (min-width: 900px) {
-  .auth-image-section {
-    display: block;
-  }
-}
-
-.auth-dynamic-bg {
+.input-icon {
   position: absolute;
-  top: -10%; left: -10%; right: -10%; bottom: -10%;
-  background-size: cover;
-  background-position: center;
-  animation: liveBackground 30s ease-in-out infinite alternate;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  pointer-events: none;
 }
 
-@keyframes liveBackground {
-  0% { transform: scale(1) translate(0, 0); }
-  50% { transform: scale(1.05) translate(2%, 2%); }
-  100% { transform: scale(1.1) translate(-2%, -2%); }
+.input-with-icon {
+  padding-left: 2.75rem;
 }
 
-.auth-image-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+/* ── Submit Button ────────────────── */
+.auth-submit-btn {
+  padding: 1rem;
+  font-size: 0.92rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Social ───────────────────────── */
+.social-signin {
   display: flex;
-  align-items: flex-end;
-  padding: 4rem;
-  z-index: 2;
+  justify-content: center;
+  margin-bottom: 1.5rem;
 }
 
-.auth-quote {
-  padding: 2rem;
-  max-width: 500px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+/* ── Auth Switch ──────────────────── */
+.auth-switch {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
-.form-group {
-  margin-bottom: 1.25rem;
+.auth-switch-link {
+  font-weight: 700;
+  margin-left: 0.3rem;
 }
 
+/* ── Image Side ─────────────────────── */
+.auth-image-side {
+  display: none !important;
+}
+
+/* ── Divider ──────────────────────── */
 .divider {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 1.5rem 0;
-  color: var(--text-muted);
+  margin: 1.25rem 0;
+  color: var(--text-light);
 }
-
-.divider::before,
-.divider::after {
+.divider::before, .divider::after {
   content: '';
   flex: 1;
   border-bottom: 1px solid var(--border);
 }
-
 .divider span {
-  padding: 0 10px;
-  font-size: 0.85rem;
-  letter-spacing: 1px;
+  padding: 0 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.text-muted {
-  color: var(--text-muted);
-  margin-bottom: 2rem;
-}
-
-.mt-4 {
-  margin-top: 1.5rem;
-}
-
-.w-100 {
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 1.5rem 0;
-  color: var(--text-muted);
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--border);
-}
-
-.divider span {
-  padding: 0 10px;
-  font-size: 0.85rem;
-}
-
-.google-btn {
-  background: white !important;
-  color: #333 !important;
-  border: 1px solid #ddd !important;
-}
-
-.google-btn:hover {
-  background: #f8f9fa !important;
-}
+.text-muted { color: var(--text-muted); }
+.w-100 { width: 100%; }

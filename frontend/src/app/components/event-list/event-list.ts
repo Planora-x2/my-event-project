@@ -13,6 +13,7 @@ import { EventService } from '../../services/event/event';
 export class EventListComponent implements OnInit {
   events: any[] = [];
   locationQuery: string = '';
+  loading: boolean = true;
 
   constructor(
     private eventService: EventService,
@@ -24,12 +25,18 @@ export class EventListComponent implements OnInit {
   }
 
   fetchEvents(): void {
+    this.loading = true;
     this.eventService.getEvents(this.locationQuery).subscribe({
       next: (data) => {
         this.events = data;
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to fetch events', err)
+      error: (err) => {
+        console.error('Failed to fetch events', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -37,9 +44,31 @@ export class EventListComponent implements OnInit {
     this.fetchEvents();
   }
 
+  filterByTag(tag: string): void {
+    this.locationQuery = tag;
+    this.fetchEvents();
+  }
+
+  scrollToEvents(): void {
+    const el = document.getElementById('events-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   getEventImageUrl(url: string | null): string {
-    if (!url) return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=600&auto=format&fit=crop';
+    if (!url) return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop';
     if (url.startsWith('http')) return url;
     return `http://localhost:8000${url}`;
+  }
+
+  getCategoryLabel(category: string): string {
+    const labels: Record<string, string> = {
+      'WEDDING': 'Wedding Ceremony',
+      'RECEPTION': 'Reception',
+      'ENGAGEMENT': 'Engagement',
+      'REHEARSAL': 'Rehearsal Dinner',
+      'BRIDAL': 'Bridal Shower',
+      'OTHER': 'Celebration',
+    };
+    return labels[category] || 'Wedding';
   }
 }

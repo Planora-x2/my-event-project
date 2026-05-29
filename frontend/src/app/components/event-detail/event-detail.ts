@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventService } from '../../services/event/event';
 import { AuthService } from '../../services/auth/auth';
 import { InteractionService } from '../../services/interaction/interaction';
@@ -9,7 +9,7 @@ import { InteractionService } from '../../services/interaction/interaction';
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css',
 })
@@ -201,5 +201,98 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         }
       } catch (err) { }
     }, 100);
+  }
+
+  getCategoryLabel(category: string): string {
+    const labels: Record<string, string> = {
+      'WEDDING': 'Wedding Ceremony',
+      'RECEPTION': 'Reception',
+      'ENGAGEMENT': 'Engagement',
+      'REHEARSAL': 'Rehearsal Dinner',
+      'BRIDAL': 'Bridal Shower',
+      'OTHER': 'Celebration',
+    };
+    return labels[category] || 'Wedding Celebration';
+  }
+
+  // --- GALLERY LIGHTBOX ---
+  selectedGalleryIndex: number | null = null;
+
+  openLightbox(index: number) {
+    this.selectedGalleryIndex = index;
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+
+  closeLightbox() {
+    this.selectedGalleryIndex = null;
+    document.body.style.overflow = '';
+  }
+
+  nextPhoto() {
+    if (!this.event || !this.event.gallery_images || this.selectedGalleryIndex === null) return;
+    if (this.selectedGalleryIndex < this.event.gallery_images.length - 1) {
+      this.selectedGalleryIndex++;
+    } else {
+      this.selectedGalleryIndex = 0; // Wrap around
+    }
+  }
+
+  prevPhoto() {
+    if (!this.event || !this.event.gallery_images || this.selectedGalleryIndex === null) return;
+    if (this.selectedGalleryIndex > 0) {
+      this.selectedGalleryIndex--;
+    } else {
+      this.selectedGalleryIndex = this.event.gallery_images.length - 1; // Wrap around
+    }
+  }
+
+  // --- GALLERY UPLOAD (Organizer) ---
+  selectedGalleryFile: File | null = null;
+  newGalleryCaption: string = '';
+  isUploadingGallery: boolean = false;
+
+  onGalleryFileSelected(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      this.selectedGalleryFile = event.target.files[0];
+    }
+  }
+
+  uploadGalleryPhoto() {
+    if (!this.selectedGalleryFile || !this.event || !this.isOrganizer) return;
+    
+    this.isUploadingGallery = true;
+    const formData = new FormData();
+    formData.append('image', this.selectedGalleryFile);
+    if (this.newGalleryCaption.trim()) {
+      formData.append('caption', this.newGalleryCaption.trim());
+    }
+
+    this.eventService.uploadGalleryImage(this.event.id, formData).subscribe({
+      next: (newImage) => {
+        // Add the new image to the beginning of the gallery array
+        if (!this.event.gallery_images) {
+          this.event.gallery_images = [];
+        }
+        this.event.gallery_images.unshift(newImage);
+        
+        // Reset form
+        this.selectedGalleryFile = null;
+        this.newGalleryCaption = '';
+        this.isUploadingGallery = false;
+        
+        // Reset file input UI
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        
+        this.cdr.detectChanges();
+        alert('Gallery photo uploaded successfully!');
+      },
+      error: (err) => {
+        console.error('Failed to upload gallery image', err);
+        alert('Failed to upload photo. Please try again.');
+        this.isUploadingGallery = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

@@ -1,59 +1,162 @@
-<div class="hero-banner animate-fade-in">
+<!-- ═══ HERO SECTION ═══ -->
+<section class="hero-banner">
   <div class="hero-overlay"></div>
-  <div class="hero-content" style="padding-bottom: 6rem;">
+  <div class="hero-petals">
+    <span class="petal" style="left:8%;animation-delay:0s">🌸</span>
+    <span class="petal" style="left:20%;animation-delay:0.8s">🌷</span>
+    <span class="petal" style="left:75%;animation-delay:0.3s">🌸</span>
+    <span class="petal" style="left:88%;animation-delay:1.2s">🌺</span>
+  </div>
+  <div class="hero-content animate-fade-in">
+    <p class="hero-eyebrow ornament">Your Story Begins Here</p>
     <h1 class="hero-title">
-      <span class="text-gradient">Discover</span> Amazing Events
+      Discover <span class="text-gradient">Extraordinary</span><br>Wedding Experiences
     </h1>
     <p class="hero-subtitle">
-      Find and book the best events, concerts, and conferences happening around you.
+      Curated wedding events, breathtaking venues, and timeless celebrations — 
+      crafted for couples who believe love deserves perfection.
     </p>
-  </div>
-</div>
-
-<div class="search-section animate-fade-in" style="animation-delay: 0.1s;">
-  <div class="search-box">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-left: 0.5rem;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    <input type="text" [(ngModel)]="locationQuery" (keyup.enter)="onFilter()" class="search-input" placeholder="Search events by location, e.g., 'New York'...">
-    <button (click)="onFilter()" class="btn btn-primary search-btn">Search</button>
-  </div>
-  
-  <div class="trending-tags">
-    <span class="trending-label" style="font-weight: 600; color: var(--text-muted);">Trending Categories:</span>
-    <button class="tag-btn">Concerts</button>
-    <button class="tag-btn">Tech</button>
-    <button class="tag-btn">Workshops</button>
-    <button class="tag-btn">Arts</button>
-  </div>
-</div>
-
-<div class="section-header animate-fade-in" style="animation-delay: 0.2s; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end;">
-  <h2 style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin: 0;">Featured Events</h2>
-  <a href="#" class="text-gradient" style="font-weight: 600; text-decoration: none;">View All →</a>
-</div>
-
-<div class="event-grid">
-  <div *ngIf="events.length === 0" class="text-center w-100 mt-4 text-muted">
-    <p>No events found for this location.</p>
-  </div>
-
-  <div *ngFor="let event of events" class="event-card glass animate-fade-in" style="animation-delay: 0.2s;">
-    <div class="card-image-wrapper">
-      <img [src]="getEventImageUrl(event.image)" [alt]="event.title" class="card-image">
-      <div class="card-price">${{ event.price }}</div>
-    </div>
-    <div class="card-content">
-      <div class="card-meta">
-        <span class="meta-tag">Event</span>
-        <span class="meta-date">{{ event.date | date:'mediumDate' }}</span>
-      </div>
-      <h3 class="card-title">{{ event.title }}</h3>
-      <p class="card-venue" *ngIf="event.venue_details">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        {{ event.venue_details.name }}, {{ event.venue_details.address }}
-      </p>
-      <div class="card-actions">
-        <button class="btn btn-secondary w-100" [routerLink]="['/event', event.id]">View Details</button>
-      </div>
+    <div class="hero-cta">
+      <button class="btn btn-primary hero-btn" (click)="scrollToEvents()" id="hero-explore">Explore Weddings</button>
+      <button class="btn btn-secondary hero-btn" routerLink="/register" id="hero-plan">Start Planning</button>
     </div>
   </div>
-</div>
+</section>
+
+<!-- ═══ SEARCH SECTION ═══ -->
+<section class="search-section" data-aos="fade-up" data-aos-duration="1000">
+  <div class="search-card glass-gold">
+    <div class="search-header">
+      <h3>Find Your Perfect Wedding</h3>
+      <p class="text-muted">Search by location or venue name</p>
+    </div>
+    <div class="search-row">
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        <input 
+          type="text" 
+          [(ngModel)]="locationQuery" 
+          (keyup.enter)="onFilter()" 
+          class="search-input" 
+          placeholder="Search by city or venue..."
+          id="search-location">
+      </div>
+      <button (click)="onFilter()" class="btn btn-primary search-btn" id="search-btn">Search</button>
+    </div>
+    
+    <div class="search-tags">
+      <span class="tags-label">Popular:</span>
+      <button class="tag-pill" (click)="filterByTag('Garden')">🌿 Garden</button>
+      <button class="tag-pill" (click)="filterByTag('Ballroom')">✨ Ballroom</button>
+      <button class="tag-pill" (click)="filterByTag('Beach')">🌊 Beachside</button>
+      <button class="tag-pill" (click)="filterByTag('Chapel')">⛪ Chapel</button>
+      <button class="tag-pill" (click)="filterByTag('Vineyard')">🍇 Vineyard</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EVENTS GRID ═══ -->
+<section class="events-section" id="events-section">
+  <div class="section-heading" data-aos="fade-up">
+    <div class="floral-sep">✿</div>
+    <h2 class="section-title">Featured <span class="text-gradient">Celebrations</span></h2>
+    <p class="section-subtitle">Handpicked wedding experiences for your perfect day</p>
+  </div>
+
+  <!-- Loading Skeleton -->
+  <div *ngIf="loading" class="event-grid">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="skeleton-card">
+      <div class="skeleton-img shimmer-bg"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line shimmer-bg" style="width: 60%; height: 12px;"></div>
+        <div class="skeleton-line shimmer-bg" style="width: 90%; height: 20px; margin-top: 8px;"></div>
+        <div class="skeleton-line shimmer-bg" style="width: 70%; height: 12px; margin-top: 8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && events.length === 0" class="empty-state animate-fade-in">
+    <div class="empty-icon">💍</div>
+    <h3>No weddings found</h3>
+    <p class="text-muted">Try a different location or browse all our beautiful celebrations.</p>
+    <button class="btn btn-primary" (click)="locationQuery=''; onFilter()">View All Weddings</button>
+  </div>
+
+  <!-- Event Cards -->
+  <div class="event-grid" *ngIf="!loading && events.length > 0">
+    <div *ngFor="let event of events; let i = index" 
+         class="event-card" 
+         data-aos="fade-up"
+         [attr.data-aos-delay]="(i % 3) * 100"
+         [routerLink]="['/event', event.id]"
+         [id]="'event-card-' + event.id">
+      
+      <div class="card-image-wrapper">
+        <img [src]="getEventImageUrl(event.image)" [alt]="event.title" class="card-image" loading="lazy">
+        <div class="card-overlay"></div>
+        
+        <!-- Floating Price Badge -->
+        <div class="price-badge">
+          <span class="price-from">from</span>
+          <span class="price-amount">${{ event.price }}</span>
+        </div>
+
+        <!-- Date Badge -->
+        <div class="date-badge">
+          <span class="date-day">{{ event.date | date:'d' }}</span>
+          <span class="date-month">{{ event.date | date:'MMM' }}</span>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="card-meta">
+          <span class="badge badge-rose">🌸 {{ getCategoryLabel(event.category) }}</span>
+          <span class="meta-year">{{ event.date | date:'yyyy' }}</span>
+        </div>
+        <h3 class="card-title">{{ event.title }}</h3>
+        <p class="card-venue" *ngIf="event.venue_details">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          {{ event.venue_details.name }}, {{ event.venue_details.address }}
+        </p>
+        <div class="card-footer">
+          <span class="capacity-info" *ngIf="event.venue_details">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Up to {{ event.venue_details.capacity | number }}
+          </span>
+          <button class="view-btn btn btn-secondary" [routerLink]="['/event', event.id]">View Details →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY CHOOSE US ═══ -->
+<section class="features-section" data-aos="fade-up" data-aos-duration="1000">
+  <div class="section-heading">
+    <div class="floral-sep">✿</div>
+    <h2 class="section-title">Why Couples <span class="text-gradient">Choose Us</span></h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card glass" data-aos="fade-up" data-aos-delay="100">
+      <div class="feature-icon">💐</div>
+      <h4>Curated Venues</h4>
+      <p class="text-muted">Every venue is personally vetted for elegance, ambiance, and service excellence.</p>
+    </div>
+    <div class="feature-card glass" data-aos="fade-up" data-aos-delay="200">
+      <div class="feature-icon">✨</div>
+      <h4>Seamless Planning</h4>
+      <p class="text-muted">Book tickets, chat with organizers, and manage everything from one beautiful platform.</p>
+    </div>
+    <div class="feature-card glass" data-aos="fade-up" data-aos-delay="300">
+      <div class="feature-icon">💬</div>
+      <h4>Live Support</h4>
+      <p class="text-muted">Real-time chat with your event organizer so no question goes unanswered.</p>
+    </div>
+    <div class="feature-card glass" data-aos="fade-up" data-aos-delay="400">
+      <div class="feature-icon">🔒</div>
+      <h4>Secure Booking</h4>
+      <p class="text-muted">Your bookings and personal details are always safe and protected.</p>
+    </div>
+  </div>
+</section>

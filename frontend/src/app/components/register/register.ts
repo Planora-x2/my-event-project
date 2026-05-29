@@ -26,8 +26,7 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const bgNumber = Math.floor(Math.random() * 3) + 1;
-    this.currentBgImage = `/assets/auth_dyn_${bgNumber}.png`;
+    this.currentBgImage = '/wedding_auth.png';
 
     this.socialAuthService.authState.subscribe((user) => {
       if (user) {

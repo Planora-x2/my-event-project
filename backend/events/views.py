@@ -1,6 +1,9 @@
-from rest_framework import viewsets, permissions
-from .models import Venue, Event, Booking
-from .serializers import VenueSerializer, EventSerializer, BookingSerializer
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from .models import Venue, Event, Booking, EventGalleryImage
+from .serializers import VenueSerializer, EventSerializer, BookingSerializer, EventGalleryImageSerializer
 
 class IsClientOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -24,6 +27,10 @@ class EventViewSet(viewsets.ModelViewSet):
         if location:
             queryset = queryset.filter(venue__address__icontains=location)
         
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        
         client_id = self.request.query_params.get('client')
         if client_id:
             if client_id == 'me':
@@ -35,6 +42,29 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def upload_gallery_image(self, request, pk=None):
+        event = self.get_object()
+        
+        # Only the event creator or admin can upload
+        if event.client != request.user and request.user.role != 'ADMIN':
+            return Response({"error": "Not authorized to upload to this event."}, status=status.HTTP_403_FORBIDDEN)
+            
+        if 'image' not in request.FILES:
+            return Response({"error": "No image provided."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        image = request.FILES['image']
+        caption = request.data.get('caption', '')
+        
+        gallery_image = EventGalleryImage.objects.create(
+            event=event,
+            image=image,
+            caption=caption
+        )
+        
+        serializer = EventGalleryImageSerializer(gallery_image)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer

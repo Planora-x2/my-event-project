@@ -18,7 +18,7 @@ export class ClientDashboardComponent implements OnInit {
   venueForm = { name: '', address: '', capacity: 0 };
   venueImage: File | null = null;
 
-  eventForm = { title: '', description: '', venue: '', date: '', price: 0 };
+  eventForm = { title: '', description: '', category: 'WEDDING', venue: '', date: '', price: 0 };
   eventImage: File | null = null;
 
   constructor(private eventService: EventService) {}
@@ -60,10 +60,10 @@ export class ClientDashboardComponent implements OnInit {
     const fd = new FormData();
     fd.append('title', this.eventForm.title);
     fd.append('description', this.eventForm.description);
+    fd.append('category', this.eventForm.category);
     fd.append('venue', this.eventForm.venue);
     
     try {
-      // Add timezone 'Z' to datetime-local string to make it valid for DRF
       if (!this.eventForm.date) {
         alert('Please select a valid date and time.');
         return;
@@ -80,7 +80,7 @@ export class ClientDashboardComponent implements OnInit {
 
     this.eventService.addEvent(fd).subscribe({
       next: () => {
-        alert('Event published!');
+        alert('Wedding event published!');
         this.loadData();
       },
       error: (err) => {
@@ -88,5 +88,15 @@ export class ClientDashboardComponent implements OnInit {
         alert('Failed to publish event. Please check the form fields.');
       }
     });
+  }
+
+  getTotalCapacity(): number {
+    return this.venues.reduce((sum: number, v: any) => sum + (v.capacity || 0), 0);
+  }
+
+  getEventImageUrl(url: string | null): string {
+    if (!url) return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200&auto=format&fit=crop';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:8000${url}`;
   }
 }
