@@ -36,7 +36,7 @@
   max-width: calc(100vw - 4rem);
   height: 500px;
   max-height: calc(100vh - 8rem);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--surface, rgba(30, 30, 30, 0.95));
   backdrop-filter: blur(16px);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 20px;
@@ -48,7 +48,7 @@
 }
 
 .chat-header {
-  background: rgba(250, 246, 241, 0.9);
+  background: var(--background-alt, var(--surface));
   padding: 1.25rem;
   border-bottom: 1px solid var(--border);
   display: flex;
@@ -128,9 +128,9 @@
 }
 
 .bot-msg .chat-bubble {
-  background: rgba(200, 149, 108, 0.08);
+  background: var(--background-alt, rgba(200, 149, 108, 0.1));
   color: var(--text-main);
-  border: 1px solid rgba(200, 149, 108, 0.2);
+  border: 1px solid rgba(200, 149, 108, 0.25);
   border-bottom-left-radius: 4px;
 }
 
@@ -168,7 +168,7 @@
 
 .chat-footer {
   padding: 1rem;
-  background: white;
+  background: var(--surface, var(--background-alt));
   border-top: 1px solid var(--border);
   display: flex;
   gap: 0.5rem;
