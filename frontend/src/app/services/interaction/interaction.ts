@@ -37,6 +37,11 @@ export class InteractionService {
     });
   }
 
+  // AI CHAT API
+  sendToAI(message: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/ai_chat/`, { message: message });
+  }
+
   // WEBSOCKET
   connectToChat(roomName: string, onMessageCallback: (msg: any) => void) {
     if (this.socket) {

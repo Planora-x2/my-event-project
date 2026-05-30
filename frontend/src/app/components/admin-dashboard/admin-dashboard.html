@@ -30,6 +30,43 @@
 
   <div class="data-sections-grid" style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
     
+    <!-- Custom Chart Designer -->
+    <div class="admin-section glass chart-designer" style="padding: 2rem; border-radius: 20px;">
+      <div class="chart-header">
+        <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">Custom Chart Designer</h2>
+        <p class="text-muted" style="margin-bottom: 1.5rem;">Dynamically visualize platform metrics by selecting data sources and chart styles.</p>
+      </div>
+
+      <div class="chart-controls" style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <div class="control-group" style="flex: 1; min-width: 200px;">
+          <label style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">Data Source & Grouping</label>
+          <select [(ngModel)]="selectedDataSource" (change)="generateChart()" style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); font-family: var(--font-main); color: var(--text-main); font-size: 0.95rem; outline: none; transition: var(--transition);">
+            <option value="users">Users grouped by Role</option>
+            <option value="events">Events grouped by Category</option>
+            <option value="bookings">Bookings grouped by Status</option>
+          </select>
+        </div>
+        
+        <div class="control-group" style="flex: 1; min-width: 200px;">
+          <label style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">Chart Style</label>
+          <select [(ngModel)]="selectedChartType" (change)="generateChart()" style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); font-family: var(--font-main); color: var(--text-main); font-size: 0.95rem; outline: none; transition: var(--transition);">
+            <option value="pie">Pie Chart</option>
+            <option value="doughnut">Doughnut Chart</option>
+            <option value="bar">Bar Chart</option>
+            <option value="line">Line Chart</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="chart-container" style="position: relative; height: 350px; width: 100%;" *ngIf="chartReady">
+        <canvas baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="selectedChartType">
+        </canvas>
+      </div>
+    </div>
+    
     <!-- Users Management -->
     <div class="admin-section glass" style="padding: 2rem; border-radius: 20px;">
       <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Users & Organisers</h2>

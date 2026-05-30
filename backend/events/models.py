@@ -18,6 +18,10 @@ class Event(models.Model):
         ENGAGEMENT = 'ENGAGEMENT', 'Engagement Party'
         REHEARSAL = 'REHEARSAL', 'Rehearsal Dinner'
         BRIDAL = 'BRIDAL', 'Bridal Shower'
+        PHOTOGRAPHY = 'PHOTOGRAPHY', 'Photography & Videography'
+        CATERING = 'CATERING', 'Catering & Food'
+        DECORATION = 'DECORATION', 'Floral & Decoration'
+        MUSIC = 'MUSIC', 'Music & Entertainment'
         OTHER = 'OTHER', 'Other Celebration'
 
     title = models.CharField(max_length=255)

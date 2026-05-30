@@ -1,6 +1,6 @@
 <!-- ═══ HERO SECTION ═══ -->
 <section class="hero-banner">
-  <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1920&q=80');"></div>
+  <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80');"></div>
   <div class="hero-overlay"></div>
   <div class="hero-petals">
     <span class="petal" style="left:8%;animation-delay:0s">🌸</span>
@@ -62,6 +62,17 @@
     <div class="floral-sep">✿</div>
     <h2 class="section-title">Featured <span class="text-gradient">Celebrations</span></h2>
     <p class="section-subtitle">Handpicked wedding experiences for your perfect day</p>
+  </div>
+
+  <!-- Category Filter Tabs -->
+  <div class="category-tabs" data-aos="fade-up" data-aos-delay="100">
+    <button class="category-tab" [class.active]="categoryQuery === 'ALL'" (click)="filterByCategory('ALL')">All</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'WEDDING'" (click)="filterByCategory('WEDDING')">Weddings</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'RECEPTION'" (click)="filterByCategory('RECEPTION')">Receptions</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'PHOTOGRAPHY'" (click)="filterByCategory('PHOTOGRAPHY')">Photography</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'CATERING'" (click)="filterByCategory('CATERING')">Catering</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'DECORATION'" (click)="filterByCategory('DECORATION')">Decoration</button>
+    <button class="category-tab" [class.active]="categoryQuery === 'MUSIC'" (click)="filterByCategory('MUSIC')">Music</button>
   </div>
 
   <!-- Loading Skeleton -->

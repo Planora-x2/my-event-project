@@ -1,0 +1,51 @@
+<!-- Floating Chatbot Button -->
+<div class="chatbot-fab" (click)="toggleChat()" [class.chat-open]="isOpen">
+  <svg *ngIf="!isOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+  <svg *ngIf="isOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+</div>
+
+<!-- Chat Window -->
+<div class="chatbot-window glass" *ngIf="isOpen" class="chatbot-window glass animate-fade-in">
+  <div class="chat-header">
+    <div class="chat-title">
+      <span class="chat-icon">✨</span>
+      <div>
+        <h3>Eternally Yours AI</h3>
+        <p class="chat-subtitle">Virtual Assistant</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-body" #chatScroll>
+    <div class="chat-message-container" *ngFor="let msg of messages" [class.user-msg]="msg.sender === 'user'" [class.bot-msg]="msg.sender === 'bot'">
+      <div class="chat-bubble">
+        <p>{{ msg.text }}</p>
+        <div class="chat-images" *ngIf="msg.images && msg.images.length > 0">
+          <img *ngFor="let img of msg.images" [src]="img" class="chat-image" />
+        </div>
+        <span class="chat-time">{{ msg.timestamp | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="chat-message-container bot-msg" *ngIf="isTyping">
+      <div class="chat-bubble typing-indicator">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input 
+      type="text" 
+      class="chat-input" 
+      [(ngModel)]="newMessage" 
+      (keyup.enter)="sendMessage()"
+      placeholder="Ask about venues, prices..." 
+      [disabled]="isTyping"
+    />
+    <button class="chat-send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim() || isTyping">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+</div>

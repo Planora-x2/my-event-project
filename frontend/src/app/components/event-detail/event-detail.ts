@@ -210,6 +210,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       'ENGAGEMENT': 'Engagement',
       'REHEARSAL': 'Rehearsal Dinner',
       'BRIDAL': 'Bridal Shower',
+      'PHOTOGRAPHY': 'Photography',
+      'CATERING': 'Catering',
+      'DECORATION': 'Decoration',
+      'MUSIC': 'Music & Entertainment',
       'OTHER': 'Celebration',
     };
     return labels[category] || 'Wedding Celebration';

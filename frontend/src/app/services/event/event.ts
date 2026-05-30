@@ -10,13 +10,16 @@ export class EventService {
 
   constructor(private http: HttpClient) { }
 
-  getEvents(location?: string, clientId?: string): Observable<any[]> {
+  getEvents(location?: string, clientId?: string, category?: string): Observable<any[]> {
     let params = new HttpParams();
     if (location) {
       params = params.set('location', location);
     }
     if (clientId) {
       params = params.set('client', clientId);
+    }
+    if (category && category !== 'ALL') {
+      params = params.set('category', category);
     }
     return this.http.get<any[]>(`${this.apiUrl}/events/`, { params });
   }

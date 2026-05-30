@@ -13,6 +13,7 @@ import { EventService } from '../../services/event/event';
 export class EventListComponent implements OnInit {
   events: any[] = [];
   locationQuery: string = '';
+  categoryQuery: string = 'ALL';
   loading: boolean = true;
 
   constructor(
@@ -26,7 +27,7 @@ export class EventListComponent implements OnInit {
 
   fetchEvents(): void {
     this.loading = true;
-    this.eventService.getEvents(this.locationQuery).subscribe({
+    this.eventService.getEvents(this.locationQuery, undefined, this.categoryQuery).subscribe({
       next: (data) => {
         this.events = data;
         this.loading = false;
@@ -49,6 +50,11 @@ export class EventListComponent implements OnInit {
     this.fetchEvents();
   }
 
+  filterByCategory(category: string): void {
+    this.categoryQuery = category;
+    this.fetchEvents();
+  }
+
   scrollToEvents(): void {
     const el = document.getElementById('events-section');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -67,6 +73,10 @@ export class EventListComponent implements OnInit {
       'ENGAGEMENT': 'Engagement',
       'REHEARSAL': 'Rehearsal Dinner',
       'BRIDAL': 'Bridal Shower',
+      'PHOTOGRAPHY': 'Photography',
+      'CATERING': 'Catering',
+      'DECORATION': 'Decoration',
+      'MUSIC': 'Music & Entertainment',
       'OTHER': 'Celebration',
     };
     return labels[category] || 'Wedding';

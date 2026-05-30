@@ -48,9 +48,9 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(20, 15, 10, 0.4) 0%,
-    rgba(20, 15, 10, 0.2) 40%,
-    rgba(250, 246, 241, 0.8) 80%,
+    rgba(10, 10, 10, 0.7) 0%,
+    rgba(10, 10, 10, 0.4) 40%,
+    rgba(250, 246, 241, 0.9) 80%,
     rgba(250, 246, 241, 1) 100%
   );
   z-index: 1;
@@ -292,6 +292,39 @@
 .section-subtitle {
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+/* Category Tabs */
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.category-tab {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.category-tab:hover {
+  background: rgba(200, 149, 108, 0.1);
+  border-color: rgba(200, 149, 108, 0.4);
+}
+
+.category-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(200, 149, 108, 0.3);
 }
 
 /* Events Grid */
