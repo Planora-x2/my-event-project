@@ -8,7 +8,7 @@ User = get_user_model()
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta(UserDetailsSerializer.Meta):
         model = User
-        fields = UserDetailsSerializer.Meta.fields + ('profile_picture', 'role', 'theme_color', 'theme_font', 'theme_look', 'is_dark_mode')
+        fields = UserDetailsSerializer.Meta.fields + ('profile_picture', 'role', 'theme_color', 'theme_font', 'theme_look', 'background_effect', 'is_dark_mode')
         read_only_fields = ('role',)
 
 class CustomRegisterSerializer(RegisterSerializer):

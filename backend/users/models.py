@@ -27,11 +27,20 @@ class User(AbstractUser):
         MINIMAL = "minimal", "Minimal"
         BOLD = "bold", "Bold"
 
+    class BackgroundEffect(models.TextChoices):
+        NONE = "none", "None"
+        FLOWERS = "flowers", "Flowers"
+        RAIN = "rain", "Rain"
+        SNOW = "snow", "Snow"
+        CONFETTI = "confetti", "Confetti"
+        PARTICLES = "particles", "Particles"
+
     role = models.CharField(max_length=50, choices=Role.choices, default=Role.USER)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     theme_color = models.CharField(max_length=50, choices=ThemeColor.choices, default=ThemeColor.ROSE)
     theme_font = models.CharField(max_length=50, choices=ThemeFont.choices, default=ThemeFont.CLASSIC)
     theme_look = models.CharField(max_length=50, choices=ThemeLook.choices, default=ThemeLook.ELEGANT)
+    background_effect = models.CharField(max_length=50, choices=BackgroundEffect.choices, default=BackgroundEffect.FLOWERS)
     is_dark_mode = models.BooleanField(default=False)
 
     def __str__(self):

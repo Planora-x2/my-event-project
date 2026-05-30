@@ -51,6 +51,7 @@ export class NavbarComponent {
   availableThemes = ['rose', 'mint', 'lavender', 'gold', 'ocean', 'ruby', 'emerald', 'sapphire'];
   availableFonts = ['classic', 'modern', 'playful'];
   availableLooks = ['elegant', 'minimal', 'bold'];
+  availableEffects = ['none', 'flowers', 'rain', 'snow', 'confetti', 'particles'];
 
   openThemeSelector() {
     this.isThemeSelectorOpen = true;
@@ -62,21 +63,26 @@ export class NavbarComponent {
 
   setTheme(theme: string, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(theme, user.is_dark_mode, user.theme_font, user.theme_look).subscribe();
+    this.authService.updateThemePreferences(theme, user.is_dark_mode, user.theme_font, user.theme_look, user.background_effect).subscribe();
   }
 
   setFont(font: string, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, font, user.theme_look).subscribe();
+    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, font, user.theme_look, user.background_effect).subscribe();
   }
 
   setLook(look: string, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, look).subscribe();
+    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, look, user.background_effect).subscribe();
+  }
+
+  setEffect(effect: string, user: any) {
+    if (!user) return;
+    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, user.theme_look, effect).subscribe();
   }
 
   toggleDarkMode(event: any, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, event.target.checked, user.theme_font, user.theme_look).subscribe();
+    this.authService.updateThemePreferences(user.theme_color, event.target.checked, user.theme_font, user.theme_look, user.background_effect).subscribe();
   }
 }

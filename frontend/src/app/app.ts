@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { ChatbotComponent } from './components/chatbot/chatbot';
+import { AuthService } from './services/auth/auth';
 import * as AOS from 'aos';
 
 @Component({
@@ -15,20 +16,48 @@ import * as AOS from 'aos';
 export class App implements OnInit {
   protected readonly title = signal('frontend');
   private router = inject(Router);
+  private authService = inject(AuthService);
 
-  // Generate 40 flowers with random positions, delays, durations, and types
-  flowers = Array(40).fill(0).map(() => {
-    const emojis = ['🌸', '💮', '✨', '🤍', '✦'];
-    return {
-      left: Math.random() * 100,
-      duration: 6 + Math.random() * 6, // Fall slowly (6 to 12s)
-      delay: Math.random() * 5,
-      type: emojis[Math.floor(Math.random() * emojis.length)],
-      size: 0.8 + Math.random() * 1.2
-    };
-  });
+  effect = 'none';
+
+  flowers = Array(40).fill(0).map(() => ({
+    left: Math.random() * 100,
+    duration: 6 + Math.random() * 6,
+    delay: Math.random() * 5,
+    type: ['🌸', '💮', '✨', '🤍', '✦'][Math.floor(Math.random() * 5)],
+    size: 0.8 + Math.random() * 1.2
+  }));
+
+  raindrops = Array(75).fill(0).map(() => ({
+    left: Math.random() * 100,
+    duration: 0.6 + Math.random() * 1.5,
+    delay: Math.random() * 2
+  }));
+
+  snowflakes = Array(60).fill(0).map(() => ({
+    left: Math.random() * 100,
+    duration: 4 + Math.random() * 6,
+    delay: Math.random() * 4,
+    size: 0.3 + Math.random() * 0.7
+  }));
+
+  confetti = Array(80).fill(0).map(() => ({
+    left: Math.random() * 100,
+    duration: 3 + Math.random() * 4,
+    delay: Math.random() * 3,
+    color: ['#D4AF37', '#9C4A5B', '#4A8C68', '#2B4C7E', '#C8956C'][Math.floor(Math.random() * 5)],
+    size: 0.5 + Math.random() * 1
+  }));
 
   ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      if (user && user.background_effect) {
+        this.effect = user.background_effect;
+      } else {
+        this.effect = 'none'; // Default for unauthenticated or no preference
+      }
+    });
+
     AOS.init({
       duration: 800,
       easing: 'ease-out-cubic',

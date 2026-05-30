@@ -92,6 +92,21 @@
                 </button>
               </div>
             </div>
+
+            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Atmosphere</span>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <button *ngFor="let effect of availableEffects" 
+                        (click)="setEffect(effect, user)"
+                        class="theme-color-btn"
+                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; color: var(--text-main);"
+                        [style.border-color]="user.background_effect === effect ? 'var(--primary)' : 'var(--border)'"
+                        [style.background-color]="user.background_effect === effect ? 'var(--primary-light)' : 'var(--background)'"
+                        [style.color]="user.background_effect === effect ? 'var(--primary-dark)' : 'var(--text-main)'">
+                  {{ effect }}
+                </button>
+              </div>
+            </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem;">
               <span style="font-size: 0.9rem; font-weight: 600;">Dark Mode</span>

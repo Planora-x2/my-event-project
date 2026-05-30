@@ -1,12 +1,52 @@
-<!-- Global Flower Effect -->
-<div class="flower-container">
-  <div class="flower" *ngFor="let flower of flowers"
-       [style.left.%]="flower.left"
-       [style.animation-duration.s]="flower.duration"
-       [style.animation-delay.s]="flower.delay"
-       [style.font-size.rem]="flower.size">
-       {{ flower.type }}
+<!-- Global Dynamic Atmosphere Effects -->
+<div class="effect-container" *ngIf="effect !== 'none'">
+
+  <!-- Flowers -->
+  <div *ngIf="effect === 'flowers'">
+    <div class="flower" *ngFor="let flower of flowers"
+         [style.left.%]="flower.left"
+         [style.animation-duration.s]="flower.duration"
+         [style.animation-delay.s]="flower.delay"
+         [style.font-size.rem]="flower.size">
+         {{ flower.type }}
+    </div>
   </div>
+
+  <!-- Rain -->
+  <div *ngIf="effect === 'rain'">
+    <div class="drop" *ngFor="let drop of raindrops"
+         [style.left.%]="drop.left"
+         [style.animation-duration.s]="drop.duration"
+         [style.animation-delay.s]="drop.delay">
+    </div>
+  </div>
+
+  <!-- Snow -->
+  <div *ngIf="effect === 'snow'">
+    <div class="snowflake" *ngFor="let flake of snowflakes"
+         [style.left.%]="flake.left"
+         [style.animation-duration.s]="flake.duration"
+         [style.animation-delay.s]="flake.delay"
+         [style.width.rem]="flake.size"
+         [style.height.rem]="flake.size">
+    </div>
+  </div>
+
+  <!-- Confetti -->
+  <div *ngIf="effect === 'confetti'">
+    <div class="confetti-piece" *ngFor="let piece of confetti"
+         [style.left.%]="piece.left"
+         [style.animation-duration.s]="piece.duration"
+         [style.animation-delay.s]="piece.delay"
+         [style.background-color]="piece.color"
+         [style.width.rem]="piece.size"
+         [style.height.rem]="piece.size / 2">
+    </div>
+  </div>
+
+  <!-- Particles -->
+  <div *ngIf="effect === 'particles'" class="particles-bg"></div>
+
 </div>
 
 <app-navbar></app-navbar>
