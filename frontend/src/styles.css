@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap');
 
 /* ═══════════════════════════════════════════════
    WEDDING ELEGANCE — Design System
@@ -80,6 +80,79 @@
   --accent: #E0C097;
   --accent-light: rgba(224, 192, 151, 0.15);
 }
+
+/* Theme: Ocean */
+[data-theme="ocean"] {
+  --primary: #4A7A8C;
+  --primary-hover: #365D6B;
+  --primary-light: rgba(74, 122, 140, 0.15);
+  --secondary: #5B8A9C;
+  --accent: #E0C097;
+  --accent-light: rgba(224, 192, 151, 0.15);
+}
+
+/* Theme: Ruby */
+[data-theme="ruby"] {
+  --primary: #9C4A5B;
+  --primary-hover: #7A3645;
+  --primary-light: rgba(156, 74, 91, 0.15);
+  --secondary: #8C5B66;
+  --accent: #D4AF37;
+  --accent-light: rgba(212, 175, 55, 0.15);
+}
+
+/* Theme: Emerald */
+[data-theme="emerald"] {
+  --primary: #4A8C68;
+  --primary-hover: #366B4E;
+  --primary-light: rgba(74, 140, 104, 0.15);
+  --secondary: #5B9C7A;
+  --accent: #C5B39A;
+  --accent-light: rgba(197, 179, 154, 0.15);
+}
+
+/* Theme: Sapphire */
+[data-theme="sapphire"] {
+  --primary: #2B4C7E;
+  --primary-hover: #1E365C;
+  --primary-light: rgba(43, 76, 126, 0.15);
+  --secondary: #3B5C8E;
+  --accent: #D1B894;
+  --accent-light: rgba(209, 184, 148, 0.15);
+}
+
+/* ── Fonts Variations ──────────────────────── */
+[data-font="modern"] {
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-main: 'Montserrat', system-ui, sans-serif;
+  --font-body: 'Montserrat', system-ui, sans-serif;
+}
+
+[data-font="playful"] {
+  --font-display: 'Dancing Script', cursive;
+  --font-main: 'Montserrat', system-ui, sans-serif;
+  --font-body: 'Montserrat', system-ui, sans-serif;
+}
+
+/* ── Look Variations ───────────────────────── */
+[data-look="minimal"] {
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-xl: 8px;
+  --shadow-sm: none;
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+[data-look="bold"] {
+  --radius: 24px;
+  --radius-sm: 12px;
+  --radius-xl: 48px;
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.18);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
 
 /* ── Dark Mode Overrides ───────────────────── */
 body.dark-mode {

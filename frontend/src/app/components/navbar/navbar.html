@@ -44,7 +44,7 @@
             🎨
           </button>
           
-          <div *ngIf="isThemeSelectorOpen" class="theme-dropdown glass animate-fade-in" style="position: absolute; top: 120%; right: 0; min-width: 200px; padding: 1rem; border-radius: 12px; z-index: 1000; box-shadow: var(--shadow-md);">
+          <div *ngIf="isThemeSelectorOpen" class="theme-dropdown glass animate-fade-in" style="position: absolute; top: 120%; right: 0; min-width: 280px; max-height: 400px; overflow-y: auto; padding: 1rem; border-radius: 12px; z-index: 1000; box-shadow: var(--shadow-md);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
               <span style="font-weight: 600; font-size: 0.9rem;">Theme Colors</span>
               <button (click)="isThemeSelectorOpen = false" style="background:none; border:none; cursor:pointer;">✕</button>
@@ -55,9 +55,39 @@
                       (click)="setTheme(theme, user)"
                       [class.active-theme]="user.theme_color === theme"
                       class="theme-color-btn"
-                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s;">
+                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s;"
+                      [style.border-color]="user.theme_color === theme ? 'var(--primary)' : 'var(--border)'"
+                      [style.background-color]="user.theme_color === theme ? 'var(--primary-light)' : 'var(--background)'">
                 {{ theme }}
               </button>
+            </div>
+
+            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Typography</span>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 0.25rem;">
+                <button *ngFor="let font of availableFonts" 
+                        (click)="setFont(font, user)"
+                        class="theme-color-btn"
+                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; text-align: left;"
+                        [style.border-color]="user.theme_font === font ? 'var(--primary)' : 'var(--border)'"
+                        [style.background-color]="user.theme_font === font ? 'var(--primary-light)' : 'var(--background)'">
+                  {{ font }}
+                </button>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
+              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Website Look</span>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <button *ngFor="let look of availableLooks" 
+                        (click)="setLook(look, user)"
+                        class="theme-color-btn"
+                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem;"
+                        [style.border-color]="user.theme_look === look ? 'var(--primary)' : 'var(--border)'"
+                        [style.background-color]="user.theme_look === look ? 'var(--primary-light)' : 'var(--background)'">
+                  {{ look }}
+                </button>
+              </div>
             </div>
             
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem;">

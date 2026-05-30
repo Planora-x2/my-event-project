@@ -48,7 +48,9 @@ export class NavbarComponent {
   }
 
   isThemeSelectorOpen = false;
-  availableThemes = ['rose', 'mint', 'lavender', 'gold'];
+  availableThemes = ['rose', 'mint', 'lavender', 'gold', 'ocean', 'ruby', 'emerald', 'sapphire'];
+  availableFonts = ['classic', 'modern', 'playful'];
+  availableLooks = ['elegant', 'minimal', 'bold'];
 
   openThemeSelector() {
     this.isThemeSelectorOpen = true;
@@ -60,11 +62,21 @@ export class NavbarComponent {
 
   setTheme(theme: string, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(theme, user.is_dark_mode).subscribe();
+    this.authService.updateThemePreferences(theme, user.is_dark_mode, user.theme_font, user.theme_look).subscribe();
+  }
+
+  setFont(font: string, user: any) {
+    if (!user) return;
+    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, font, user.theme_look).subscribe();
+  }
+
+  setLook(look: string, user: any) {
+    if (!user) return;
+    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, look).subscribe();
   }
 
   toggleDarkMode(event: any, user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, event.target.checked).subscribe();
+    this.authService.updateThemePreferences(user.theme_color, event.target.checked, user.theme_font, user.theme_look).subscribe();
   }
 }

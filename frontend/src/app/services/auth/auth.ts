@@ -61,7 +61,7 @@ export class AuthService {
       tap((user: any) => {
         this.currentUserSubject.next(user);
         if (user.theme_color) {
-          this.applyThemeToDocument(user.theme_color, user.is_dark_mode);
+          this.applyThemeToDocument(user.theme_color, user.is_dark_mode, user.theme_font, user.theme_look);
         }
       }),
       catchError(err => {
@@ -79,21 +79,25 @@ export class AuthService {
     );
   }
 
-  updateThemePreferences(themeColor: string, isDarkMode: boolean): Observable<any> {
+  updateThemePreferences(themeColor: string, isDarkMode: boolean, themeFont: string, themeLook: string): Observable<any> {
     const payload = {
       theme_color: themeColor,
-      is_dark_mode: isDarkMode
+      is_dark_mode: isDarkMode,
+      theme_font: themeFont,
+      theme_look: themeLook
     };
     return this.http.patch(`${this.apiUrl}/user/`, payload).pipe(
       tap(user => {
         this.currentUserSubject.next(user);
-        this.applyThemeToDocument(themeColor, isDarkMode);
+        this.applyThemeToDocument(themeColor, isDarkMode, themeFont, themeLook);
       })
     );
   }
 
-  applyThemeToDocument(themeColor: string, isDarkMode: boolean) {
+  applyThemeToDocument(themeColor: string, isDarkMode: boolean, themeFont?: string, themeLook?: string) {
     document.body.setAttribute('data-theme', themeColor);
+    document.body.setAttribute('data-font', themeFont || 'classic');
+    document.body.setAttribute('data-look', themeLook || 'elegant');
     if (isDarkMode) {
       document.body.setAttribute('data-theme-mode', 'dark');
       document.body.classList.add('dark-mode');
