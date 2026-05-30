@@ -55,9 +55,10 @@
                       (click)="setTheme(theme, user)"
                       [class.active-theme]="user.theme_color === theme"
                       class="theme-color-btn"
-                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s;"
+                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s; color: var(--text-main);"
                       [style.border-color]="user.theme_color === theme ? 'var(--primary)' : 'var(--border)'"
-                      [style.background-color]="user.theme_color === theme ? 'var(--primary-light)' : 'var(--background)'">
+                      [style.background-color]="user.theme_color === theme ? 'var(--primary-light)' : 'var(--background)'"
+                      [style.color]="user.theme_color === theme ? 'var(--primary-dark)' : 'var(--text-main)'">
                 {{ theme }}
               </button>
             </div>
@@ -68,9 +69,10 @@
                 <button *ngFor="let font of availableFonts" 
                         (click)="setFont(font, user)"
                         class="theme-color-btn"
-                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; text-align: left;"
+                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; text-align: left; color: var(--text-main);"
                         [style.border-color]="user.theme_font === font ? 'var(--primary)' : 'var(--border)'"
-                        [style.background-color]="user.theme_font === font ? 'var(--primary-light)' : 'var(--background)'">
+                        [style.background-color]="user.theme_font === font ? 'var(--primary-light)' : 'var(--background)'"
+                        [style.color]="user.theme_font === font ? 'var(--primary-dark)' : 'var(--text-main)'">
                   {{ font }}
                 </button>
               </div>
@@ -82,9 +84,10 @@
                 <button *ngFor="let look of availableLooks" 
                         (click)="setLook(look, user)"
                         class="theme-color-btn"
-                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem;"
+                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; color: var(--text-main);"
                         [style.border-color]="user.theme_look === look ? 'var(--primary)' : 'var(--border)'"
-                        [style.background-color]="user.theme_look === look ? 'var(--primary-light)' : 'var(--background)'">
+                        [style.background-color]="user.theme_look === look ? 'var(--primary-light)' : 'var(--background)'"
+                        [style.color]="user.theme_look === look ? 'var(--primary-dark)' : 'var(--text-main)'">
                   {{ look }}
                 </button>
               </div>

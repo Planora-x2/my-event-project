@@ -30,11 +30,61 @@ export class AdminDashboardComponent implements OnInit {
     labels: [],
     datasets: [{ data: [] }]
   };
-  chartOptions: ChartConfiguration['options'] = {
+  chartOptions: ChartConfiguration['options'] | any = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: '80%', // Makes doughnut charts elegantly thin
+    layout: {
+      padding: 20
+    },
+    animation: {
+      duration: 1500,
+      easing: 'easeOutQuart'
+    },
+    elements: {
+      line: {
+        tension: 0.4, // Smooth flowing curves
+        borderWidth: 3,
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 6,
+        hoverBorderWidth: 3
+      },
+      bar: {
+        borderRadius: 8,
+        borderSkipped: false
+      },
+      arc: {
+        borderWidth: 0, // Removes the hard lines between pie slices
+        borderRadius: 4,
+        hoverOffset: 12 // Makes pieces pop out dynamically on hover
+      }
+    },
     plugins: {
-      legend: { position: 'right' }
+      legend: {
+        position: 'right',
+        labels: {
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle',
+          font: { family: "'Montserrat', sans-serif", size: 12 }
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        titleFont: { family: "'Montserrat', sans-serif", size: 14, weight: 'bold' },
+        bodyFont: { family: "'Montserrat', sans-serif", size: 13 },
+        padding: 12,
+        cornerRadius: 12,
+        displayColors: true,
+        usePointStyle: true,
+      }
+    },
+    scales: {
+      x: { display: false },
+      y: { display: false }
     }
   };
   chartReady: boolean = false;
@@ -84,16 +134,39 @@ export class AdminDashboardComponent implements OnInit {
       dataCounts = Object.values(statuses);
     }
 
+    // Custom gradients can be complex in pure Chart.js without canvas context,
+    // so we use soft, premium semi-transparent colors for lines/bars and solid for pies.
+    const isLineOrBar = this.selectedChartType === 'line' || this.selectedChartType === 'bar';
+
+    // Show scales only for line/bar charts
+    if (this.chartOptions?.scales) {
+      this.chartOptions.scales['x']!.display = isLineOrBar;
+      this.chartOptions.scales['y']!.display = isLineOrBar;
+      
+      // Make grid lines super subtle for Apple look
+      if (isLineOrBar) {
+        (this.chartOptions.scales['x'] as any).grid = { display: false };
+        (this.chartOptions.scales['y'] as any).grid = { color: 'rgba(150, 150, 150, 0.1)' };
+        (this.chartOptions.scales['x'] as any).border = { display: false };
+        (this.chartOptions.scales['y'] as any).border = { display: false };
+      }
+    }
+
     this.chartData = {
       labels: labels,
       datasets: [
         { 
           data: dataCounts,
-          backgroundColor: backgroundColors.slice(0, labels.length),
-          borderColor: 'transparent'
+          backgroundColor: isLineOrBar ? backgroundColors.map(c => c + '40') : backgroundColors.slice(0, labels.length),
+          borderColor: isLineOrBar ? backgroundColors.map(c => c) : 'transparent',
+          fill: isLineOrBar ? true : false,
+          borderWidth: isLineOrBar ? 3 : 0
         }
       ]
     };
+    
+    // Force angular to detect chart changes deeply
+    this.chartOptions = { ...this.chartOptions };
     this.chartReady = true;
   }
 

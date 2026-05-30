@@ -1,0 +1,27 @@
+.flower-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Let clicks pass through to the website underneath */
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.flower {
+  position: absolute;
+  top: -10vh; /* Start above the screen */
+  animation: fallAndSway linear infinite;
+  opacity: 0.85;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+  user-select: none;
+}
+
+@keyframes fallAndSway {
+  0% { transform: translate(0, -10vh) rotate(0deg); }
+  25% { transform: translate(30px, 20vh) rotate(90deg); }
+  50% { transform: translate(-30px, 50vh) rotate(180deg); }
+  75% { transform: translate(30px, 80vh) rotate(270deg); }
+  100% { transform: translate(0, 115vh) rotate(360deg); }
+}

@@ -16,6 +16,18 @@ export class App implements OnInit {
   protected readonly title = signal('frontend');
   private router = inject(Router);
 
+  // Generate 40 flowers with random positions, delays, durations, and types
+  flowers = Array(40).fill(0).map(() => {
+    const emojis = ['🌸', '💮', '✨', '🤍', '✦'];
+    return {
+      left: Math.random() * 100,
+      duration: 6 + Math.random() * 6, // Fall slowly (6 to 12s)
+      delay: Math.random() * 5,
+      type: emojis[Math.floor(Math.random() * emojis.length)],
+      size: 0.8 + Math.random() * 1.2
+    };
+  });
+
   ngOnInit() {
     AOS.init({
       duration: 800,
