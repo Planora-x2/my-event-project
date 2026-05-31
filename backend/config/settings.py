@@ -13,24 +13,30 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# ─────────────────────────────────────────────────────────────
+#  Core Security Settings
+#  All secrets are read from the .env file via python-decouple.
+#  Never hardcode secrets here.
+# ─────────────────────────────────────────────────────────────
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!%cuurakp6*r%-ck7#$df)&t)p^n$cj%9zk2z0)ixm+gn#z=%n'
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set DEBUG=True in .env for local dev, DEBUG=False for production
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+# Comma-separated in .env, e.g.: ALLOWED_HOSTS=your-ec2-ip,your-domain.com
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
 
-# Application definition
+# ─────────────────────────────────────────────────────────────
+#  Application definition
+# ─────────────────────────────────────────────────────────────
 
 INSTALLED_APPS = [
     'daphne',
@@ -41,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    
+
     # 3rd party apps
     'channels',
     'rest_framework',
@@ -54,7 +60,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
-    
+
     # Local apps
     'users',
     'events',
@@ -96,19 +102,43 @@ WSGI_APPLICATION = 'config.wsgi.application'
 ASGI_APPLICATION = 'config.asgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# ─────────────────────────────────────────────────────────────
+#  Database
+#  In development (.env): set DB_ENGINE=sqlite3
+#  In production (.env):  set DB_ENGINE=mysql (default)
+# ─────────────────────────────────────────────────────────────
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DB_ENGINE = config('DB_ENGINE', default='mysql')
+
+if DB_ENGINE == 'sqlite3':
+    # Local development fallback
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # Production: MySQL on EC2 (EBS) or RDS
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME', default='event_db'),
+            'USER': config('DB_USER', default='event_user'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST', default='127.0.0.1'),
+            'PORT': config('DB_PORT', default='3306'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+# ─────────────────────────────────────────────────────────────
+#  Password validation
+# ─────────────────────────────────────────────────────────────
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,33 +156,53 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# ─────────────────────────────────────────────────────────────
+#  Internationalization
+# ─────────────────────────────────────────────────────────────
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# ─────────────────────────────────────────────────────────────
+#  Static & Media Files
+#  - STATIC_ROOT: where collectstatic dumps files (Nginx serves these)
+#  - MEDIA_ROOT:  where uploaded files are saved (Nginx serves these)
+# ─────────────────────────────────────────────────────────────
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')   # created by collectstatic
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+# ─────────────────────────────────────────────────────────────
+#  Default primary key field type
+# ─────────────────────────────────────────────────────────────
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 
-CORS_ALLOW_ALL_ORIGINS = True
+
+# ─────────────────────────────────────────────────────────────
+#  CORS (Cross-Origin Resource Sharing)
+#  Production: only allow requests from your actual frontend domain.
+#  Development: allow all origins for convenience.
+# ─────────────────────────────────────────────────────────────
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='', cast=Csv())
+
+
+# ─────────────────────────────────────────────────────────────
+#  Django REST Framework
+# ─────────────────────────────────────────────────────────────
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -169,6 +219,11 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
 }
 
+
+# ─────────────────────────────────────────────────────────────
+#  django-allauth / dj-rest-auth
+# ─────────────────────────────────────────────────────────────
+
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
@@ -182,8 +237,65 @@ REST_AUTH = {
     'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
 }
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}
+
+# ─────────────────────────────────────────────────────────────
+#  Django Channels — WebSocket layer
+#  Development: InMemoryChannelLayer (single process, no Redis needed)
+#  Production:  RedisChannelLayer (required for multiple Gunicorn workers)
+# ─────────────────────────────────────────────────────────────
+
+if DEBUG:
+    # Local dev — no Redis required
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
+else:
+    # Production — Redis must be running on EC2
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                'hosts': [(
+                    config('REDIS_HOST', default='127.0.0.1'),
+                    config('REDIS_PORT', default=6379, cast=int),
+                )],
+            },
+        },
+    }
+
+
+# ─────────────────────────────────────────────────────────────
+#  Logging (production only)
+#  Errors go to /var/log/django/error.log on EC2
+# ─────────────────────────────────────────────────────────────
+
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '{levelname} {asctime} {module} {message}',
+                'style': '{',
+            },
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose',
+            },
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': config('DJANGO_LOG_LEVEL', default='WARNING'),
+                'propagate': False,
+            },
+        },
+    }

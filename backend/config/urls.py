@@ -39,5 +39,8 @@ urlpatterns = [
     path('api/admin/', include(admin_router.urls)),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Media files:
+# - In production: Nginx serves /media/ directly from MEDIA_ROOT (see nginx.conf)
+# - In development: Django serves them here (DEBUG=True uses runserver)
+# - Always registered so Django can serve as fallback if needed
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
