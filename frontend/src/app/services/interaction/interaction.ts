@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth';
+import { API_BASE, WS_BASE } from '../../constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InteractionService {
-  private apiUrl = 'http://localhost:8000/api/interactions';
-  private wsUrl = 'ws://localhost:8000/ws/chat';
+  private apiUrl = `${API_BASE}/api/interactions`;
+  private wsUrl = `${WS_BASE}/ws/chat`;
   private socket: WebSocket | null = null;
 
   constructor(private http: HttpClient, private authService: AuthService) { }

@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth/auth';
+import { API_BASE } from '../../constants';
 
 @Component({
   selector: 'app-navbar',
@@ -44,7 +45,7 @@ export class NavbarComponent {
   getProfilePicUrl(url: string | null): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8000${url}`;
+    return `${API_BASE}${url}`;
   }
 
   isThemeSelectorOpen = false;

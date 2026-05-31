@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventService } from '../../services/event/event';
 import { AuthService } from '../../services/auth/auth';
 import { InteractionService } from '../../services/interaction/interaction';
+import { API_BASE } from '../../constants';
 
 @Component({
   selector: 'app-event-detail',
@@ -94,7 +95,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   getEventImageUrl(url: string | null): string {
     if (!url) return 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1200&auto=format&fit=crop';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8000${url}`;
+    return `${API_BASE}${url}`;
   }
 
   bookTickets() {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
+import { API_BASE } from '../../constants';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -20,7 +21,7 @@ export class AdminDashboardComponent implements OnInit {
   totalRevenue = 0;
   totalOrganisers = 0;
 
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = `${API_BASE}/api`;
 
   // Chart Configuration
   selectedDataSource: 'users' | 'events' | 'bookings' = 'users';

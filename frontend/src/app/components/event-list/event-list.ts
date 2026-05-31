@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EventService } from '../../services/event/event';
+import { API_BASE } from '../../constants';
 
 @Component({
   selector: 'app-event-list',
@@ -63,7 +64,7 @@ export class EventListComponent implements OnInit {
   getEventImageUrl(url: string | null): string {
     if (!url) return 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800&auto=format&fit=crop';
     if (url.startsWith('http')) return url;
-    return `http://localhost:8000${url}`;
+    return `${API_BASE}${url}`;
   }
 
   getCategoryLabel(category: string): string {
