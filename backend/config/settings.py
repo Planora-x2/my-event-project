@@ -276,7 +276,7 @@ REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_COOKIE': 'ey-access-token',
     'JWT_AUTH_REFRESH_COOKIE': 'ey-refresh-token',
-    'JWT_AUTH_SECURE': not DEBUG, # Secure (HTTPS only) in production
+    'JWT_AUTH_SECURE': config('JWT_AUTH_SECURE', default=not DEBUG, cast=bool), # Secure (HTTPS only) in production by default
     'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_RETURN_EXPIRATION': False,
     'USER_DETAILS_SERIALIZER': 'users.serializers.CustomUserDetailsSerializer',

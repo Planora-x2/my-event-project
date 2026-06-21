@@ -16,4 +16,4 @@ const isDev = window.location.hostname === 'localhost' || window.location.hostna
 export const API_BASE = isDev ? 'http://localhost:8000' : '';
 
 /** WebSocket base — wss:// in prod, ws://localhost in dev */
-export const WS_BASE = isDev ? 'ws://localhost:8000' : `wss://${window.location.host}`;
+export const WS_BASE = isDev ? 'ws://localhost:8000' : `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}`;
