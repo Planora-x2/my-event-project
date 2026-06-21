@@ -1,30 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Dancing+Script:wght@400;600;700&display=swap');
+@import 'leaflet/dist/leaflet.css';
+
 
 /* ═══════════════════════════════════════════════
    WEDDING ELEGANCE — Design System
    ═══════════════════════════════════════════════ */
 :root {
-  /* Color Palette — Blush, Gold & Ivory */
-  --primary: #C8956C;           /* Warm rose gold */
-  --primary-hover: #B07A54;     /* Darker rose gold */
-  --primary-light: rgba(200, 149, 108, 0.15);
-  --secondary: #9B7B5E;         /* Warm taupe */
+  /* Color Palette — Amethyst & Gold */
+  --primary: #7B5C8E;           /* Amethyst purple */
+  --primary-hover: #5C456B;     /* Deep amethyst */
+  --primary-light: rgba(123, 92, 142, 0.15);
+  --secondary: #927A9C;         /* Soft lilac */
   --accent: #D4AF37;            /* Rich gold */
   --accent-light: rgba(212, 175, 55, 0.15);
 
   /* Backgrounds */
-  --background: #FAF6F1;        /* Warm ivory */
-  --background-alt: #F5EFE7;    /* Slightly warmer */
+  --background: #F8F5FA;        /* Soft faint lilac */
+  --background-alt: #F0EBF4;    /* Slightly deeper lilac */
   --surface: #FFFFFF;
-  --surface-warm: #FDF9F5;
+  --surface-warm: #FCFAFD;
 
   /* Text */
-  --text-main: #2C1810;         /* Deep warm brown */
-  --text-muted: #8C7B72;        /* Muted taupe */
-  --text-light: #B5A99F;
+  --text-main: #2A2030;         /* Deep eggplant */
+  --text-muted: #7D6F83;        /* Muted violet-grey */
+  --text-light: #A89CAB;
 
   /* Borders & Dividers */
-  --border: #E8DDD5;
+  --border: #EAE2F0;
   --border-gold: rgba(212, 175, 55, 0.3);
 
   /* Shadows */
@@ -156,16 +158,16 @@
 
 /* ── Dark Mode Overrides ───────────────────── */
 body.dark-mode {
-  --background: #161413;
-  --background-alt: #1F1C1A;
-  --surface: #262220;
-  --surface-warm: #221E1C;
+  --background: #18141C;
+  --background-alt: #1F1924;
+  --surface: #27202C;
+  --surface-warm: #221D26;
   
-  --text-main: #EFE9E5;
-  --text-muted: #B5A99F;
-  --text-light: #8C7B72;
+  --text-main: #F2ECF4;
+  --text-muted: #A89CAB;
+  --text-light: #7D6F83;
   
-  --border: #3A3330;
+  --border: #3A3042;
   --border-gold: rgba(212, 175, 55, 0.15);
   
   --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.3);

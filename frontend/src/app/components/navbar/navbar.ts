@@ -11,9 +11,12 @@ import { API_BASE } from '../../constants';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   currentUser$: Observable<any>;
   isScrolled = false;
+  notifications: any[] = [];
+  unreadCount = 0;
+  isNotificationsOpen = false;
 
   constructor(public authService: AuthService, private router: Router) {
     this.currentUser$ = this.authService.currentUser$;
@@ -22,6 +25,38 @@ export class NavbarComponent {
   @HostListener('window:scroll')
   onScroll() {
     this.isScrolled = window.scrollY > 20;
+  }
+
+  ngOnInit() {
+    this.currentUser$.subscribe(user => {
+      if (user && (user.role === 'CLIENT' || user.role === 'ADMIN')) {
+        this.fetchNotifications();
+      }
+    });
+  }
+
+  fetchNotifications() {
+    this.authService.getNotifications().subscribe(data => {
+      this.notifications = data;
+      this.unreadCount = this.notifications.filter(n => !n.is_read).length;
+    });
+  }
+
+  toggleNotifications() {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  markAsRead(notification: any) {
+    if (!notification.is_read) {
+      this.authService.markNotificationAsRead(notification.id).subscribe(() => {
+        notification.is_read = true;
+        this.unreadCount = Math.max(0, this.unreadCount - 1);
+      });
+    }
+    if (notification.link) {
+      this.router.navigateByUrl(notification.link);
+      this.isNotificationsOpen = false;
+    }
   }
 
   logout() {
@@ -48,42 +83,8 @@ export class NavbarComponent {
     return `${API_BASE}${url}`;
   }
 
-  isThemeSelectorOpen = false;
-  availableThemes = ['rose', 'mint', 'lavender', 'gold', 'ocean', 'ruby', 'emerald', 'sapphire'];
-  availableFonts = ['classic', 'modern', 'playful'];
-  availableLooks = ['elegant', 'minimal', 'bold'];
-  availableEffects = ['none', 'flowers', 'rain', 'snow', 'confetti', 'particles'];
-
-  openThemeSelector() {
-    this.isThemeSelectorOpen = true;
-  }
-
-  closeThemeSelector() {
-    this.isThemeSelectorOpen = false;
-  }
-
-  setTheme(theme: string, user: any) {
+  toggleDarkModeDirect(user: any) {
     if (!user) return;
-    this.authService.updateThemePreferences(theme, user.is_dark_mode, user.theme_font, user.theme_look, user.background_effect).subscribe();
-  }
-
-  setFont(font: string, user: any) {
-    if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, font, user.theme_look, user.background_effect).subscribe();
-  }
-
-  setLook(look: string, user: any) {
-    if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, look, user.background_effect).subscribe();
-  }
-
-  setEffect(effect: string, user: any) {
-    if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, user.is_dark_mode, user.theme_font, user.theme_look, effect).subscribe();
-  }
-
-  toggleDarkMode(event: any, user: any) {
-    if (!user) return;
-    this.authService.updateThemePreferences(user.theme_color, event.target.checked, user.theme_font, user.theme_look, user.background_effect).subscribe();
+    this.authService.updateThemePreferences(user.theme_color, !user.is_dark_mode, user.theme_font, user.theme_look, user.background_effect).subscribe();
   }
 }

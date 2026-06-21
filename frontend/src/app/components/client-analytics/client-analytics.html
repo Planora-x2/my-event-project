@@ -15,7 +15,10 @@
   <div class="charts-grid">
     <!-- Bar Charts (Scrollable) -->
     <div class="chart-card glass animate-fade-in" style="animation-delay:0.1s">
-      <h3 class="chart-title">💍 Bookings per Wedding</h3>
+      <h3 class="chart-title" style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+        Bookings per Service
+      </h3>
       <div class="scrollable-chart-wrapper">
         <div class="chart-wrapper" style="min-width: 500px; height: 300px;">
           <canvas baseChart [data]="eventChartData" [options]="chartOptions" type="bar"></canvas>
@@ -24,7 +27,10 @@
     </div>
 
     <div class="chart-card glass animate-fade-in" style="animation-delay:0.15s">
-      <h3 class="chart-title">🏛️ Bookings per Venue</h3>
+      <h3 class="chart-title" style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="20" width="20" height="2"></rect><rect x="2" y="2" width="20" height="4"></rect><rect x="4" y="6" width="2" height="14"></rect><rect x="10" y="6" width="2" height="14"></rect><rect x="18" y="6" width="2" height="14"></rect></svg>
+        Bookings per Venue
+      </h3>
       <div class="scrollable-chart-wrapper">
         <div class="chart-wrapper" style="min-width: 500px; height: 300px;">
           <canvas baseChart [data]="venueChartData" [options]="chartOptions" type="bar"></canvas>
@@ -34,14 +40,20 @@
 
     <!-- Donut Charts -->
     <div class="chart-card glass animate-fade-in" style="animation-delay:0.2s">
-      <h3 class="chart-title">💰 Revenue by Wedding</h3>
+      <h3 class="chart-title" style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        Revenue by Service
+      </h3>
       <div class="chart-wrapper" style="height: 300px;">
         <canvas baseChart [data]="revenueByEventChartData" [options]="donutChartOptions" type="doughnut"></canvas>
       </div>
     </div>
 
     <div class="chart-card glass animate-fade-in" style="animation-delay:0.25s">
-      <h3 class="chart-title">💰 Revenue by Venue</h3>
+      <h3 class="chart-title" style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        Revenue by Venue
+      </h3>
       <div class="chart-wrapper" style="height: 300px;">
         <canvas baseChart [data]="revenueByVenueChartData" [options]="donutChartOptions" type="doughnut"></canvas>
       </div>
@@ -52,7 +64,10 @@
   <div class="analytics-card glass animate-fade-in" style="animation-delay:0.2s">
     <div class="analytics-card-header">
       <div class="floral-sep">✿</div>
-      <h2 class="analytics-section-title">💌 Guest Bookings</h2>
+      <h2 class="analytics-section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        Guest Bookings
+      </h2>
       <p class="text-muted" style="font-size:0.85rem">All attendees who have booked your wedding events</p>
     </div>
     <div class="table-wrapper">
@@ -61,7 +76,7 @@
           <tr>
             <th>Guest Name</th>
             <th>Email</th>
-            <th>Wedding Event</th>
+            <th>Service</th>
             <th>Venue</th>
             <th>Tickets</th>
             <th>Status</th>
@@ -83,7 +98,10 @@
             </td>
             <td class="text-muted" style="font-size:0.85rem">{{ booking.event_details.venue_details?.name || '—' }}</td>
             <td>
-              <span class="ticket-chip">🎟️ {{ booking.tickets }}</span>
+              <span class="ticket-chip" style="display: flex; align-items: center; gap: 0.2rem; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5v2"></path><path d="M15 11v2"></path><path d="M15 17v2"></path><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"></path></svg>
+                {{ booking.tickets }}
+              </span>
             </td>
             <td>
               <span class="badge" [ngClass]="{
@@ -96,8 +114,10 @@
           <tr *ngIf="bookings.length === 0">
             <td colspan="6" class="empty-row">
               <div class="empty-cell">
-                <span>💌</span>
-                <p>No bookings yet. Your wedding events are waiting for guests!</p>
+                <span style="display: inline-block; margin-bottom: 0.5rem;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </span>
+                <p>No bookings yet. Your services are waiting for clients!</p>
               </div>
             </td>
           </tr>
@@ -110,14 +130,17 @@
   <div class="analytics-card glass animate-fade-in" style="animation-delay:0.25s">
     <div class="analytics-card-header">
       <div class="floral-sep">✿</div>
-      <h2 class="analytics-section-title">💍 Your Wedding Events</h2>
-      <p class="text-muted" style="font-size:0.85rem">Performance overview for all your published weddings</p>
+      <h2 class="analytics-section-title" style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+        Your Services
+      </h2>
+      <p class="text-muted" style="font-size:0.85rem">Performance overview for all your published services</p>
     </div>
     <div class="table-wrapper">
       <table class="analytics-table">
         <thead>
           <tr>
-            <th>Wedding Title</th>
+            <th>Service Title</th>
             <th>Date</th>
             <th>Venue</th>
             <th>Tickets Sold</th>
@@ -144,8 +167,10 @@
           <tr *ngIf="managedEvents.length === 0">
             <td colspan="5" class="empty-row">
               <div class="empty-cell">
-                <span>💍</span>
-                <p>No events created yet. <a routerLink="/client-dashboard" class="text-gradient">Create your first wedding →</a></p>
+                <span style="display: inline-block; margin-bottom: 0.5rem;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+                </span>
+                <p>No services created yet. <a routerLink="/client-dashboard" class="text-gradient">Create your first service listing →</a></p>
               </div>
             </td>
           </tr>

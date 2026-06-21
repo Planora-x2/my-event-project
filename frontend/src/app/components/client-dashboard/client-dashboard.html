@@ -4,32 +4,39 @@
   <div class="planner-header">
     <div class="header-text">
       <div class="floral-sep">✿</div>
-      <h1 class="page-title"><span class="text-gradient">Wedding</span> Planner Portal</h1>
-      <p class="text-muted page-subtitle">Create venues, publish wedding events, and manage your celebrations</p>
+      <h1 class="page-title"><span class="text-gradient">Vendor</span> Portal</h1>
+      <p class="text-muted page-subtitle">Register business locations, publish service listings, and manage your portfolio</p>
     </div>
-    <button routerLink="/client-analytics" class="btn btn-secondary" id="analytics-btn">
-      📊 Analytics & Bookings
+    <button routerLink="/client-analytics" class="btn btn-secondary" id="analytics-btn" style="display: flex; align-items: center; gap: 0.5rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      Analytics & Bookings
     </button>
   </div>
 
   <!-- Stats Row -->
   <div class="stats-row">
     <div class="stat-card glass-gold" data-aos="fade-up" data-aos-delay="100">
-      <span class="stat-icon">🏛️</span>
+      <span class="stat-icon" style="display: flex; align-items: center; justify-content: center; color: var(--primary);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="20" width="20" height="2"></rect><rect x="2" y="2" width="20" height="4"></rect><rect x="4" y="6" width="2" height="14"></rect><rect x="10" y="6" width="2" height="14"></rect><rect x="18" y="6" width="2" height="14"></rect></svg>
+      </span>
       <div>
         <p class="stat-number">{{ venues.length }}</p>
         <p class="stat-desc">Registered Venues</p>
       </div>
     </div>
     <div class="stat-card glass-gold" data-aos="fade-up" data-aos-delay="200">
-      <span class="stat-icon">💍</span>
+      <span class="stat-icon" style="display: flex; align-items: center; justify-content: center; color: var(--primary);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+      </span>
       <div>
         <p class="stat-number">{{ managedEvents.length }}</p>
-        <p class="stat-desc">Active Weddings</p>
+        <p class="stat-desc">Active Service Listings</p>
       </div>
     </div>
     <div class="stat-card glass-gold" data-aos="fade-up" data-aos-delay="300">
-      <span class="stat-icon">🌸</span>
+      <span class="stat-icon" style="display: flex; align-items: center; justify-content: center; color: var(--primary);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9z"></path><path d="M12 22c-4.97 0-9-4.03-9-9 4.97 0 9-4.03 9 9z"></path><path d="M12 2c4.97 0 9 4.03 9 9-4.97 0-9-4.03-9-9z"></path><path d="M12 2c-4.97 0-9 4.03-9 9 4.97 0 9-4.03 9-9z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </span>
       <div>
         <p class="stat-number">{{ getTotalCapacity() | number }}</p>
         <p class="stat-desc">Total Guest Capacity</p>
@@ -37,110 +44,251 @@
     </div>
   </div>
 
-  <!-- Form Grid -->
-  <div class="forms-grid">
+  <!-- Subscription Check -->
+  <div *ngIf="!isAdmin && (!subscription || subscription.status !== 'APPROVED')" class="forms-grid">
+    <div class="form-panel glass" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+      <h2 class="form-panel-title">Subscription Required</h2>
+      
+      <div *ngIf="subscription?.status === 'PENDING'">
+        <p class="text-muted">Your subscription request is currently pending admin approval.</p>
+        <p class="text-muted" style="margin-top: 1rem;">Requested period: <strong>{{ subscription.period }}</strong></p>
+      </div>
+
+      <div *ngIf="!subscription || subscription?.status === 'CANCELLED'">
+        <p class="text-muted mb-3">You need an active subscription to register locations and list your services.</p>
+        <div style="max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+          <input type="text" class="input-field" [(ngModel)]="subRequestPeriod" placeholder="Enter requested period (e.g., 6 months, 1 year)" />
+          <button (click)="requestSubscription()" class="btn btn-primary w-100">Request Subscription</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Grid (Only if APPROVED or ADMIN) -->
+  <div class="forms-grid" *ngIf="isAdmin || subscription?.status === 'APPROVED'">
 
     <!-- Register Venue -->
-    <div class="form-panel glass" data-aos="fade-right" data-aos-delay="100">
-      <div class="form-panel-header">
-        <h2 class="form-panel-title">🏛️ Register a Venue</h2>
-        <p class="text-muted" style="font-size:0.85rem">Add a new wedding venue to your portfolio</p>
+    <div class="form-panel glass" data-aos="fade-right" data-aos-delay="100" style="position: relative;">
+      <div *ngIf="editingEventId" style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.7); z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: inherit;">
+        <div style="background: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;">
+          <p>You are currently editing a Service.</p>
+          <button class="btn btn-secondary btn-sm" (click)="resetEventForm()">Cancel Edit to Access</button>
+        </div>
       </div>
-      <form (ngSubmit)="submitVenue()" id="venue-form">
+      <div class="form-panel-header">
+        <h2 class="form-panel-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="20" width="20" height="2"></rect><rect x="2" y="2" width="20" height="4"></rect><rect x="4" y="6" width="2" height="14"></rect><rect x="10" y="6" width="2" height="14"></rect><rect x="18" y="6" width="2" height="14"></rect></svg>
+          {{ editingVenueId ? 'Update Business Location/Venue' : 'Register a Business Location/Venue' }}
+        </h2>
+        <p class="text-muted" style="font-size:0.85rem">{{ editingVenueId ? 'Update your location details' : 'Add a new business location to your portfolio' }}</p>
+      </div>
+      <form (ngSubmit)="venueFormEl.form.valid && submitVenue()" #venueFormEl="ngForm" id="venue-form">
         <div class="form-group">
-          <label class="input-label">Venue Name</label>
-          <input type="text" class="input-field" [(ngModel)]="venueForm.name" name="venueName" 
-                 placeholder="e.g. The Grand Garden Pavilion" required id="venue-name">
+          <label class="input-label">Location/Venue Name <span style="color:red">*</span></label>
+          <input type="text" class="input-field" [(ngModel)]="venueForm.name" name="venueName" placeholder="e.g. Grand Plaza Hotel" required #vName="ngModel">
+          <div *ngIf="vName.invalid && (vName.dirty || vName.touched || venueFormEl.submitted)" style="color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem;">
+            Please fill out this field.
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label class="input-label">Country <span style="color:red">*</span></label>
+            <select class="input-field" [(ngModel)]="venueForm.country" name="venueCountry" (change)="onCountryChange()" required #vCountry="ngModel">
+              <option value="" disabled>Select Country</option>
+              <option *ngFor="let c of countries" [value]="c.isoCode">{{ c.name }}</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="input-label">State <span style="color:red">*</span></label>
+            <select class="input-field" [(ngModel)]="venueForm.state" name="venueState" (change)="onStateChange()" required #vState="ngModel" [disabled]="!states.length">
+              <option value="" disabled>Select State</option>
+              <option *ngFor="let s of states" [value]="s.isoCode">{{ s.name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label class="input-label">District/City <span style="color:red">*</span></label>
+            <select class="input-field" [(ngModel)]="venueForm.district" name="venueDistrict" (change)="onDistrictChange()" required #vDistrict="ngModel" [disabled]="!districts.length">
+              <option value="" disabled>Select District/City</option>
+              <option *ngFor="let d of districts" [value]="d.name">{{ d.name }}</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="input-label">Address Details <span style="color:red">*</span></label>
+            <input type="text" class="input-field" [(ngModel)]="venueForm.address" name="venueAddress" placeholder="Street, Plot No." required #vAddress="ngModel">
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">Address / Location</label>
-          <input type="text" class="input-field" [(ngModel)]="venueForm.address" name="venueAddress" 
-                 placeholder="Full address, city" required id="venue-address">
-        </div>
-        <div class="form-group">
-          <label class="input-label">Guest Capacity</label>
-          <input type="number" class="input-field" [(ngModel)]="venueForm.capacity" name="venueCapacity" 
-                 placeholder="e.g. 250" required id="venue-capacity">
+          <label class="input-label">Guest Capacity <span style="color:red">*</span></label>
+          <input type="number" class="input-field" [(ngModel)]="venueForm.capacity" name="venueCapacity" placeholder="e.g. 200" required min="1" #vCapacity="ngModel">
+          <div *ngIf="vCapacity.invalid && (vCapacity.dirty || vCapacity.touched || venueFormEl.submitted)" style="color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem;">
+            Please provide a valid capacity.
+          </div>
         </div>
         <div class="form-group">
           <label class="input-label">Venue Photo</label>
           <div class="file-upload-area" (click)="venueFileInput.click()">
-            <span class="file-upload-icon">📷</span>
+            <span class="file-upload-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </span>
             <p>{{ venueImage ? venueImage.name : 'Click to upload venue image' }}</p>
             <span class="file-upload-hint">JPG, PNG up to 10MB</span>
           </div>
           <input #venueFileInput type="file" (change)="onVenueImageSelected($event)" accept="image/*" style="display:none" id="venue-image">
         </div>
-        <button type="submit" class="btn btn-secondary w-100" id="save-venue-btn">
-          💾 Save Venue
+        <button type="submit" class="btn btn-secondary w-100" id="save-venue-btn" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          {{ editingVenueId ? 'Update Venue' : 'Save Venue' }}
         </button>
+        <button *ngIf="editingVenueId" type="button" class="btn btn-secondary w-100 mt-2" (click)="resetVenueForm()">Cancel Edit</button>
       </form>
     </div>
 
     <!-- Create Wedding Event -->
-    <div class="form-panel glass" data-aos="fade-left" data-aos-delay="200">
-      <div class="form-panel-header">
-        <h2 class="form-panel-title">💍 Create Wedding Event</h2>
-        <p class="text-muted" style="font-size:0.85rem">Publish a new wedding celebration</p>
+    <div class="form-panel glass" data-aos="fade-left" data-aos-delay="200" style="position: relative;">
+      <div *ngIf="editingVenueId" style="position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.7); z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: inherit;">
+        <div style="background: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center;">
+          <p>You are currently editing a Venue.</p>
+          <button class="btn btn-secondary btn-sm" (click)="resetVenueForm()">Cancel Edit to Access</button>
+        </div>
       </div>
-      <form (ngSubmit)="submitEvent()" id="event-form">
+      <div class="form-panel-header">
+        <h2 class="form-panel-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+          {{ editingEventId ? 'Update Service Listing' : 'Publish Service Listing' }}
+        </h2>
+        <p class="text-muted" style="font-size:0.85rem">{{ editingEventId ? 'Update your service details' : 'Publish a new service for couples to discover' }}</p>
+      </div>
+      <form (ngSubmit)="eventFormEl.form.valid && submitEvent()" #eventFormEl="ngForm" id="event-form">
         <div class="form-group">
-          <label class="input-label">Wedding Title</label>
-          <input type="text" class="input-field" [(ngModel)]="eventForm.title" name="eventTitle" 
-                 placeholder="e.g. The Rosewood Garden Wedding" required id="event-title">
+          <label class="input-label">Service/Business Name <span style="color:red">*</span></label>
+          <input type="text" class="input-field" [(ngModel)]="eventForm.title" name="eventTitle" placeholder="e.g. Royal Photography Package" required #eTitle="ngModel">
+          <div *ngIf="eTitle.invalid && (eTitle.dirty || eTitle.touched || eventFormEl.submitted)" style="color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem;">
+            Please fill out this field.
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">Description</label>
-          <textarea class="input-field" [(ngModel)]="eventForm.description" name="eventDescription" 
-                    placeholder="Tell guests what makes this wedding special..." 
-                    rows="3" required id="event-desc"></textarea>
+          <label class="input-label">Description <span style="color:red">*</span></label>
+          <textarea class="input-field" rows="3" [(ngModel)]="eventForm.description" name="eventDescription" placeholder="Tell couples what makes your service special..." required #eDesc="ngModel"></textarea>
+          <div *ngIf="eDesc.invalid && (eDesc.dirty || eDesc.touched || eventFormEl.submitted)" style="color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem;">
+            Please provide a description.
+          </div>
         </div>
         <div class="form-group">
-          <label class="input-label">Wedding Type</label>
-          <select class="input-field" [(ngModel)]="eventForm.category" name="eventCategory" id="event-category">
-            <option value="WEDDING">💍 Wedding Ceremony</option>
-            <option value="RECEPTION">🥂 Wedding Reception</option>
-            <option value="ENGAGEMENT">💌 Engagement Party</option>
-            <option value="REHEARSAL">🌹 Rehearsal Dinner</option>
-            <option value="BRIDAL">👰 Bridal Shower</option>
-            <option value="PHOTOGRAPHY">📸 Photography & Videography</option>
-            <option value="CATERING">🍽️ Catering & Food</option>
-            <option value="DECORATION">💐 Floral & Decoration</option>
-            <option value="MUSIC">🎵 Music & Entertainment</option>
-            <option value="OTHER">🌸 Other Celebration</option>
+          <label class="input-label">Service Category</label>
+          <select class="input-field" [(ngModel)]="eventForm.category" name="eventCategory" required>
+            <option value="WEDDING">Full Wedding Planning</option>
+            <option value="RECEPTION">Reception Venues & Services</option>
+            <option value="PHOTOGRAPHY">Photography & Videography</option>
+            <option value="CATERING">Catering & Food</option>
+            <option value="DECORATION">Floral & Decoration</option>
+            <option value="MUSIC">Music & Entertainment</option>
+            <option value="BRIDAL">Bridal Makeup & Wear</option>
+            <option value="OTHER">Other Services</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="input-label">Select Venue</label>
-          <select class="input-field" [(ngModel)]="eventForm.venue" name="eventVenue" required id="event-venue">
-            <option value="">— Choose a Venue —</option>
+          <label class="input-label">Select Base Location</label>
+          <select class="input-field" [(ngModel)]="eventForm.venue" name="eventVenue" id="event-venue">
+            <option value="">— No specific venue / Location flexible —</option>
             <option *ngFor="let v of venues" [value]="v.id">{{ v.name }} ({{ v.capacity }} guests)</option>
           </select>
         </div>
         <div class="form-row">
           <div class="form-group" style="flex:1">
-            <label class="input-label">Wedding Date & Time</label>
-            <input type="datetime-local" class="input-field" [(ngModel)]="eventForm.date" name="eventDate" required id="event-date">
+            <label class="input-label">Available From (Optional)</label>
+            <input type="datetime-local" class="input-field" [(ngModel)]="eventForm.date" name="eventDate" id="event-date">
           </div>
           <div class="form-group" style="flex:1">
-            <label class="input-label">Ticket Price ($)</label>
+            <label class="input-label">Starting Price ($) <span style="color:red">*</span></label>
             <input type="number" class="input-field" [(ngModel)]="eventForm.price" name="eventPrice" 
-                   placeholder="0.00" min="0" step="0.01" required id="event-price">
+                   placeholder="0.00" min="0" step="0.01" required id="event-price" #ePrice="ngModel">
+            <div *ngIf="ePrice.invalid && (ePrice.dirty || ePrice.touched || eventFormEl.submitted)" style="color: #dc3545; font-size: 0.8rem; margin-top: 0.25rem;">
+              Please provide a valid price.
+            </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="input-label">Wedding Photo</label>
+          <label class="input-label">Coverage Area (Search or Click on map to set)</label>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="text" class="input-field" [(ngModel)]="mapSearchQuery" name="mapSearch" placeholder="Search a location or city...">
+            <button type="button" class="btn btn-secondary" (click)="searchLocation()">Search</button>
+          </div>
+          <div id="picker-map" style="height: 250px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 0.5rem; z-index: 1;"></div>
+          <p class="text-muted" style="font-size: 0.8rem;" *ngIf="eventForm.latitude && eventForm.longitude">
+            Selected: {{ eventForm.latitude | number:'1.4-4' }}, {{ eventForm.longitude | number:'1.4-4' }}
+          </p>
+          <p class="text-muted" style="font-size: 0.8rem; color: #cc0000;" *ngIf="!eventForm.latitude || !eventForm.longitude">
+            Please select a location on the map.
+          </p>
+        </div>
+        <div class="form-group">
+          <label class="input-label">Service Banner Photo</label>
           <div class="file-upload-area" (click)="eventFileInput.click()">
-            <span class="file-upload-icon">🌸</span>
-            <p>{{ eventImage ? eventImage.name : 'Click to upload event banner photo' }}</p>
+            <span class="file-upload-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </span>
+            <p>{{ eventImage ? eventImage.name : 'Click to upload business photo' }}</p>
             <span class="file-upload-hint">JPG, PNG up to 10MB</span>
           </div>
           <input #eventFileInput type="file" (change)="onEventImageSelected($event)" accept="image/*" style="display:none" id="event-image">
         </div>
-        <button type="submit" class="btn btn-primary w-100" id="publish-event-btn">
-          💍 Publish Wedding Event
+        
+        <div class="form-group">
+          <label class="input-label">Gallery Images (Optional)</label>
+          <div class="file-upload-area" (click)="galleryFileInput.click()">
+            <span class="file-upload-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            </span>
+            <p>{{ eventImages.length > 0 ? eventImages.length + ' files selected' : 'Click to upload multiple gallery photos' }}</p>
+            <span class="file-upload-hint">You can select multiple files</span>
+          </div>
+          <input #galleryFileInput type="file" multiple (change)="onGalleryImagesSelected($event)" accept="image/*" style="display:none" id="gallery-images">
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100" id="publish-event-btn" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M10 8l2 -3l2 3"></path><path d="M9 10h6"></path></svg>
+          {{ editingEventId ? 'Update Service Listing' : 'Publish Service Listing' }}
         </button>
+        <button *ngIf="editingEventId" type="button" class="btn btn-secondary w-100 mt-2" (click)="resetEventForm()">Cancel Edit</button>
       </form>
+    </div>
+  </div>
+
+  <!-- My Venues -->
+  <div class="my-events-section" data-aos="fade-up" data-aos-duration="1000" *ngIf="venues.length > 0">
+    <div class="section-heading">
+      <div class="floral-sep">✿</div>
+      <h2 class="section-title">Your <span class="text-gradient">Registered Venues</span></h2>
+    </div>
+    <div class="events-table">
+      <div class="table-header">
+        <span>Venue Name</span>
+        <span>Address</span>
+        <span>Capacity</span>
+        <span></span>
+      </div>
+      <div *ngFor="let venue of venues; let i = index" class="table-row" data-aos="fade-up" [attr.data-aos-delay]="(i % 5) * 100" [id]="'venue-row-' + venue.id">
+        <div class="event-cell event-name">
+          <div class="event-thumb">
+            <img [src]="getEventImageUrl(venue.image)" [alt]="venue.name" style="width:100%;height:100%;object-fit:cover">
+          </div>
+          <div>
+            <p class="event-name-text">{{ venue.name }}</p>
+          </div>
+        </div>
+        <div class="event-cell text-muted" style="font-size:0.85rem">
+          {{ venue.address }}
+        </div>
+        <div class="event-cell">
+          {{ venue.capacity }} guests
+        </div>
+        <div class="event-cell" style="display:flex; gap:0.5rem;">
+          <button class="btn btn-secondary btn-sm" (click)="editVenue(venue)">Edit</button>
+          <button class="btn btn-danger btn-sm" style="background:#dc3545; color:white; border:none; padding:0.4rem 0.8rem; border-radius:4px; cursor:pointer;" (click)="deleteVenue(venue.id)">Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -148,20 +296,20 @@
   <div class="my-events-section" data-aos="fade-up" data-aos-duration="1000" *ngIf="managedEvents.length > 0">
     <div class="section-heading">
       <div class="floral-sep">✿</div>
-      <h2 class="section-title">Your <span class="text-gradient">Wedding Events</span></h2>
+      <h2 class="section-title">Your <span class="text-gradient">Service Listings</span></h2>
     </div>
     <div class="events-table">
       <div class="table-header">
-        <span>Wedding</span>
-        <span>Date</span>
-        <span>Venue</span>
-        <span>Price</span>
+        <span>Service</span>
+        <span>Available</span>
+        <span>Location</span>
+        <span>Base Price</span>
         <span></span>
       </div>
       <div *ngFor="let event of managedEvents; let i = index" class="table-row" data-aos="fade-up" [attr.data-aos-delay]="(i % 5) * 100" [id]="'event-row-' + event.id">
         <div class="event-cell event-name">
           <div class="event-thumb">
-            <img [src]="getEventImageUrl(event.image)" [alt]="event.title" style="width:100%;height:100%;object-fit:cover">
+            <img [src]="getEventImageUrl(event.image || event.venue_details?.image)" [alt]="event.title" style="width:100%;height:100%;object-fit:cover">
           </div>
           <div>
             <p class="event-name-text">{{ event.title }}</p>
@@ -169,7 +317,8 @@
           </div>
         </div>
         <div class="event-cell">
-          <span class="event-date-badge">{{ event.date | date:'MMM d, yyyy' }}</span>
+          <span class="event-date-badge" *ngIf="event.date">{{ event.date | date:'MMM d, yyyy' }}</span>
+          <span class="event-date-badge" *ngIf="!event.date">Anytime</span>
         </div>
         <div class="event-cell text-muted" style="font-size:0.85rem">
           {{ event.venue_details?.name || '—' }}
@@ -177,8 +326,10 @@
         <div class="event-cell">
           <span class="price-chip">${{ event.price }}</span>
         </div>
-        <div class="event-cell">
-          <button class="btn btn-secondary btn-sm" [routerLink]="['/event', event.id]" [id]="'view-event-' + event.id">View →</button>
+        <div class="event-cell" style="display:flex; gap:0.5rem;">
+          <button class="btn btn-secondary btn-sm" [routerLink]="['/event', event.id]" [id]="'view-event-' + event.id">View</button>
+          <button class="btn btn-secondary btn-sm" (click)="editEvent(event)">Edit</button>
+          <button class="btn btn-danger btn-sm" style="background:#dc3545; color:white; border:none; padding:0.4rem 0.8rem; border-radius:4px; cursor:pointer;" (click)="deleteEvent(event.id)">Delete</button>
         </div>
       </div>
     </div>

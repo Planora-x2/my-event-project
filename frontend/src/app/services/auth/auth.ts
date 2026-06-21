@@ -13,23 +13,18 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) { 
-    if (localStorage.getItem('access_token')) {
-      this.getUserProfile().subscribe();
+    if (localStorage.getItem('is_logged_in')) {
+      this.getUserProfile().subscribe({
+        error: () => this.logout() // If cookie expired, clear flag
+      });
     }
   }
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login/`, credentials).pipe(
       tap((res: any) => {
-        console.log('Login response:', res);
-        const token = res.access || res.access_token || res.key;
-        if (token) {
-          localStorage.setItem('access_token', token);
-          if (res.refresh) localStorage.setItem('refresh_token', res.refresh);
-          console.log('Token saved:', token.substring(0, 20) + '...');
-        } else {
-          console.error('No access token in response!', Object.keys(res));
-        }
+        console.log('Login successful');
+        localStorage.setItem('is_logged_in', 'true');
       }),
       // After token is saved, fetch user profile
       switchMap(() => this.getUserProfile())
@@ -39,20 +34,13 @@ export class AuthService {
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/registration/`, userData).pipe(
       tap((res: any) => {
-        const token = res.access || res.access_token || res.key;
-        if (token) {
-          localStorage.setItem('access_token', token);
-          if (res.refresh) {
-            localStorage.setItem('refresh_token', res.refresh);
-          }
-        }
+        localStorage.setItem('is_logged_in', 'true');
       })
     );
   }
 
   logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('is_logged_in');
     this.currentUserSubject.next(null);
     return this.http.post(`${this.apiUrl}/logout/`, {});
   }
@@ -100,7 +88,7 @@ export class AuthService {
     document.body.setAttribute('data-theme', themeColor);
     document.body.setAttribute('data-font', themeFont || 'classic');
     document.body.setAttribute('data-look', themeLook || 'elegant');
-    document.body.setAttribute('data-effect', backgroundEffect || 'flowers');
+    document.body.setAttribute('data-effect', backgroundEffect || 'none');
     if (isDarkMode) {
       document.body.setAttribute('data-theme-mode', 'dark');
       document.body.classList.add('dark-mode');
@@ -108,5 +96,27 @@ export class AuthService {
       document.body.removeAttribute('data-theme-mode');
       document.body.classList.remove('dark-mode');
     }
+  }
+
+  // --- Subscriptions ---
+  getSubscriptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_BASE}/api/users/subscriptions/`);
+  }
+
+  requestSubscription(period: string): Observable<any> {
+    return this.http.post(`${API_BASE}/api/users/subscriptions/`, { period });
+  }
+
+  updateSubscriptionStatus(id: number, status: string): Observable<any> {
+    return this.http.patch(`${API_BASE}/api/users/subscriptions/${id}/`, { status });
+  }
+
+  // --- Notifications ---
+  getNotifications(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_BASE}/api/interactions/notifications/`);
+  }
+
+  markNotificationAsRead(id: number): Observable<any> {
+    return this.http.patch(`${API_BASE}/api/interactions/notifications/${id}/`, { is_read: true });
   }
 }

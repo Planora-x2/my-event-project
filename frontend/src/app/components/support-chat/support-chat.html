@@ -1,0 +1,83 @@
+<div class="support-container animate-fade-in">
+  
+  <div class="support-header">
+    <div class="floral-sep">✿</div>
+    <h1 class="page-title"><span class="text-gradient">Support</span> Portal</h1>
+    <p class="text-muted" *ngIf="isAdmin">Manage client inquiries and support requests</p>
+    <p class="text-muted" *ngIf="!isAdmin">Direct line to our Eternally Yours administration team</p>
+  </div>
+
+  <div class="support-layout glass">
+    
+    <!-- Admin: Client List Sidebar -->
+    <div class="client-sidebar" *ngIf="isAdmin">
+      <div class="sidebar-header">
+        <h3>Clients</h3>
+      </div>
+      <div class="client-list">
+        <div *ngFor="let client of clients" 
+             class="client-item" 
+             [class.active]="selectedClient?.id === client.id"
+             (click)="selectClient(client)">
+          <div class="client-avatar">
+            <img *ngIf="client.profile_picture" [src]="getProfilePicUrl(client.profile_picture)">
+            <span *ngIf="!client.profile_picture">{{ client.username.charAt(0).toUpperCase() }}</span>
+          </div>
+          <div class="client-info">
+            <span class="client-name">{{ client.username }}</span>
+            <span class="client-email">{{ client.email }}</span>
+          </div>
+        </div>
+        <div *ngIf="clients.length === 0" class="empty-clients">
+          <p>No clients found.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window">
+      
+      <div class="chat-header" *ngIf="selectedClient">
+        <div class="client-avatar">
+          <img *ngIf="selectedClient.profile_picture" [src]="getProfilePicUrl(selectedClient.profile_picture)">
+          <span *ngIf="!selectedClient.profile_picture">{{ selectedClient.username.charAt(0).toUpperCase() }}</span>
+        </div>
+        <div class="chat-header-info">
+          <h3>{{ isAdmin ? selectedClient.username : 'Eternally Yours Admin' }}</h3>
+          <span class="status-indicator">Online</span>
+        </div>
+      </div>
+
+      <div class="chat-header" *ngIf="!selectedClient">
+        <h3>Select a client to begin chatting</h3>
+      </div>
+
+      <div class="chat-messages" #chatScroll>
+        <div *ngIf="selectedClient && chatMessages.length === 0" class="chat-empty">
+          <span>💌</span>
+          <p>No messages yet. Say hello!</p>
+        </div>
+        
+        <div *ngFor="let msg of chatMessages" 
+             class="chat-bubble"
+             [class.sent]="msg.sender_name === currentUser?.username"
+             [class.received]="msg.sender_name !== currentUser?.username">
+          <span class="bubble-sender">{{ msg.sender_name === currentUser?.username ? 'You' : (isAdmin ? msg.sender_name : 'Admin') }}</span>
+          <p class="bubble-text">{{ msg.message }}</p>
+        </div>
+      </div>
+
+      <div class="chat-input-row" *ngIf="selectedClient">
+        <input 
+          type="text" 
+          class="input-field chat-input-field" 
+          [(ngModel)]="newChatMessage" 
+          (keyup.enter)="sendMessage()" 
+          placeholder="Type your message..."
+          [disabled]="!selectedClient">
+        <button class="btn btn-primary" (click)="sendMessage()" [disabled]="!newChatMessage.trim() || !selectedClient">Send</button>
+      </div>
+
+    </div>
+  </div>
+</div>

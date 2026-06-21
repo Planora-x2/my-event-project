@@ -4,6 +4,9 @@ from django.conf import settings
 class Venue(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField()
+    country = models.CharField(max_length=100, default='India')
+    state = models.CharField(max_length=100, default='Kerala')
+    district = models.CharField(max_length=100, blank=True, null=True)
     capacity = models.PositiveIntegerField()
     image = models.ImageField(upload_to='venues/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,6 +35,9 @@ class Event(models.Model):
     date = models.DateTimeField()
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     image = models.ImageField(upload_to='events/', null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    enquiry_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -63,3 +69,11 @@ class EventGalleryImage(models.Model):
 
     def __str__(self):
         return f"Gallery Image for {self.event.title}"
+
+class Enquiry(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='enquiries')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='enquiries')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Enquiry for {self.event.title} by {self.user.username if self.user else 'Unknown User'}"

@@ -5,7 +5,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventService } from '../../services/event/event';
 import { AuthService } from '../../services/auth/auth';
 import { InteractionService } from '../../services/interaction/interaction';
+import { ToastService } from '../../services/toast/toast';
+import { SavedVendorService } from '../../services/saved-vendor/saved-vendor';
 import { API_BASE } from '../../constants';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-event-detail',
@@ -16,9 +19,9 @@ import { API_BASE } from '../../constants';
 })
 export class EventDetailComponent implements OnInit, OnDestroy {
   event: any = null;
-  ticketsToBook: number = 1;
   loading: boolean = true;
-  isSubmitting: boolean = false;
+  userRating: number = 0;
+  map: L.Map | null = null;
 
   // Interaction State
   currentUser: any = null;
@@ -36,14 +39,16 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    public authService: AuthService,
     private interactionService: InteractionService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService,
+    public authService: AuthService,
+    private savedVendorService: SavedVendorService
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user: any) => {
       this.currentUser = user;
       this.checkRoleAndInitialize();
     });
@@ -79,10 +84,18 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         this.event = data;
         this.loading = false;
         
+        if (this.event.current_user_rating) {
+          this.userRating = this.event.current_user_rating;
+        }
+        
         this.loadComments();
         this.checkRoleAndInitialize();
         
         this.cdr.detectChanges();
+        
+        if (this.event.latitude && this.event.longitude) {
+          setTimeout(() => this.initMap(), 100);
+        }
       },
       error: (err) => {
         console.error('Failed to load event details', err);
@@ -98,25 +111,52 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     return `${API_BASE}${url}`;
   }
 
-  bookTickets() {
-    if (!this.event) return;
+  initMap() {
+    if (this.map) {
+      this.map.remove();
+    }
+    const lat = this.event.latitude;
+    const lng = this.event.longitude;
     
+    this.map = L.map('event-map').setView([lat, lng], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    // Use default icon
+    const icon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    });
+
+    L.marker([lat, lng], { icon }).addTo(this.map)
+      .bindPopup(this.event.title)
+      .openPopup();
+      
+    setTimeout(() => {
+      this.map?.invalidateSize();
+    }, 200);
+  }
+
+  rateEvent(stars: number) {
     if (!this.currentUser) {
-      alert('Please login to book tickets!');
-      this.router.navigate(['/login']);
+      this.toastService.show('Please log in to rate this event.', 'warning');
       return;
     }
-
-    this.isSubmitting = true;
-    this.eventService.bookEvent(this.event.id, this.ticketsToBook).subscribe({
-      next: () => {
-        alert(`Successfully booked ${this.ticketsToBook} ticket(s) for ${this.event.title}!`);
-        this.isSubmitting = false;
+    this.eventService.rateEvent(this.event.id, stars).subscribe({
+      next: (res) => {
+        this.userRating = stars;
+        this.event.average_rating = (this.event.average_rating || 0); // Mock update, or reload event
+        this.loadEvent(this.event.id); // Reload event to get new average
+        this.toastService.show('Thank you for your rating!', 'info');
       },
       error: (err) => {
-        console.error('Booking failed', err);
-        alert('Failed to book tickets. Please try again.');
-        this.isSubmitting = false;
+        this.toastService.show('Failed to submit rating.', 'warning');
+        console.error(err);
       }
     });
   }
@@ -132,7 +172,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   postComment() {
     if (!this.currentUser) {
-      alert('Please login to participate in the discussion.');
+      this.toastService.show('Please login to participate in the discussion.', 'warning');
       return;
     }
     if (!this.newComment.trim() || !this.event) return;
@@ -172,7 +212,7 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
   sendChatMessage() {
     if (!this.currentUser) {
-      alert('Please login to chat with the organizer.');
+      this.toastService.show('Please login to chat with the organizer.', 'warning');
       return;
     }
     if (!this.newChatMessage.trim() || !this.event) return;
@@ -190,7 +230,19 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
     if (this.isChatOpen) {
+      this.trackEnquiry();
       this.scrollToBottom();
+    }
+  }
+
+  trackEnquiry() {
+    if (this.event) {
+      this.eventService.trackEnquiry(this.event.id).subscribe({
+        next: (res) => {
+          this.event.enquiry_count = res.enquiry_count;
+        },
+        error: (err) => console.error('Failed to track enquiry', err)
+      });
     }
   }
 
@@ -274,30 +326,62 @@ export class EventDetailComponent implements OnInit, OnDestroy {
 
     this.eventService.uploadGalleryImage(this.event.id, formData).subscribe({
       next: (newImage) => {
-        // Add the new image to the beginning of the gallery array
         if (!this.event.gallery_images) {
           this.event.gallery_images = [];
         }
         this.event.gallery_images.unshift(newImage);
         
-        // Reset form
         this.selectedGalleryFile = null;
         this.newGalleryCaption = '';
         this.isUploadingGallery = false;
         
-        // Reset file input UI
         const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
         
         this.cdr.detectChanges();
-        alert('Gallery photo uploaded successfully!');
+        this.toastService.show('Gallery photo uploaded successfully!', 'info');
       },
       error: (err) => {
         console.error('Failed to upload gallery image', err);
-        alert('Failed to upload photo. Please try again.');
+        this.toastService.show('Failed to upload photo. Please try again.', 'warning');
         this.isUploadingGallery = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+  share(platform: string) {
+    const url = window.location.href;
+    const text = `Check out this service on Eternally Yours: ${this.event?.title || ''}`;
+    
+    if (platform === 'whatsapp') {
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    } else if (platform === 'copy') {
+      navigator.clipboard.writeText(url).then(() => {
+        this.toastService.show('Link copied to clipboard!', 'info');
+      });
+    }
+  }
+
+  toggleLike(): void {
+    if (this.event) {
+      this.savedVendorService.toggleLike(this.event.id);
+    }
+  }
+
+  toggleSave(): void {
+    if (this.event) {
+      this.savedVendorService.toggleSave(this.event.id);
+    }
+  }
+
+  isLiked(): boolean {
+    return this.event ? this.savedVendorService.isLiked(this.event.id) : false;
+  }
+
+  isSaved(): boolean {
+    return this.event ? this.savedVendorService.isSaved(this.event.id) : false;
   }
 }

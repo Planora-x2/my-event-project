@@ -17,9 +17,17 @@ export class AdminDashboardComponent implements OnInit {
   users: any[] = [];
   events: any[] = [];
   bookings: any[] = [];
+  subscriptions: any[] = [];
   
   totalRevenue = 0;
   totalOrganisers = 0;
+
+  activeTab: any = 'users';
+  groupedEvents: { organiserName: string; events: any[]; expanded: boolean }[] = [];
+
+  switchTab(tab: string) {
+    this.activeTab = tab;
+  }
 
   private apiUrl = `${API_BASE}/api`;
 
@@ -34,7 +42,7 @@ export class AdminDashboardComponent implements OnInit {
   chartOptions: ChartConfiguration['options'] | any = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '80%', // Makes doughnut charts elegantly thin
+    cutout: '70%', // A more classic thickness
     layout: {
       padding: 20
     },
@@ -96,13 +104,29 @@ export class AdminDashboardComponent implements OnInit {
     this.loadUsers();
     this.loadEvents();
     this.loadBookings();
+    this.loadSubscriptions();
+  }
+
+  loadSubscriptions() {
+    this.http.get<any[]>(`${this.apiUrl}/users/subscriptions/`).subscribe({
+      next: (data) => {
+        this.subscriptions = data;
+      },
+      error: (err) => console.error('Failed to load subscriptions', err)
+    });
+  }
+
+  updateSubscription(id: number, status: string) {
+    this.http.patch(`${this.apiUrl}/users/subscriptions/${id}/`, { status }).subscribe(() => {
+      this.loadSubscriptions();
+    });
   }
 
   // Called when all data is loaded or when user changes dropdowns
   generateChart() {
     let labels: string[] = [];
     let dataCounts: number[] = [];
-    let backgroundColors: string[] = ['#D4AF37', '#2C1810', '#8A9A5B', '#C8956C', '#F5E6D3', '#A47551', '#4A5D23'];
+    let backgroundColors: string[] = ['#AEC6CF', '#CBAACB', '#B0E0E6', '#E6E6FA', '#D8BFD8', '#F5E6E6', '#E8DCC4'];
 
     if (this.selectedDataSource === 'users') {
       // Group users by role
@@ -208,7 +232,28 @@ export class AdminDashboardComponent implements OnInit {
     this.loadedCount++;
     if (this.loadedCount === 3) {
       this.generateChart();
+      this.groupEvents();
     }
+  }
+
+  groupEvents() {
+    const grouped = new Map<string, any[]>();
+    
+    this.events.forEach(event => {
+      const clientUser = this.users.find(u => u.pk === event.client);
+      const organiserName = clientUser ? clientUser.username : `Client #${event.client}`;
+      
+      if (!grouped.has(organiserName)) {
+        grouped.set(organiserName, []);
+      }
+      grouped.get(organiserName)!.push(event);
+    });
+
+    this.groupedEvents = Array.from(grouped.entries()).map(([name, evts]) => ({
+      organiserName: name,
+      events: evts,
+      expanded: false
+    }));
   }
 
   calculateRevenue() {
@@ -231,6 +276,8 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to delete this event?')) {
       this.http.delete(`${this.apiUrl}/events/events/${eventId}/`).subscribe(() => {
         this.loadEvents();
+        // The checkInitialChart is called inside loadEvents, but we might just need to regroup if already loaded
+        setTimeout(() => this.groupEvents(), 100);
       });
     }
   }

@@ -18,25 +18,28 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import GoogleLogin, AdminUserViewSet
+from users.views import GoogleLogin, CustomRegisterView, AdminUserViewSet, SubscriptionViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
 admin_router = DefaultRouter()
 admin_router.register(r'users', AdminUserViewSet, basename='admin-user')
 
+users_router = DefaultRouter()
+users_router.register(r'subscriptions', SubscriptionViewSet, basename='subscription')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # SimpleJWT direct endpoints — always return tokens in JSON body
-    path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # dj-rest-auth for user profile, registration, logout
+    # dj-rest-auth for user profile, registration, logout, login (sets HttpOnly cookies)
     path('api/auth/', include('dj_rest_auth.urls')),
+    path('api/auth/registration/', CustomRegisterView.as_view(), name='custom_rest_register'),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('api/events/', include('events.urls')),
     path('api/interactions/', include('interactions.urls')),
+    path('api/users/', include(users_router.urls)),
     path('api/admin/', include(admin_router.urls)),
+    path('api/tours/', include('tours.urls')),
 ]
 
 # Media files:

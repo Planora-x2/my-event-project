@@ -8,6 +8,7 @@ interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: Date;
   images?: string[];
+  vendors?: any[];
 }
 
 @Component({
@@ -73,7 +74,8 @@ export class ChatbotComponent implements OnInit {
             text: res.response || "I'm not sure, but I can help you find out!",
             sender: 'bot',
             timestamp: new Date(),
-            images: res.images || []
+            images: res.images || [],
+            vendors: res.vendors || []
           });
           this.scrollToBottom();
           this.cdr.detectChanges();

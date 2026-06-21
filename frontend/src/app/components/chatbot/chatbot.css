@@ -1,7 +1,7 @@
 .chatbot-fab {
   position: fixed;
   bottom: 2rem;
-  left: 2rem;
+  right: 2rem;
   width: 60px;
   height: 60px;
   background: var(--primary);
@@ -13,7 +13,7 @@
   cursor: pointer;
   box-shadow: var(--shadow-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
+  z-index: 1050;
 }
 
 .chatbot-fab:hover {
@@ -31,11 +31,11 @@
 .chatbot-window {
   position: fixed;
   bottom: 6rem;
-  left: 2rem;
+  right: 2rem;
   width: 350px;
   max-width: calc(100vw - 4rem);
   height: 500px;
-  max-height: calc(100vh - 8rem);
+  max-height: calc(100vh - 120px);
   background: var(--surface, rgba(30, 30, 30, 0.95));
   backdrop-filter: blur(16px);
   border: 1px solid rgba(212, 175, 55, 0.2);
@@ -43,7 +43,7 @@
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
-  z-index: 999;
+  z-index: 1050;
   overflow: hidden;
 }
 
@@ -237,4 +237,81 @@
 @keyframes bounce {
   0%, 80%, 100% { transform: scale(0); }
   40% { transform: scale(1); }
+}
+
+/* Vendor Cards inside Chat */
+.chat-vendor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.chat-vendor-card {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid rgba(200, 149, 108, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+
+.chat-vendor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--primary);
+}
+
+.chat-vendor-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.chat-vendor-info {
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.chat-vendor-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.2rem 0;
+  color: var(--primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.chat-vendor-price {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.chat-vendor-map-btn {
+  font-size: 0.7rem;
+  color: white;
+  background: var(--primary);
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  width: fit-content;
+  transition: background 0.2s;
+}
+
+.chat-vendor-map-btn:hover {
+  background: var(--accent);
 }

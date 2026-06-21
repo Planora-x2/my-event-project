@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'users',
     'events',
     'interactions',
+    'tours',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -80,6 +81,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# CSRF Configuration for Angular
+CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+CSRF_HEADER_NAME = 'HTTP_X_XSRF_TOKEN'
+CSRF_COOKIE_HTTPONLY = False  # Allows Angular HttpClient to read it
+CSRF_USE_SESSIONS = False
 
 ROOT_URLCONF = 'config.urls'
 
@@ -190,14 +202,25 @@ SITE_ID = 1
 # ─────────────────────────────────────────────────────────────
 #  CORS (Cross-Origin Resource Sharing)
 #  Production: only allow requests from your actual frontend domain.
-#  Development: allow all origins for convenience.
 # ─────────────────────────────────────────────────────────────
 
+CORS_ALLOW_ALL_ORIGINS = False
+
 if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:4200',
+        'http://127.0.0.1:4200',
+    ]
 else:
-    CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='', cast=Csv())
+    CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:4200', cast=Csv())
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow Angular's default CSRF header
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-xsrf-token',
+]
 
 
 # ─────────────────────────────────────────────────────────────
@@ -206,11 +229,20 @@ else:
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '30/minute',
+        'user': '1000/day'
+    }
 }
 
 SIMPLE_JWT = {
@@ -228,10 +260,24 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 
+# ─────────────────────────────────────────────────────────────
+#  Email Configuration
+# ─────────────────────────────────────────────────────────────
+# Set EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend' in production .env
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@eternallyyours.com')
+
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_COOKIE': None,
-    'JWT_AUTH_REFRESH_COOKIE': None,
+    'JWT_AUTH_COOKIE': 'ey-access-token',
+    'JWT_AUTH_REFRESH_COOKIE': 'ey-refresh-token',
+    'JWT_AUTH_SECURE': not DEBUG, # Secure (HTTPS only) in production
+    'JWT_AUTH_HTTPONLY': True,
     'JWT_AUTH_RETURN_EXPIRATION': False,
     'USER_DETAILS_SERIALIZER': 'users.serializers.CustomUserDetailsSerializer',
     'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',

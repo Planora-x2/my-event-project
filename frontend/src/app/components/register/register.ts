@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
   password = '';
   role = 'USER';
   currentBgImage = '/assets/auth_dyn_1.png';
+  errorMessage = '';
 
   constructor(
     private socialAuthService: SocialAuthService,
@@ -59,7 +60,19 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         console.error('Registration failed', err);
-        alert('Registration failed. Please check your details.');
+        this.errorMessage = '';
+        if (err.error && typeof err.error === 'object') {
+          for (const key in err.error) {
+            if (Array.isArray(err.error[key])) {
+              this.errorMessage += `${err.error[key].join(' ')} `;
+            } else if (typeof err.error[key] === 'string') {
+              this.errorMessage += `${err.error[key]} `;
+            }
+          }
+        }
+        if (!this.errorMessage) {
+          this.errorMessage = 'Registration failed. Please check your details.';
+        }
       }
     });
   }

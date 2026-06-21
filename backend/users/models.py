@@ -40,8 +40,23 @@ class User(AbstractUser):
     theme_color = models.CharField(max_length=50, choices=ThemeColor.choices, default=ThemeColor.ROSE)
     theme_font = models.CharField(max_length=50, choices=ThemeFont.choices, default=ThemeFont.CLASSIC)
     theme_look = models.CharField(max_length=50, choices=ThemeLook.choices, default=ThemeLook.ELEGANT)
-    background_effect = models.CharField(max_length=50, choices=BackgroundEffect.choices, default=BackgroundEffect.FLOWERS)
+    background_effect = models.CharField(max_length=50, choices=BackgroundEffect.choices, default=BackgroundEffect.NONE)
     is_dark_mode = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+class Subscription(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        APPROVED = 'APPROVED', 'Approved'
+        CANCELLED = 'CANCELLED', 'Cancelled'
+
+    client = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription', limit_choices_to={'role': 'CLIENT'})
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.PENDING)
+    period = models.CharField(max_length=100, help_text="e.g., '1 month', '6 months'")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.client.username} - {self.status}"

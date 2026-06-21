@@ -1,0 +1,88 @@
+<div class="pilgrimage-container">
+  <div class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" data-aos="fade-up">
+      <h1 class="hero-title">Sacred Journeys</h1>
+      <p class="hero-subtitle">Discover inner peace with our guided pilgrimage tours.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2 class="section-heading" data-aos="fade-up">Available Tours</h2>
+    
+    <div *ngIf="tours.length === 0" class="no-tours" data-aos="fade-in">
+      <p>No tours are currently available. Please check back later.</p>
+    </div>
+
+    <div class="tours-grid">
+      <div class="tour-card" *ngFor="let tour of tours" data-aos="fade-up">
+        <div class="tour-image" [style.background-image]="tour.image ? 'url(' + tour.image + ')' : 'url(https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&q=80&w=800)'">
+          <div class="tour-duration">{{ tour.duration_days }} Days</div>
+        </div>
+        <div class="tour-details">
+          <h3 class="tour-title">{{ tour.title }}</h3>
+          <p class="tour-destination"><i class="fas fa-map-marker-alt"></i> {{ tour.destination }}</p>
+          <p class="tour-desc">{{ tour.description | slice:0:100 }}...</p>
+          <div class="tour-footer">
+            <span class="tour-price">₹{{ tour.base_price }}</span>
+            <button class="btn-book" (click)="openBooking(tour)">Book Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div class="modal-backdrop" *ngIf="selectedTour">
+    <div class="booking-modal" data-aos="zoom-in">
+      <button class="close-btn" (click)="closeBooking()">&times;</button>
+      
+      <div *ngIf="!bookingSuccess">
+        <h2 class="modal-title">Book {{ selectedTour.title }}</h2>
+        <p class="modal-subtitle">Fill in your details to secure your journey.</p>
+        
+        <form (ngSubmit)="submitBooking()" #form="ngForm" class="booking-form">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" [(ngModel)]="bookingForm.pilgrim_name" name="name" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label>Email *</label>
+              <input type="email" [(ngModel)]="bookingForm.email" name="email" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label>Phone *</label>
+              <input type="tel" [(ngModel)]="bookingForm.phone" name="phone" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label>Travel Date *</label>
+              <input type="date" [(ngModel)]="bookingForm.travel_date" name="date" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label>Passengers *</label>
+              <input type="number" [(ngModel)]="bookingForm.passenger_count" name="passengers" min="1" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Special Requirements</label>
+            <textarea [(ngModel)]="bookingForm.special_requirements" name="reqs" rows="3" placeholder="Dietary needs, mobility assistance..."></textarea>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeBooking()">Cancel</button>
+            <button type="submit" class="btn-submit" [disabled]="!form.valid">Confirm Booking</button>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="bookingSuccess" class="success-message">
+        <div class="success-icon">✓</div>
+        <h3>Booking Confirmed!</h3>
+        <p>May your journey be blessed. We will contact you shortly with the itinerary.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@ export class ClientAnalyticsComponent implements OnInit {
   public donutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '82%',
+    cutout: '70%',
     animation: {
       duration: 2500,
       easing: 'easeOutExpo',
@@ -48,22 +48,22 @@ export class ClientAnalyticsComponent implements OnInit {
   
   public eventChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
-    datasets: [{ data: [], label: 'Tickets Sold', backgroundColor: '#C8956C', borderRadius: 6, maxBarThickness: 25 }]
+    datasets: [{ data: [], label: 'Tickets Sold', backgroundColor: '#AEC6CF', borderRadius: 6, maxBarThickness: 25 }]
   };
 
   public venueChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
-    datasets: [{ data: [], label: 'Bookings by Venue', backgroundColor: '#D4AF37', borderRadius: 6, maxBarThickness: 25 }]
+    datasets: [{ data: [], label: 'Bookings by Venue', backgroundColor: '#CBAACB', borderRadius: 6, maxBarThickness: 25 }]
   };
 
   public revenueByEventChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
-    datasets: [{ data: [], label: 'Revenue ($)', backgroundColor: ['#C8956C', '#D4AF37', '#8C7B72', '#E8DCC4', '#A08D80'], hoverOffset: 8, borderWidth: 2, borderColor: '#fff' }]
+    datasets: [{ data: [], label: 'Revenue ($)', backgroundColor: ['#AEC6CF', '#CBAACB', '#B0E0E6', '#E6E6FA', '#D8BFD8', '#F5E6E6', '#E8DCC4'], hoverOffset: 8, borderWidth: 2, borderColor: '#fff' }]
   };
 
   public revenueByVenueChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
-    datasets: [{ data: [], label: 'Revenue ($)', backgroundColor: ['#D4AF37', '#A08D80', '#C8956C', '#8C7B72', '#E8DCC4'], hoverOffset: 8, borderWidth: 2, borderColor: '#fff' }]
+    datasets: [{ data: [], label: 'Revenue ($)', backgroundColor: ['#CBAACB', '#AEC6CF', '#D8BFD8', '#B0E0E6', '#E6E6FA', '#F5E6E6', '#E8DCC4'], hoverOffset: 8, borderWidth: 2, borderColor: '#fff' }]
   };
 
   constructor(private eventService: EventService, private cdr: ChangeDetectorRef) {}
@@ -114,22 +114,22 @@ export class ClientAnalyticsComponent implements OnInit {
 
     this.eventChartData = {
       labels: this.managedEvents.map(e => e.title),
-      datasets: [{ data: this.managedEvents.map(e => e.ticketsSold), label: 'Tickets Sold', backgroundColor: '#C8956C', borderRadius: 6 }]
+      datasets: [{ data: this.managedEvents.map(e => e.ticketsSold), label: 'Tickets Sold', backgroundColor: '#AEC6CF', borderRadius: 6 }]
     };
 
     this.venueChartData = {
       labels: Object.keys(venueStats),
-      datasets: [{ data: Object.keys(venueStats).map(k => venueStats[k].tickets), label: 'Bookings by Venue', backgroundColor: '#D4AF37', borderRadius: 6 }]
+      datasets: [{ data: Object.keys(venueStats).map(k => venueStats[k].tickets), label: 'Bookings by Venue', backgroundColor: '#CBAACB', borderRadius: 6 }]
     };
 
     this.revenueByEventChartData = {
       labels: this.managedEvents.map(e => e.title),
-      datasets: [{ data: this.managedEvents.map(e => e.revenue), label: 'Revenue ($)', backgroundColor: ['#C8956C', '#D4AF37', '#8C7B72', '#E8DCC4', '#A08D80', '#e0c097', '#b5a195'] }]
+      datasets: [{ data: this.managedEvents.map(e => e.revenue), label: 'Revenue ($)', backgroundColor: ['#AEC6CF', '#CBAACB', '#B0E0E6', '#E6E6FA', '#D8BFD8', '#F5E6E6', '#E8DCC4'] }]
     };
 
     this.revenueByVenueChartData = {
       labels: Object.keys(venueStats),
-      datasets: [{ data: Object.keys(venueStats).map(k => venueStats[k].revenue), label: 'Revenue ($)', backgroundColor: ['#D4AF37', '#A08D80', '#C8956C', '#8C7B72', '#E8DCC4', '#e0c097', '#b5a195'] }]
+      datasets: [{ data: Object.keys(venueStats).map(k => venueStats[k].revenue), label: 'Revenue ($)', backgroundColor: ['#CBAACB', '#AEC6CF', '#D8BFD8', '#B0E0E6', '#E6E6FA', '#F5E6E6', '#E8DCC4'] }]
     };
     
     if (this.cdr) {

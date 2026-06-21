@@ -2,7 +2,13 @@
   <div class="nav-container">
     <!-- Logo / Brand -->
     <a routerLink="/" class="logo" id="nav-logo">
-      <span class="logo-icon">💍</span>
+      <span class="logo-icon" style="display: flex; align-items: center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+          <circle cx="12" cy="14" r="6"></circle>
+          <path d="M10 8l2 -3l2 3"></path>
+          <path d="M9 10h6"></path>
+        </svg>
+      </span>
       <span class="logo-text">
         <span class="text-gradient">Eternally</span> Yours
       </span>
@@ -11,15 +17,27 @@
     <!-- Authenticated Nav -->
     <div class="nav-links" *ngIf="currentUser$ | async as user; else loggedOut">
       <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" id="nav-events">
-        ✦ Weddings
+        Services
+      </a>
+      <a routerLink="/saved" class="nav-link" routerLinkActive="active" id="nav-saved" style="display: flex; align-items: center; gap: 0.25rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        Saved
+      </a>
+      <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
+         routerLink="/support" class="nav-link" routerLinkActive="active" id="nav-support">
+        Support
       </a>
       <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
          routerLink="/client-dashboard" class="nav-link" routerLinkActive="active" id="nav-planner">
-        ✦ Planner Portal
+        Vendor Portal
       </a>
       <a *ngIf="user.role === 'ADMIN'" 
          routerLink="/admin-dashboard" class="nav-link" routerLinkActive="active" id="nav-admin">
-        ✦ Admin
+        Admin
+      </a>
+      <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
+         routerLink="/enquiry-analytics" class="nav-link" routerLinkActive="active" id="nav-enquiries">
+        Enquiries
       </a>
       
       <div class="user-profile">
@@ -30,92 +48,70 @@
           <ng-template #defaultPic>
             <div class="profile-pic default-pic">{{ user.username.charAt(0).toUpperCase() }}</div>
           </ng-template>
-          <div class="profile-pic-edit">✎</div>
+          <div class="profile-pic-edit">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </div>
         </label>
         <input type="file" id="profile-upload" (change)="onFileSelected($event)" accept="image/*" style="display: none;">
         
-        <div class="user-info" style="position: relative;">
-          <span class="user-name">{{ user.username }}</span>
-          <span class="user-role">{{ user.role | titlecase }}</span>
+        <div class="user-info">
+          <a routerLink="/profile" class="user-name" style="text-decoration: none;" title="View Profile">{{ user.username }}</a>
         </div>
 
-        <div class="theme-menu-container" style="position: relative;">
-          <button (click)="isThemeSelectorOpen = !isThemeSelectorOpen" class="btn btn-secondary btn-sm" id="theme-btn" title="Theme Settings">
-            🎨
-          </button>
-          
-          <div *ngIf="isThemeSelectorOpen" class="theme-dropdown glass animate-fade-in" style="position: absolute; top: 120%; right: 0; min-width: 280px; max-height: 400px; overflow-y: auto; padding: 1rem; border-radius: 12px; z-index: 1000; box-shadow: var(--shadow-md);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-              <span style="font-weight: 600; font-size: 0.9rem;">Theme Colors</span>
-              <button (click)="isThemeSelectorOpen = false" style="background:none; border:none; cursor:pointer;">✕</button>
-            </div>
+        <div class="theme-menu-container" style="position: relative; display: flex; gap: 0.5rem; align-items: center;">
+          <!-- Notifications Bell -->
+          <div style="position: relative;" *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'">
+            <button (click)="toggleNotifications()" class="btn btn-secondary btn-sm" id="notif-btn" title="Notifications" style="position: relative; display: flex; align-items: center; justify-content: center; padding: 0.5rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span *ngIf="unreadCount > 0" style="position: absolute; top: -5px; right: -5px; background: var(--gold, #D4AF37); color: white; font-size: 0.7rem; padding: 2px 5px; border-radius: 10px; font-weight: bold; border: 2px solid var(--background);">
+                {{ unreadCount > 9 ? '9+' : unreadCount }}
+              </span>
+            </button>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
-              <button *ngFor="let theme of availableThemes" 
-                      (click)="setTheme(theme, user)"
-                      [class.active-theme]="user.theme_color === theme"
-                      class="theme-color-btn"
-                      style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; transition: all 0.2s; color: var(--text-main);"
-                      [style.border-color]="user.theme_color === theme ? 'var(--primary)' : 'var(--border)'"
-                      [style.background-color]="user.theme_color === theme ? 'var(--primary-light)' : 'var(--background)'"
-                      [style.color]="user.theme_color === theme ? 'var(--primary-dark)' : 'var(--text-main)'">
-                {{ theme }}
-              </button>
-            </div>
-
-            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
-              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Typography</span>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 0.25rem;">
-                <button *ngFor="let font of availableFonts" 
-                        (click)="setFont(font, user)"
-                        class="theme-color-btn"
-                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; text-align: left; color: var(--text-main);"
-                        [style.border-color]="user.theme_font === font ? 'var(--primary)' : 'var(--border)'"
-                        [style.background-color]="user.theme_font === font ? 'var(--primary-light)' : 'var(--background)'"
-                        [style.color]="user.theme_font === font ? 'var(--primary-dark)' : 'var(--text-main)'">
-                  {{ font }}
-                </button>
+            <div *ngIf="isNotificationsOpen" class="theme-dropdown glass animate-fade-in" style="position: absolute; top: 120%; right: 0; width: 320px; max-height: 400px; overflow-y: auto; padding: 0; border-radius: 12px; z-index: 1000; box-shadow: var(--shadow-md);">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--background); z-index: 1;">
+                <span style="font-weight: 600; font-size: 0.9rem;">Notifications</span>
+                <button (click)="isNotificationsOpen = false" style="background:none; border:none; cursor:pointer;">✕</button>
               </div>
-            </div>
-
-            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
-              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Website Look</span>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                <button *ngFor="let look of availableLooks" 
-                        (click)="setLook(look, user)"
-                        class="theme-color-btn"
-                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; color: var(--text-main);"
-                        [style.border-color]="user.theme_look === look ? 'var(--primary)' : 'var(--border)'"
-                        [style.background-color]="user.theme_look === look ? 'var(--primary-light)' : 'var(--background)'"
-                        [style.color]="user.theme_look === look ? 'var(--primary-dark)' : 'var(--text-main)'">
-                  {{ look }}
-                </button>
+              <div *ngIf="notifications.length === 0" style="padding: 2rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                No new notifications
               </div>
-            </div>
-
-            <div style="margin-bottom: 1rem; border-top: 1px solid var(--border); padding-top: 0.75rem;">
-              <span style="font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 0.5rem;">Atmosphere</span>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                <button *ngFor="let effect of availableEffects" 
-                        (click)="setEffect(effect, user)"
-                        class="theme-color-btn"
-                        style="padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: var(--background); cursor: pointer; text-transform: capitalize; font-size: 0.8rem; color: var(--text-main);"
-                        [style.border-color]="user.background_effect === effect ? 'var(--primary)' : 'var(--border)'"
-                        [style.background-color]="user.background_effect === effect ? 'var(--primary-light)' : 'var(--background)'"
-                        [style.color]="user.background_effect === effect ? 'var(--primary-dark)' : 'var(--text-main)'">
-                  {{ effect }}
-                </button>
+              <div style="display: flex; flex-direction: column;">
+                <div *ngFor="let notif of notifications" 
+                     (click)="markAsRead(notif)"
+                     [style.background]="notif.is_read ? 'transparent' : 'var(--primary-light)'"
+                     style="padding: 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; gap: 0.25rem;">
+                  <span style="font-size: 0.85rem; color: var(--text-main);" [style.font-weight]="notif.is_read ? 'normal' : '600'">{{ notif.message }}</span>
+                  <span style="font-size: 0.7rem; color: var(--text-muted);">{{ notif.created_at | date:'short' }}</span>
+                </div>
               </div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem;">
-              <span style="font-size: 0.9rem; font-weight: 600;">Dark Mode</span>
-              <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
-                <input type="checkbox" [checked]="user.is_dark_mode" (change)="toggleDarkMode($event, user)" style="opacity: 0; width: 0; height: 0;">
-                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px;"></span>
-              </label>
             </div>
           </div>
+
+          <button (click)="toggleDarkModeDirect(user)" class="btn btn-secondary btn-sm" id="theme-btn" [title]="user.is_dark_mode ? 'Light Mode' : 'Dark Mode'" style="display: flex; align-items: center; justify-content: center; padding: 0.5rem;">
+            <!-- Moon icon (when in light mode) -->
+            <svg *ngIf="!user.is_dark_mode" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <!-- Sun icon (when in dark mode) -->
+            <svg *ngIf="user.is_dark_mode" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
         </div>
 
         <button (click)="logout()" class="btn btn-secondary btn-sm" id="nav-logout">Logout</button>
@@ -126,7 +122,11 @@
     <ng-template #loggedOut>
       <div class="nav-links">
         <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-          ✦ Weddings
+          Services
+        </a>
+        <a routerLink="/saved" class="nav-link" routerLinkActive="active" id="nav-saved-guest" style="display: flex; align-items: center; gap: 0.25rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          Saved
         </a>
         <div class="auth-buttons">
           <button routerLink="/login" class="btn btn-secondary" id="nav-login">Sign In</button>

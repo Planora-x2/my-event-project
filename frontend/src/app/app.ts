@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar';
 import { ChatbotComponent } from './components/chatbot/chatbot';
+import { ToastComponent } from './components/toast/toast';
 import { AuthService } from './services/auth/auth';
 import * as AOS from 'aos';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavbarComponent, ChatbotComponent],
+  imports: [CommonModule, RouterOutlet, NavbarComponent, ChatbotComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -18,6 +19,7 @@ export class App implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
 
+  isPilgrimRoute = false;
   effect = 'none';
 
   flowers = Array(40).fill(0).map(() => ({
@@ -68,6 +70,7 @@ export class App implements OnInit {
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
+        this.isPilgrimRoute = event.urlAfterRedirects.startsWith('/pilgrimage');
         setTimeout(() => AOS.refresh(), 100);
       }
     });

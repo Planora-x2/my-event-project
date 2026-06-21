@@ -1,0 +1,60 @@
+<div class="profile-container animate-fade-in" *ngIf="user">
+  <div class="profile-card glass">
+    <div class="profile-header">
+      <div class="floral-sep">✿</div>
+      <h1 class="page-title">User <span class="text-gradient">Profile</span></h1>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-avatar-section">
+        <img *ngIf="user.profile_picture" [src]="getProfilePicUrl(user.profile_picture)" alt="Profile" class="large-avatar">
+        <div *ngIf="!user.profile_picture" class="large-avatar default-avatar">
+          {{ user.username.charAt(0).toUpperCase() }}
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <div class="detail-row">
+          <span class="detail-label">Username:</span>
+          <span class="detail-value">{{ user.username }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value">{{ user.email }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Account Type:</span>
+          <span class="badge badge-gold">{{ user.role }}</span>
+        </div>
+        <div class="detail-row" *ngIf="user.first_name || user.last_name">
+          <span class="detail-label">Full Name:</span>
+          <span class="detail-value">{{ user.first_name }} {{ user.last_name }}</span>
+        </div>
+
+        <ng-container *ngIf="user.role === 'CLIENT' && user.subscription">
+          <div style="margin-top: 2rem;">
+            <div class="floral-sep" style="font-size: 1rem;">✿</div>
+            <h3 style="font-family: var(--font-display); color: var(--primary); text-align: center; margin-bottom: 1rem;">Subscription Details</h3>
+            
+            <div class="detail-row">
+              <span class="detail-label">Status:</span>
+              <span class="badge" 
+                [class.badge-gold]="user.subscription.status === 'APPROVED'"
+                [class.badge-rose]="user.subscription.status === 'PENDING'">
+                {{ user.subscription.status }}
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Period:</span>
+              <span class="detail-value">{{ user.subscription.period }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Start Date:</span>
+              <span class="detail-value">{{ user.subscription.created_at | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

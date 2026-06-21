@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   username = '';
   password = '';
   currentBgImage = '/assets/auth_dyn_1.png'; // default
+  errorMessage = '';
 
   constructor(
     private socialAuthService: SocialAuthService,
@@ -46,7 +47,19 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         console.error('Login failed', err);
-        alert('Login failed. Please check your credentials.');
+        this.errorMessage = '';
+        if (err.error && typeof err.error === 'object') {
+          for (const key in err.error) {
+            if (Array.isArray(err.error[key])) {
+              this.errorMessage += `${err.error[key].join(' ')} `;
+            } else if (typeof err.error[key] === 'string') {
+              this.errorMessage += `${err.error[key]} `;
+            }
+          }
+        }
+        if (!this.errorMessage) {
+          this.errorMessage = 'Login failed. Please check your credentials.';
+        }
       }
     });
   }

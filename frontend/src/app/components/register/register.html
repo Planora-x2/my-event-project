@@ -1,5 +1,5 @@
 <div class="auth-layout animate-fade-in">
-  <div class="auth-bg" style="background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1920&q=80');"></div>
+  <div class="auth-bg" style="background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80');"></div>
   <!-- Left: Image Side -->
   <div class="auth-image-side">
     <div class="auth-bg" [ngStyle]="{'background-image': 'url(' + currentBgImage + ')'}"></div>
@@ -18,11 +18,15 @@
     <div class="auth-brand">
       <a routerLink="/" class="brand-logo">💍 <span class="text-gradient">Eternally Yours</span></a>
     </div>
-    <div class="auth-form-container glass">
+    <div class="auth-form-container">
       <div class="auth-welcome">
         <div class="welcome-ornament">✦ ✦ ✦</div>
         <h1>Begin Your Journey</h1>
-        <p class="text-muted">Create an account to plan and attend beautiful weddings</p>
+        <p class="text-muted">Create an account to find or list beautiful wedding services</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message" style="color: #A03030; background: rgba(200, 60, 60, 0.15); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; border: 1px solid rgba(200, 60, 60, 0.3); font-size: 0.9rem;">
+        {{ errorMessage }}
       </div>
 
       <form class="auth-form" (ngSubmit)="onSubmit()" id="register-form">
@@ -74,8 +78,8 @@
         <div class="form-group">
           <label class="input-label" for="reg-role">I want to...</label>
           <select class="input-field" name="role" [(ngModel)]="role" id="reg-role">
-            <option value="USER">💌 Attend & Book Weddings</option>
-            <option value="CLIENT">🎩 Organize Wedding Events</option>
+            <option value="USER">💌 Find & Book Wedding Services</option>
+            <option value="CLIENT">🎩 List my Wedding Services as a Vendor</option>
           </select>
         </div>
         

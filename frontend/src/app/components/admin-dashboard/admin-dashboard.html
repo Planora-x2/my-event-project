@@ -7,23 +7,47 @@
   <!-- Overview Stats -->
   <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
     <div class="stat-card glass-gold" style="padding: 1.5rem; border-radius: 16px; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
-      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-display); color: var(--primary);">{{ users.length }}</div>
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: center; color: var(--primary);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--primary);">{{ users.length }}</div>
       <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Total Users</div>
     </div>
     <div class="stat-card glass" style="padding: 1.5rem; border-radius: 16px; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏛️</div>
-      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-display); color: var(--text-main);">{{ totalOrganisers }}</div>
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: center; color: var(--text-main);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="20" width="20" height="2"></rect>
+          <rect x="2" y="2" width="20" height="4"></rect>
+          <rect x="4" y="6" width="2" height="14"></rect>
+          <rect x="10" y="6" width="2" height="14"></rect>
+          <rect x="18" y="6" width="2" height="14"></rect>
+        </svg>
+      </div>
+      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--text-main);">{{ totalOrganisers }}</div>
       <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Organisers</div>
     </div>
     <div class="stat-card glass" style="padding: 1.5rem; border-radius: 16px; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">✨</div>
-      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-display); color: var(--text-main);">{{ events.length }}</div>
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: center; color: var(--text-main);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+      </div>
+      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--text-main);">{{ events.length }}</div>
       <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Total Events</div>
     </div>
     <div class="stat-card glass-gold" style="padding: 1.5rem; border-radius: 16px; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">💎</div>
-      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-display); color: var(--primary);">${{ totalRevenue | number:'1.0-0' }}</div>
+      <div style="margin-bottom: 0.5rem; display: flex; justify-content: center; color: var(--primary);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20"></path>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </div>
+      <div style="font-size: 2rem; font-weight: 700; font-family: var(--font-main); color: var(--primary);">${{ totalRevenue | number:'1.0-0' }}</div>
       <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Platform Revenue</div>
     </div>
   </div>
@@ -33,7 +57,7 @@
     <!-- Custom Chart Designer -->
     <div class="admin-section glass chart-designer" style="padding: 2rem; border-radius: 20px;">
       <div class="chart-header">
-        <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">Custom Chart Designer</h2>
+        <h2 style="font-family: var(--font-main); font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">Custom Chart Designer</h2>
         <p class="text-muted" style="margin-bottom: 1.5rem;">Dynamically visualize platform metrics by selecting data sources and chart styles.</p>
       </div>
 
@@ -67,9 +91,17 @@
       </div>
     </div>
     
+    <!-- Tabs Navigation -->
+    <div style="display: flex; gap: 1rem; border-bottom: 2px solid var(--border); margin-bottom: 1rem;">
+      <button (click)="switchTab('users')" style="background: none; border: none; padding: 1rem; cursor: pointer; font-family: var(--font-main); font-size: 1.1rem; color: var(--text-main); border-bottom: 3px solid transparent; transition: var(--transition);" [style.border-bottom-color]="activeTab === 'users' ? 'var(--primary)' : 'transparent'">Users</button>
+      <button (click)="switchTab('subscriptions')" style="background: none; border: none; padding: 1rem; cursor: pointer; font-family: var(--font-main); font-size: 1.1rem; color: var(--text-main); border-bottom: 3px solid transparent; transition: var(--transition);" [style.border-bottom-color]="activeTab === 'subscriptions' ? 'var(--primary)' : 'transparent'">Subscriptions</button>
+      <button (click)="switchTab('events')" style="background: none; border: none; padding: 1rem; cursor: pointer; font-family: var(--font-main); font-size: 1.1rem; color: var(--text-main); border-bottom: 3px solid transparent; transition: var(--transition);" [style.border-bottom-color]="activeTab === 'events' ? 'var(--primary)' : 'transparent'">Events</button>
+      <button (click)="switchTab('bookings')" style="background: none; border: none; padding: 1rem; cursor: pointer; font-family: var(--font-main); font-size: 1.1rem; color: var(--text-main); border-bottom: 3px solid transparent; transition: var(--transition);" [style.border-bottom-color]="activeTab === 'bookings' ? 'var(--primary)' : 'transparent'">Bookings</button>
+    </div>
+
     <!-- Users Management -->
-    <div class="admin-section glass" style="padding: 2rem; border-radius: 20px;">
-      <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Users & Organisers</h2>
+    <div class="admin-section glass animate-fade-in" *ngIf="activeTab === 'users'" style="padding: 2rem; border-radius: 20px;">
+      <h2 style="font-family: var(--font-main); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Users & Organisers</h2>
       <div class="table-responsive" style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
           <thead>
@@ -102,38 +134,101 @@
       </div>
     </div>
 
-    <!-- Events Management -->
-    <div class="admin-section glass" style="padding: 2rem; border-radius: 20px;">
-      <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Global Events</h2>
+    <!-- Subscriptions Management -->
+    <div class="admin-section glass animate-fade-in" *ngIf="activeTab === 'subscriptions'" style="padding: 2rem; border-radius: 20px;">
+      <h2 style="font-family: var(--font-main); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Client Subscriptions</h2>
       <div class="table-responsive" style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
           <thead>
             <tr style="border-bottom: 2px solid var(--border);">
-              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Event</th>
-              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Category</th>
-              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Organiser ID</th>
+              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Client Name</th>
+              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Period</th>
+              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Status</th>
+              <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Requested At</th>
               <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let evt of events" style="border-bottom: 1px solid var(--border);">
-              <td style="padding: 1rem; font-weight: 600;">{{ evt.title }}</td>
-              <td style="padding: 1rem;">{{ evt.category | titlecase }}</td>
-              <td style="padding: 1rem; color: var(--text-muted);">Client #{{ evt.client }}</td>
+            <tr *ngFor="let s of subscriptions" style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 1rem; font-weight: 600;">{{ s.client_name }}</td>
+              <td style="padding: 1rem;">{{ s.period }}</td>
               <td style="padding: 1rem;">
-                <button (click)="deleteEvent(evt.id)" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                  Delete
+                <span class="badge" [ngClass]="{'badge-green': s.status === 'APPROVED', 'badge-gold': s.status === 'PENDING', 'badge-rose': s.status === 'CANCELLED'}">
+                  {{ s.status }}
+                </span>
+              </td>
+              <td style="padding: 1rem; color: var(--text-muted);">{{ s.created_at | date:'shortDate' }}</td>
+              <td style="padding: 1rem;">
+                <button *ngIf="s.status !== 'APPROVED'" (click)="updateSubscription(s.id, 'APPROVED')" style="background: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid rgba(40, 167, 69, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-right: 0.5rem;">
+                  Approve
+                </button>
+                <button *ngIf="s.status !== 'CANCELLED'" (click)="updateSubscription(s.id, 'CANCELLED')" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                  Cancel
                 </button>
               </td>
+            </tr>
+            <tr *ngIf="subscriptions.length === 0">
+              <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">No subscriptions found.</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- Events Management -->
+    <div class="admin-section glass animate-fade-in" *ngIf="activeTab === 'events'" style="padding: 2rem; border-radius: 20px;">
+      <h2 style="font-family: var(--font-main); font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary);">Events by Organiser</h2>
+      
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div *ngFor="let group of groupedEvents" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--background);">
+          
+          <!-- Accordion Header -->
+          <div (click)="group.expanded = !group.expanded" style="padding: 1.25rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;" [style.background]="group.expanded ? 'var(--primary-light)' : 'transparent'">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="font-weight: 600; font-size: 1.1rem; color: var(--text-main);">{{ group.organiserName }}</span>
+              <span style="background: var(--surface); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; color: var(--text-muted); border: 1px solid var(--border);">{{ group.events.length }} events</span>
+            </div>
+            <span style="color: var(--primary); font-weight: bold; font-size: 1.2rem; transform: transition 0.3s;" [style.transform]="group.expanded ? 'rotate(180deg)' : 'rotate(0deg)'">▼</span>
+          </div>
+
+          <!-- Accordion Body -->
+          <div *ngIf="group.expanded" style="border-top: 1px solid var(--border); background: var(--surface);">
+            <div class="table-responsive" style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                  <tr style="border-bottom: 2px solid var(--border);">
+                    <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Event</th>
+                    <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Category</th>
+                    <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Enquiries</th>
+                    <th style="padding: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let evt of group.events" style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 1rem; font-weight: 600;">{{ evt.title }}</td>
+                    <td style="padding: 1rem;">{{ evt.category | titlecase }}</td>
+                    <td style="padding: 1rem; text-align: center;">
+                      <span style="background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: bold; font-size: 0.9rem;">
+                        {{ evt.enquiry_count || 0 }}
+                      </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                      <button (click)="deleteEvent(evt.id)" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bookings Management -->
-    <div class="admin-section glass" style="padding: 2rem; border-radius: 20px;">
-      <h2 style="font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Global Bookings</h2>
+    <div class="admin-section glass animate-fade-in" *ngIf="activeTab === 'bookings'" style="padding: 2rem; border-radius: 20px;">
+      <h2 style="font-family: var(--font-main); font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary);">Global Bookings</h2>
       <div class="table-responsive" style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
           <thead>

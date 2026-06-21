@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Comment, ChatMessage
+from .models import Comment, ChatMessage, Notification
 
 class CommentSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
@@ -17,3 +17,9 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         model = ChatMessage
         fields = '__all__'
         read_only_fields = ('sender',)
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
+        read_only_fields = ('recipient', 'message', 'link', 'created_at')

@@ -30,12 +30,15 @@ export class InteractionService {
     return this.http.get<any[]>(`${this.apiUrl}/messages/`, { params });
   }
 
-  sendMessage(roomName: string, message: string, receiverId: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/messages/`, {
+  sendMessage(roomName: string, message: string, receiverId?: number): Observable<any> {
+    const payload: any = {
       room_group_name: roomName,
-      message: message,
-      receiver: receiverId
-    });
+      message: message
+    };
+    if (receiverId) {
+      payload.receiver = receiverId;
+    }
+    return this.http.post<any>(`${this.apiUrl}/messages/`, payload);
   }
 
   // AI CHAT API
