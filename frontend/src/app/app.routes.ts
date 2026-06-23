@@ -12,6 +12,9 @@ import { SupportChatComponent } from './components/support-chat/support-chat';
 import { SavedVendorsComponent } from './components/saved-vendors/saved-vendors';
 import { PilgrimageComponent } from './components/pilgrimage/pilgrimage';
 
+import { WeddingCardGeneratorComponent } from './components/wedding-card-generator/wedding-card-generator.component';
+import { WeddingCardViewComponent } from './components/wedding-card-view/wedding-card-view.component';
+
 export const routes: Routes = [
   { path: '', component: EventListComponent },
   { path: 'login', component: LoginComponent },
@@ -25,5 +28,7 @@ export const routes: Routes = [
   { path: 'support', component: SupportChatComponent },
   { path: 'saved', component: SavedVendorsComponent },
   { path: 'pilgrimage', component: PilgrimageComponent },
+  { path: 'wedding-card/generate', component: WeddingCardGeneratorComponent },
+  { path: 'wedding-card/:id', component: WeddingCardViewComponent },
   { path: '**', redirectTo: '' }
 ];

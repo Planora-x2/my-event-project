@@ -1,0 +1,159 @@
+<div class="generator-container">
+  <div class="header">
+    <h1>Wedding Card Generator</h1>
+    <p>Create a beautiful, shareable wedding card linked to a convention center.</p>
+  </div>
+
+  <div class="generator-content">
+    <div class="form-section card">
+      <h2>Card Details</h2>
+      
+      <div class="form-group">
+        <label>Bride's Name *</label>
+        <input type="text" [(ngModel)]="card.bride_name" placeholder="Enter Bride's Name">
+      </div>
+
+      <div class="form-group">
+        <label>Bride's Parents (Optional)</label>
+        <input type="text" [(ngModel)]="card.bride_parents" placeholder="E.g. Mr. John & Mrs. Jane Doe">
+      </div>
+
+      <div class="form-group">
+        <label>Bride's Home Address (Optional)</label>
+        <textarea [(ngModel)]="card.bride_address" rows="2" placeholder="Enter bride's home address"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Groom's Name *</label>
+        <input type="text" [(ngModel)]="card.groom_name" placeholder="Enter Groom's Name">
+      </div>
+
+      <div class="form-group">
+        <label>Groom's Parents (Optional)</label>
+        <input type="text" [(ngModel)]="card.groom_parents" placeholder="E.g. Mr. Robert & Mrs. Mary Smith">
+      </div>
+
+      <div class="form-group">
+        <label>Groom's Home Address (Optional)</label>
+        <textarea [(ngModel)]="card.groom_address" rows="2" placeholder="Enter groom's home address"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Wedding Date *</label>
+        <input type="datetime-local" [(ngModel)]="card.date">
+      </div>
+
+      <div class="form-group venue-selection">
+        <label>Venue Selection *</label>
+        
+        <div class="venue-mode-toggle">
+          <button class="toggle-btn" 
+                  [class.active]="venueMode === 'existing'" 
+                  (click)="toggleVenueMode('existing')">
+            Select Existing Venue
+          </button>
+          <button class="toggle-btn" 
+                  [class.active]="venueMode === 'custom'" 
+                  (click)="toggleVenueMode('custom')">
+            Add Custom Venue
+          </button>
+        </div>
+
+        <div *ngIf="venueMode === 'existing'" class="existing-venue-dropdown">
+          <select [(ngModel)]="card.venue">
+            <option [ngValue]="null">Select a Venue</option>
+            <option *ngFor="let venue of venues" [ngValue]="venue.id">{{venue.name}} ({{venue.state}})</option>
+          </select>
+        </div>
+
+        <div *ngIf="venueMode === 'custom'" class="custom-venue-inputs">
+          <div class="form-group">
+            <label>Custom Venue Name *</label>
+            <input type="text" [(ngModel)]="card.custom_venue_name" placeholder="E.g. Grand Plaza">
+          </div>
+          <div class="form-group">
+            <label>Custom Venue Address *</label>
+            <textarea [(ngModel)]="card.custom_venue_address" rows="2" placeholder="Full address"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Pick Location on Map (Optional)</label>
+            <div id="venue-map" style="height: 300px; width: 100%; border-radius: 8px; z-index: 1;"></div>
+            <small *ngIf="card.custom_venue_lat" style="color: green; margin-top: 0.5rem; display: block;">Location selected!</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Template Style</label>
+        <div class="template-selector">
+          <div *ngFor="let tmpl of templates" 
+               class="template-option" 
+               [class.active]="card.template_id === tmpl.id"
+               (click)="card.template_id = tmpl.id">
+            {{tmpl.name}}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Custom Message</label>
+        <textarea [(ngModel)]="card.message" rows="4" placeholder="Enter a custom invitation message..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Cover Photo (Optional)</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label>Primary Text Color</label>
+          <input type="color" [(ngModel)]="card.primary_color">
+        </div>
+        <div class="form-group half">
+          <label>Background Color</label>
+          <input type="color" [(ngModel)]="card.background_color">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Font Family</label>
+        <select [(ngModel)]="card.font_family">
+          <option *ngFor="let font of fonts" [value]="font.id">{{font.name}}</option>
+        </select>
+      </div>
+
+      <button class="btn-primary" (click)="generateCard()" [disabled]="loading">
+        <span *ngIf="loading">Generating...</span>
+        <span *ngIf="!loading">Generate Wedding Card</span>
+      </button>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="preview-section card">
+      <h2>Live Preview</h2>
+      <div class="preview-box" [ngClass]="'preview-' + card.template_id" 
+           [ngStyle]="{'background-color': card.background_color, 'font-family': card.font_family}">
+        
+        <div *ngIf="previewImage" class="preview-image-container">
+          <img [src]="previewImage" alt="Cover Photo">
+        </div>
+
+        <h3 [ngStyle]="{'color': card.primary_color}">{{ card.bride_name || 'Bride' }} & {{ card.groom_name || 'Groom' }}</h3>
+        <p class="date">{{ card.date ? (card.date | date:'medium') : 'Date & Time' }}</p>
+        <p class="message" [ngStyle]="{'color': card.primary_color}">{{ card.message }}</p>
+        <p class="venue">Venue ID: {{ card.venue || 'Not Selected' }}</p>
+      </div>
+
+      <div *ngIf="generatedLink" class="success-box">
+        <h3>Card Generated Successfully!</h3>
+        <p>Your public shareable link:</p>
+        <div class="link-box">
+          <input type="text" [value]="generatedLink" readonly>
+          <button (click)="copyLink()">Copy</button>
+        </div>
+        <button class="btn-secondary" (click)="viewCard()">View Public Card</button>
+      </div>
+    </div>
+  </div>
+</div>

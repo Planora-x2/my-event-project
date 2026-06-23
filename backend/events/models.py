@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import uuid
 
 class Venue(models.Model):
     name = models.CharField(max_length=255)
@@ -77,3 +78,38 @@ class Enquiry(models.Model):
 
     def __str__(self):
         return f"Enquiry for {self.event.title} by {self.user.username if self.user else 'Unknown User'}"
+
+class WeddingCard(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wedding_cards')
+    bride_name = models.CharField(max_length=255)
+    groom_name = models.CharField(max_length=255)
+    date = models.DateTimeField()
+    venue = models.ForeignKey(Venue, on_delete=models.SET_NULL, null=True, related_name='wedding_cards')
+    template_id = models.CharField(max_length=50, default='classic')
+    message = models.TextField(blank=True, null=True)
+    
+    # Extended Details
+    bride_parents = models.CharField(max_length=255, blank=True, null=True)
+    groom_parents = models.CharField(max_length=255, blank=True, null=True)
+    bride_address = models.TextField(blank=True, null=True)
+    groom_address = models.TextField(blank=True, null=True)
+    
+    # Static / Custom Venue
+    is_custom_venue = models.BooleanField(default=False)
+    custom_venue_name = models.CharField(max_length=255, blank=True, null=True)
+    custom_venue_address = models.TextField(blank=True, null=True)
+    custom_venue_lat = models.FloatField(blank=True, null=True)
+    custom_venue_lng = models.FloatField(blank=True, null=True)
+    
+    # Customization Fields
+    primary_color = models.CharField(max_length=20, default='#D4AF37')
+    background_color = models.CharField(max_length=20, default='#FFFFFF')
+    font_family = models.CharField(max_length=100, default='Playfair Display')
+    cover_image = models.ImageField(upload_to='wedding_cards/', null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Wedding Card for {self.bride_name} & {self.groom_name} by {self.user.username}"

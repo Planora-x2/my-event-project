@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Venue, Event, Booking, EventGalleryImage, Enquiry
+from .models import Venue, Event, Booking, EventGalleryImage, Enquiry, WeddingCard
 from users.serializers import CustomUserDetailsSerializer
 
 class VenueSerializer(serializers.ModelSerializer):
@@ -60,3 +60,12 @@ class EnquirySerializer(serializers.ModelSerializer):
         model = Enquiry
         fields = '__all__'
         read_only_fields = ('user', 'created_at')
+
+class WeddingCardSerializer(serializers.ModelSerializer):
+    venue_details = VenueSerializer(source='venue', read_only=True)
+    user_details = CustomUserDetailsSerializer(source='user', read_only=True)
+
+    class Meta:
+        model = WeddingCard
+        fields = '__all__'
+        read_only_fields = ('user', 'created_at', 'updated_at')

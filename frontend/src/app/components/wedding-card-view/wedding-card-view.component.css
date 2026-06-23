@@ -1,0 +1,525 @@
+.view-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f7fafc;
+}
+
+.loading-state, .error-state {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.card-wrapper {
+  max-width: 800px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.card-content {
+  padding: 4rem 3rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-image-container {
+  width: 100%;
+  max-height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cover-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.names-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.person-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.name {
+  font-size: 3.5rem;
+  line-height: 1.2;
+}
+
+.parents-text {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #4a5568;
+}
+
+.address-text {
+  font-size: 0.95rem;
+  color: #718096;
+  white-space: pre-line;
+  max-width: 80%;
+}
+
+.ampersand {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+}
+
+.invitation-text {
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.date-section {
+  margin-bottom: 2.5rem;
+}
+
+.date-section h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.date-section p {
+  font-size: 1.2rem;
+}
+
+.custom-message {
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.venue-section {
+  margin-bottom: 2rem;
+}
+
+.venue-section h3 {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.venue-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.map-container {
+  margin-top: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Templates */
+
+/* Classic Elegance */
+.template-classic {
+  background: #fffdfa;
+  border: 10px solid #f4e8c1;
+}
+.template-classic .card-content {
+  border: 1px solid #d4af37;
+  margin: 10px;
+}
+.template-classic .name, .template-classic .ampersand {
+  font-family: 'Playfair Display', "Times New Roman", serif;
+  color: #d4af37;
+}
+.template-classic .invitation-text, .template-classic .date-section, .template-classic .venue-section {
+  font-family: 'Lora', "Times New Roman", serif;
+  color: #4a4a4a;
+}
+
+/* Modern Minimalist */
+.template-modern {
+  background: #ffffff;
+  border-radius: 0;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+.template-modern .name {
+  font-family: 'Montserrat', 'Helvetica Neue', sans-serif;
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 4px;
+  font-size: 2.5rem;
+  color: #2d3748;
+}
+.template-modern .ampersand {
+  font-family: 'Montserrat', sans-serif;
+  color: #a0aec0;
+  font-weight: 200;
+}
+.template-modern .invitation-text, .template-modern .date-section, .template-modern .venue-section {
+  font-family: 'Inter', sans-serif;
+  color: #4a5568;
+}
+.template-modern .date-section h3 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.2rem;
+}
+
+/* Floral Bloom */
+.template-floral {
+  border: 1px dashed #feb2b2;
+}
+.template-floral .card-content {
+  background: rgba(255, 255, 255, 0.9);
+  margin: 2rem;
+  border-radius: 12px;
+}
+.template-floral .name, .template-floral .ampersand {
+  font-size: 4rem;
+}
+
+/* Royal Heritage */
+.template-royal {
+  border: 15px double #b8860b;
+}
+.template-royal .card-content {
+  padding: 5rem 4rem;
+}
+.template-royal .name {
+  text-transform: capitalize;
+  font-size: 4.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Rustic Charm */
+.template-rustic {
+  border: 10px solid #8b4513;
+  border-radius: 4px;
+}
+.template-rustic .card-content {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(139, 69, 19, 0.05),
+    rgba(139, 69, 19, 0.05) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* Ocean Breeze */
+.template-ocean {
+  border: 8px solid #4682b4;
+  border-radius: 20px;
+}
+.template-ocean .name {
+  letter-spacing: 2px;
+}
+
+/* Vintage Elegance */
+.template-vintage {
+  border: 20px groove #deb887;
+}
+.template-vintage .card-content {
+  border: 1px dashed #deb887;
+  margin: 1.5rem;
+}
+
+/* Neon Vibes */
+.template-neon {
+  background-color: #1a202c !important;
+  border: 4px solid #ed64a6;
+  box-shadow: 0 0 20px #ed64a6, inset 0 0 20px #ed64a6;
+}
+.template-neon .name, .template-neon h3, .template-neon p, .template-neon .ampersand {
+  color: #ed64a6 !important;
+  text-shadow: 0 0 10px #ed64a6;
+}
+.template-neon .card-content {
+  background: transparent;
+}
+
+/* Sunset Glow */
+.template-sunset {
+  background: linear-gradient(135deg, #ed8936, #ed64a6) !important;
+  border: none;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.1);
+}
+.template-sunset .name, .template-sunset h3, .template-sunset p, .template-sunset .ampersand {
+  color: white !important;
+}
+.template-sunset .card-content {
+  background: transparent;
+}
+
+/* Tropical Paradise */
+.template-tropical {
+  background: linear-gradient(135deg, #38b2ac, #ecc94b) !important;
+  border: 10px dashed white;
+}
+.template-tropical .name, .template-tropical h3, .template-tropical p, .template-tropical .ampersand {
+  color: #2c7a7b !important;
+}
+.template-tropical .card-content {
+  background: rgba(255,255,255,0.6);
+  margin: 2rem;
+  border-radius: 12px;
+}
+
+/* Pastel Dream */
+.template-pastel {
+  background: linear-gradient(135deg, #fbb6ce, #b794f4, #90cdf4) !important;
+  border: 4px solid white;
+}
+.template-pastel .name, .template-pastel h3, .template-pastel p, .template-pastel .ampersand {
+  color: white !important;
+}
+.template-pastel .card-content {
+  background: rgba(255,255,255,0.3);
+  margin: 1rem;
+  border-radius: 16px;
+}
+
+/* Navy & Gold */
+.template-navygold {
+  background-color: #001f3f !important;
+  border: 15px solid #001f3f;
+}
+.template-navygold .card-content {
+  border: 4px double #FFD700;
+  margin: 1rem;
+  background: transparent;
+}
+.template-navygold .name, .template-navygold h3, .template-navygold p, .template-navygold .ampersand {
+  color: #FFD700 !important;
+}
+
+/* Watercolor Rose */
+.template-watercolor {
+  background: radial-gradient(circle at center, #fff0f5 0%, #ffe4e1 100%) !important;
+  border: 8px solid white;
+}
+.template-watercolor .card-content {
+  background: rgba(255, 255, 255, 0.7);
+  margin: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Traditional Arch */
+.template-traditional {
+  background-color: #800000 !important;
+  border: 20px solid #800000;
+  border-radius: 20px 20px 0 0;
+}
+.template-traditional .card-content {
+  border: 4px solid #FFD700;
+  border-radius: 150px 150px 0 0;
+  background: transparent;
+  padding-top: 6rem;
+}
+.template-traditional .name, .template-traditional h3, .template-traditional p, .template-traditional .ampersand {
+  color: #FFD700 !important;
+}
+
+/* Botanical Minimal */
+.template-botanical {
+  background-color: #ffffff !important;
+  border: 2px solid #2e8b57;
+}
+.template-botanical .card-content {
+  border: 1px dashed #2e8b57;
+  margin: 1rem;
+  background: transparent;
+}
+.template-botanical .name, .template-botanical h3, .template-botanical p, .template-botanical .ampersand {
+  color: #2e8b57 !important;
+}
+
+/* Ice Blue Classic */
+.template-blue-classic {
+  background-color: #a2c2e0 !important;
+  border: 10px double white;
+  padding: 2rem;
+}
+.template-blue-classic .card-content {
+  background: transparent;
+}
+.template-blue-classic .name, .template-blue-classic h3, .template-blue-classic p, .template-blue-classic .ampersand {
+  color: white !important;
+}
+
+/* Olive Green Arch */
+.template-olive-arch {
+  background-color: #8a9a7b !important;
+  border-radius: 300px 300px 0 0;
+  border: 4px solid white;
+}
+.template-olive-arch .card-content {
+  background: transparent;
+  padding-top: 6rem;
+}
+.template-olive-arch .name, .template-olive-arch h3, .template-olive-arch p, .template-olive-arch .ampersand {
+  color: white !important;
+}
+
+/* Blue Watercolor Splash */
+.template-blue-splash {
+  background: radial-gradient(circle at top left, #e0f2fe 0%, white 40%), radial-gradient(circle at bottom right, #e0f2fe 0%, white 40%) !important;
+  border: 2px solid #bae6fd;
+}
+
+/* Deep Red Elegance */
+.template-red-elegant {
+  background-color: #8b0000 !important;
+  border: 4px solid white;
+  outline: 8px solid #8b0000;
+  outline-offset: -12px;
+}
+.template-red-elegant .card-content {
+  background: transparent;
+}
+.template-red-elegant .name, .template-red-elegant h3, .template-red-elegant p, .template-red-elegant .ampersand {
+  color: white !important;
+}
+
+/* Pink Floral Border */
+.template-pink-floral {
+  background-color: white !important;
+  border: 15px solid #fdf2f8;
+  border-image: repeating-linear-gradient(45deg, #fbcfe8, #fbcfe8 20px, transparent 20px, transparent 40px) 15;
+}
+.template-pink-floral .card-content {
+  background: transparent;
+}
+
+/* Golden Mandala */
+.template-gold-mandala {
+  background-color: #fffbeb !important;
+  border: 4px dashed #d4af37;
+  padding: 2rem;
+}
+.template-gold-mandala .card-content {
+  border: 1px solid #d4af37;
+  padding: 3rem;
+  background: transparent;
+}
+.template-gold-mandala h3 {
+  color: #b45309 !important;
+}
+
+/* Teal Laser Cut */
+.template-teal-laser {
+  background-color: #008080 !important;
+  border: 8px dotted white;
+  padding: 1rem;
+}
+.template-teal-laser .card-content {
+  border: 2px solid white;
+  background: transparent;
+  padding: 2rem;
+}
+.template-teal-laser .name, .template-teal-laser h3, .template-teal-laser p, .template-teal-laser .ampersand {
+  color: white !important;
+}
+
+/* Peach Splash */
+.template-peach-splash {
+  background: linear-gradient(135deg, #ffdab9, #ffe4e1) !important;
+  border: none;
+}
+.template-peach-splash .card-content {
+  background: rgba(255,255,255,0.4);
+  border-radius: 20px;
+  margin: 2rem;
+}
+.template-peach-splash h3 {
+  color: #c05640 !important;
+}
+
+/* Navy Gold Leaf */
+.template-navy-gold-leaf {
+  background-color: #1e3a8a !important;
+  border-top: 15px solid #fbbf24;
+  border-bottom: 15px solid #fbbf24;
+}
+.template-navy-gold-leaf .card-content {
+  background: transparent;
+}
+.template-navy-gold-leaf .name, .template-navy-gold-leaf h3, .template-navy-gold-leaf p, .template-navy-gold-leaf .ampersand {
+  color: #fbbf24 !important;
+}
+
+/* Photo Timeline */
+.template-photo-timeline {
+  background-color: #f8fafc !important;
+  border-top: 60px solid #cbd5e1;
+}
+.template-photo-timeline .card-content {
+  background: white;
+  margin: -30px 2rem 2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 5;
+}
+
+/* Rose Garden */
+.template-rose-garden {
+  background: #fffafa url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 10 Q25 0 30 10 Q40 15 30 20 Q40 30 20 30 Q0 30 10 20 Q0 15 10 10 Q15 0 20 10 Z" fill="none" stroke="%23ffb6c1" stroke-width="1" opacity="0.3"/></svg>') repeat !important;
+  border: 8px solid #ffb6c1;
+  border-radius: 12px;
+}
+.template-rose-garden .card-content {
+  background: rgba(255, 255, 255, 0.85);
+  margin: 1.5rem;
+  border-radius: 8px;
+}
+.template-rose-garden .name, .template-rose-garden h3, .template-rose-garden p, .template-rose-garden .ampersand {
+  color: #d1495b !important;
+}
+
+/* Eucalyptus Wreath */
+.template-eucalyptus {
+  background: #f4fcf6 url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><path d="M15 5 C 25 5, 25 15, 15 25 C 5 15, 5 5, 15 5 Z" fill="none" stroke="%238fbc8f" stroke-width="1" opacity="0.4"/></svg>') repeat !important;
+  border: 15px double #8fbc8f;
+}
+.template-eucalyptus .card-content {
+  background: transparent;
+}
+.template-eucalyptus .name, .template-eucalyptus h3, .template-eucalyptus p, .template-eucalyptus .ampersand {
+  color: #3e8e41 !important;
+}
+
+/* Lotus Elegance */
+.template-lotus {
+  background: #fdf5e6 url('data:image/svg+xml;utf8,<svg width="50" height="30" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><path d="M25 5 Q30 25 45 25 Q30 25 25 30 Q20 25 5 25 Q20 25 25 5 Z" fill="none" stroke="%23dda0dd" stroke-width="1" opacity="0.5"/><path d="M25 10 Q28 25 35 25 Q28 25 25 30 Q22 25 15 25 Q22 25 25 10 Z" fill="none" stroke="%23dda0dd" stroke-width="1" opacity="0.5"/></svg>') repeat !important;
+  border: 6px solid #dda0dd;
+  border-radius: 50px 0 50px 0;
+}
+.template-lotus .card-content {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 40px 0 40px 0;
+  margin: 1rem;
+}
+.template-lotus .name, .template-lotus h3, .template-lotus p, .template-lotus .ampersand {
+  color: #8b008b !important;
+}

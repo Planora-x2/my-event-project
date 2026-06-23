@@ -2,8 +2,8 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from .models import Venue, Event, Booking, EventGalleryImage, Enquiry
-from .serializers import VenueSerializer, EventSerializer, BookingSerializer, EventGalleryImageSerializer, EnquirySerializer
+from .models import Venue, Event, Booking, EventGalleryImage, Enquiry, WeddingCard
+from .serializers import VenueSerializer, EventSerializer, BookingSerializer, EventGalleryImageSerializer, EnquirySerializer, WeddingCardSerializer
 
 class IsClientOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -152,3 +152,24 @@ class EnquiryViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(event_id=event_id)
             
         return queryset.order_by('-created_at')
+
+class WeddingCardViewSet(viewsets.ModelViewSet):
+    queryset = WeddingCard.objects.all()
+    serializer_class = WeddingCardSerializer
+
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        if self.action == 'retrieve':
+            return WeddingCard.objects.all()
+        if self.request.user.is_authenticated:
+            if self.request.user.role == 'ADMIN':
+                return WeddingCard.objects.all()
+            return WeddingCard.objects.filter(user=self.request.user)
+        return WeddingCard.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

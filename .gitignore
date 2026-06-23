@@ -16,6 +16,7 @@ venv/
 /backend/staticfiles/
 /backend/media/
 /backend/.env
+/backend/db.sqlite3
 
 # Environment variables — NEVER commit these
 .env

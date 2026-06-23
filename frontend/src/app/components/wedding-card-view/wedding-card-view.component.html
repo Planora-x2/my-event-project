@@ -1,0 +1,80 @@
+<div class="view-container">
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading Wedding Card...</p>
+  </div>
+
+  <div *ngIf="error" class="error-state">
+    <h2>Card Not Found</h2>
+    <p>The wedding card you are looking for does not exist or has been removed.</p>
+  </div>
+
+  <div *ngIf="!loading && !error && card" class="card-wrapper" 
+       [ngClass]="'template-' + card.template_id"
+       [ngStyle]="{'background-color': card.background_color, 'font-family': card.font_family}">
+    
+    <!-- Cover Image -->
+    <div *ngIf="card.cover_image" class="cover-image-container">
+      <img [src]="card.cover_image" alt="Cover Photo">
+    </div>
+
+    <div class="card-content">
+      <div class="names-section">
+        <div class="person-block">
+          <div class="name" [ngStyle]="{'color': card.primary_color}">{{ card.bride_name }}</div>
+          <div *ngIf="card.bride_parents" class="parents-text">Daughter of {{ card.bride_parents }}</div>
+          <div *ngIf="card.bride_address" class="address-text">{{ card.bride_address }}</div>
+        </div>
+
+        <div class="ampersand" [ngStyle]="{'color': card.primary_color}">&</div>
+
+        <div class="person-block">
+          <div class="name" [ngStyle]="{'color': card.primary_color}">{{ card.groom_name }}</div>
+          <div *ngIf="card.groom_parents" class="parents-text">Son of {{ card.groom_parents }}</div>
+          <div *ngIf="card.groom_address" class="address-text">{{ card.groom_address }}</div>
+        </div>
+      </div>
+
+      <div class="invitation-text">
+        <p>Joyfully invite you to share in our happiness</p>
+        <p>as we unite in marriage</p>
+      </div>
+
+      <div class="date-section">
+        <h3 [ngStyle]="{'color': card.primary_color}">{{ card.date | date:'EEEE, MMMM d, y' }}</h3>
+        <p>at {{ card.date | date:'shortTime' }}</p>
+      </div>
+
+      <div *ngIf="card.message" class="custom-message">
+        <p [ngStyle]="{'color': card.primary_color}">{{ card.message }}</p>
+      </div>
+
+      <div *ngIf="card.venue_details && !card.is_custom_venue" class="venue-section">
+        <h3 [ngStyle]="{'color': card.primary_color}">Reception to follow at</h3>
+        <p class="venue-name">{{ card.venue_details.name }}</p>
+        <p>{{ card.venue_details.address }}</p>
+        <p>{{ card.venue_details.state }}, {{ card.venue_details.country }}</p>
+      </div>
+
+      <div *ngIf="card.is_custom_venue" class="venue-section custom-venue">
+        <h3 [ngStyle]="{'color': card.primary_color}">Reception to follow at</h3>
+        <p class="venue-name">{{ card.custom_venue_name }}</p>
+        <p style="white-space: pre-line;">{{ card.custom_venue_address }}</p>
+      </div>
+
+      <!-- Map Integration -->
+      <div *ngIf="mapUrl" class="map-container">
+        <iframe 
+          [src]="mapUrl" 
+          width="100%" 
+          height="300" 
+          frameborder="0" 
+          style="border:0;" 
+          allowfullscreen="" 
+          aria-hidden="false" 
+          tabindex="0">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
