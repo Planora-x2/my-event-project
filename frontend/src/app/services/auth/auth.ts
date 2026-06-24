@@ -12,6 +12,10 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  getCurrentUser(): any {
+    return this.currentUserSubject.getValue();
+  }
+
   constructor(private http: HttpClient) { 
     if (localStorage.getItem('is_logged_in')) {
       this.getUserProfile().subscribe({

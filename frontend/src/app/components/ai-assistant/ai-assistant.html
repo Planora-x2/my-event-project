@@ -1,0 +1,68 @@
+<div class="ai-layout">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>AI Assistant</h2>
+      <p>Powered by Eternally Yours</p>
+    </div>
+    
+    <div class="suggested-topics">
+      <h3>Ask me about...</h3>
+      <ul>
+        <li (click)="newMessage = 'Can you suggest some floral decoration themes?'; sendMessage()">Floral Themes</li>
+        <li (click)="newMessage = 'What is a typical 6-month wedding timeline?'; sendMessage()">Event Timeline</li>
+        <li (click)="newMessage = 'How much should I budget for a photographer?'; sendMessage()">Vendor Budgets</li>
+        <li (click)="newMessage = 'Give me ideas for a rustic outdoor reception.'; sendMessage()">Rustic Concepts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-history" #scrollContainer>
+      <div *ngFor="let msg of messages" class="message-wrapper" [class.user-wrapper]="msg.isUser">
+        
+        <!-- AI Avatar -->
+        <div class="avatar ai-avatar" *ngIf="!msg.isUser">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+
+        <div class="message" [class.user-message]="msg.isUser" [class.ai-message]="!msg.isUser">
+          <p>{{ msg.text }}</p>
+          <span class="time">{{ msg.time | date:'shortTime' }}</span>
+        </div>
+
+        <!-- User Avatar -->
+        <div class="avatar user-avatar" *ngIf="msg.isUser">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+
+      </div>
+
+      <div class="processing-indicator" *ngIf="isProcessing">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage" 
+        (keyup.enter)="sendMessage()" 
+        placeholder="Type your message here..."
+        [disabled]="isProcessing"
+      >
+      <button (click)="sendMessage()" [disabled]="isProcessing || !newMessage.trim()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

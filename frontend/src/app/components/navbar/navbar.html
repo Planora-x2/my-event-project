@@ -1,7 +1,7 @@
 <nav class="navbar" [class.scrolled]="isScrolled">
   <div class="nav-container">
     <!-- Logo / Brand -->
-    <a routerLink="/" class="logo" id="nav-logo">
+    <a routerLink="/" class="logo" id="nav-logo" (click)="closeMobileMenu()">
       <span class="logo-icon" style="display: flex; align-items: center;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
           <circle cx="12" cy="14" r="6"></circle>
@@ -14,32 +14,53 @@
       </span>
     </a>
 
+    <!-- Hamburger Menu -->
+    <button class="hamburger" (click)="toggleMobileMenu()" [class.active]="isMobileMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
     <!-- Authenticated Nav -->
-    <div class="nav-links" *ngIf="currentUser$ | async as user; else loggedOut">
-      <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" id="nav-events">
+    <div class="nav-links" [class.mobile-open]="isMobileMenuOpen" *ngIf="currentUser$ | async as user; else loggedOut">
+      <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" id="nav-events" (click)="closeMobileMenu()">
         Services
       </a>
-      <a routerLink="/wedding-card/generate" class="nav-link" routerLinkActive="active" id="nav-wedding-card">
-        Card Generator
+      <a routerLink="/wedding-card/generate" class="nav-link" routerLinkActive="active" id="nav-wedding-card" (click)="closeMobileMenu()">
+        Cards
       </a>
-      <a routerLink="/saved" class="nav-link" routerLinkActive="active" id="nav-saved" style="display: flex; align-items: center; gap: 0.25rem;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-        Saved
+      <a *ngIf="user.role === 'USER'" routerLink="/planning" class="nav-link" routerLinkActive="active" id="nav-planning" (click)="closeMobileMenu()">
+        Planning
       </a>
+      <div class="nav-dropdown">
+        <span class="nav-link dropdown-toggle">Features ▾</span>
+        <div class="dropdown-content">
+          <a routerLink="/saved" class="dropdown-item" routerLinkActive="active" id="nav-saved" (click)="closeMobileMenu()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+            Saved
+          </a>
+          <a routerLink="/inspiration" class="dropdown-item" routerLinkActive="active" id="nav-inspiration" (click)="closeMobileMenu()">
+            Inspiration
+          </a>
+          <a routerLink="/ai-assistant" class="dropdown-item" routerLinkActive="active" id="nav-ai-assistant" (click)="closeMobileMenu()">
+            <i class="fas fa-robot" style="margin-right: 4px;"></i> AI Assistant
+          </a>
+        </div>
+      </div>
       <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
-         routerLink="/support" class="nav-link" routerLinkActive="active" id="nav-support">
+         routerLink="/support" class="nav-link" routerLinkActive="active" id="nav-support" (click)="closeMobileMenu()">
         Support
       </a>
       <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
-         routerLink="/client-dashboard" class="nav-link" routerLinkActive="active" id="nav-planner">
+         routerLink="/client-dashboard" class="nav-link" routerLinkActive="active" id="nav-planner" (click)="closeMobileMenu()">
         Vendor Portal
       </a>
       <a *ngIf="user.role === 'ADMIN'" 
-         routerLink="/admin-dashboard" class="nav-link" routerLinkActive="active" id="nav-admin">
+         routerLink="/admin-dashboard" class="nav-link" routerLinkActive="active" id="nav-admin" (click)="closeMobileMenu()">
         Admin
       </a>
       <a *ngIf="user.role === 'CLIENT' || user.role === 'ADMIN'" 
-         routerLink="/enquiry-analytics" class="nav-link" routerLinkActive="active" id="nav-enquiries">
+         routerLink="/enquiry-analytics" class="nav-link" routerLinkActive="active" id="nav-enquiries" (click)="closeMobileMenu()">
         Enquiries
       </a>
       
@@ -123,20 +144,20 @@
     
     <!-- Guest Nav -->
     <ng-template #loggedOut>
-      <div class="nav-links">
-        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <div class="nav-links" [class.mobile-open]="isMobileMenuOpen">
+        <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">
           Services
         </a>
-        <a routerLink="/wedding-card/generate" class="nav-link" routerLinkActive="active" id="nav-wedding-card-guest">
-          Card Generator
+        <a routerLink="/wedding-card/generate" class="nav-link" routerLinkActive="active" id="nav-wedding-card-guest" (click)="closeMobileMenu()">
+          Cards
         </a>
-        <a routerLink="/saved" class="nav-link" routerLinkActive="active" id="nav-saved-guest" style="display: flex; align-items: center; gap: 0.25rem;">
+        <a routerLink="/saved" class="nav-link" routerLinkActive="active" id="nav-saved-guest" style="display: flex; align-items: center; gap: 0.25rem;" (click)="closeMobileMenu()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
           Saved
         </a>
         <div class="auth-buttons">
-          <button routerLink="/login" class="btn btn-secondary" id="nav-login">Sign In</button>
-          <button routerLink="/register" class="btn btn-primary" id="nav-register">Begin Your Journey</button>
+          <button routerLink="/login" class="btn btn-secondary" id="nav-login" (click)="closeMobileMenu()">Sign In</button>
+          <button routerLink="/register" class="btn btn-primary" id="nav-register" (click)="closeMobileMenu()">Begin Your Journey</button>
         </div>
       </div>
     </ng-template>

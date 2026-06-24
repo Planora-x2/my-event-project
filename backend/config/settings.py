@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'events',
     'interactions',
     'tours',
+    'planning',
 ]
 
 AUTH_USER_MODEL = 'users.User'

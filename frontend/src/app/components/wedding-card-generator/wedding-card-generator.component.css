@@ -167,6 +167,32 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
 }
 
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qr-code-box {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.qr-code-box p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.qr-code-box img {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: white;
+}
+
 .preview-image-container img {
   width: 100%;
   height: 100%;
@@ -458,4 +484,126 @@ input:focus, select:focus, textarea:focus {
 
 .link-box button:hover {
   background: #38a169;
+}
+
+/* Premium section styling */
+.premium-group {
+  margin-top: 2rem;
+  background: linear-gradient(135deg, #fffdf0, #fff7e6);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #f6e05e;
+}
+
+.premium-badge {
+  background: #ecc94b;
+  color: #744210;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.premium-option {
+  border-color: #ecc94b;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-option:hover {
+  background: #fefcbf;
+}
+
+.premium-option.active {
+  border-color: #d69e2e;
+  background: #fefcbf;
+  color: #975a16;
+  box-shadow: 0 0 10px rgba(214, 158, 46, 0.2);
+}
+
+/* Premium Templates Previews */
+.preview-premium-blue-floral {
+  background: #f4f8fb url('https://images.unsplash.com/photo-1572621481541-e9ee46061324?auto=format&fit=crop&w=400&q=80') top/cover no-repeat !important;
+  border: 3px double #b8860b;
+  color: #1a365d !important;
+}
+.preview-premium-blue-floral h3 {
+  font-family: 'Great Vibes', cursive !important;
+  color: #2b6cb0 !important;
+  text-shadow: 1px 1px 2px white;
+}
+.preview-premium-blue-floral p {
+  color: #2b6cb0 !important;
+  text-shadow: 1px 1px 2px white;
+  font-weight: 500;
+}
+
+.preview-premium-pink-vine {
+  background: #fdfbf7;
+  border: 8px solid transparent;
+  border-image: url('https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=200&q=80') 30 round;
+  color: #4a3028 !important;
+}
+.preview-premium-pink-vine h3 {
+  color: #4a3028 !important;
+  font-family: 'Playfair Display', serif !important;
+}
+
+.preview-premium-vintage-ribbon {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  position: relative;
+}
+.preview-premium-vintage-ribbon::before {
+  content: "JOIN US FOR THE WEDDING";
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: #38b2ac;
+  margin-bottom: 1rem;
+}
+.preview-premium-vintage-ribbon h3 {
+  color: #2d3748 !important;
+  font-family: 'Georgia', serif !important;
+  font-style: italic;
+}
+.preview-premium-vintage-ribbon p {
+  color: #4a5568 !important;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.preview-premium-indian-traditional {
+  background: #800000;
+  border: 10px solid #d4af37;
+  border-radius: 20px 20px 0 0;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+.preview-premium-indian-traditional h3 {
+  color: #d4af37 !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 2.2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+.preview-premium-indian-traditional p {
+  color: #fceeb5 !important;
+}
+
+.preview-premium-teal-floral {
+  background: #008080;
+  box-shadow: inset 20px 0 30px rgba(255,255,255,0.2);
+  border-left: 20px solid #e6f2f2; /* Simulates the white 3D floral left edge */
+}
+.preview-premium-teal-floral h3 {
+  color: white !important;
+  font-family: 'Great Vibes', cursive !important;
+  font-size: 2.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+.preview-premium-teal-floral p {
+  color: #e6f2f2 !important;
 }

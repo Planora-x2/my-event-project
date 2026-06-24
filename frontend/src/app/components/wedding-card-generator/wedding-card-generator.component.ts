@@ -29,7 +29,8 @@ export class WeddingCardGeneratorComponent implements OnInit {
     custom_venue_name: '',
     custom_venue_address: '',
     custom_venue_lat: 0,
-    custom_venue_lng: 0
+    custom_venue_lng: 0,
+    is_save_the_date: false
   };
 
   venueMode: 'existing' | 'custom' = 'existing';
@@ -38,39 +39,54 @@ export class WeddingCardGeneratorComponent implements OnInit {
 
   venues: Venue[] = [];
   generatedLink: string | null = null;
+  qrCodeUrl: string | null = null;
   loading = false;
   previewImage: string | ArrayBuffer | null = null;
 
   templates = [
-    { id: 'classic', name: 'Classic Elegance' },
-    { id: 'modern', name: 'Modern Minimalist' },
-    { id: 'floral', name: 'Floral Bloom' },
-    { id: 'royal', name: 'Royal Heritage' },
-    { id: 'rustic', name: 'Rustic Charm' },
-    { id: 'ocean', name: 'Ocean Breeze' },
-    { id: 'vintage', name: 'Vintage Elegance' },
-    { id: 'neon', name: 'Neon Vibes' },
-    { id: 'sunset', name: 'Sunset Glow' },
-    { id: 'tropical', name: 'Tropical Paradise' },
-    { id: 'pastel', name: 'Pastel Dream' },
-    { id: 'navygold', name: 'Navy & Gold' },
-    { id: 'watercolor', name: 'Watercolor Rose' },
-    { id: 'traditional', name: 'Traditional Arch' },
-    { id: 'botanical', name: 'Botanical Minimal' },
-    { id: 'blue-classic', name: 'Ice Blue Classic' },
-    { id: 'olive-arch', name: 'Olive Green Arch' },
-    { id: 'blue-splash', name: 'Blue Watercolor Splash' },
-    { id: 'red-elegant', name: 'Deep Red Elegance' },
-    { id: 'pink-floral', name: 'Pink Floral Border' },
-    { id: 'gold-mandala', name: 'Golden Mandala' },
-    { id: 'teal-laser', name: 'Teal Laser Cut' },
-    { id: 'peach-splash', name: 'Peach Splash' },
-    { id: 'navy-gold-leaf', name: 'Navy Gold Leaf' },
-    { id: 'photo-timeline', name: 'Photo Timeline' },
-    { id: 'rose-garden', name: 'Rose Garden' },
-    { id: 'eucalyptus', name: 'Eucalyptus Wreath' },
-    { id: 'lotus', name: 'Lotus Elegance' }
+    { id: 'classic', name: 'Classic Elegance', category: 'normal' },
+    { id: 'modern', name: 'Modern Minimalist', category: 'normal' },
+    { id: 'floral', name: 'Floral Bloom', category: 'normal' },
+    { id: 'royal', name: 'Royal Heritage', category: 'normal' },
+    { id: 'rustic', name: 'Rustic Charm', category: 'normal' },
+    { id: 'ocean', name: 'Ocean Breeze', category: 'normal' },
+    { id: 'vintage', name: 'Vintage Elegance', category: 'normal' },
+    { id: 'neon', name: 'Neon Vibes', category: 'normal' },
+    { id: 'sunset', name: 'Sunset Glow', category: 'normal' },
+    { id: 'tropical', name: 'Tropical Paradise', category: 'normal' },
+    { id: 'pastel', name: 'Pastel Dream', category: 'normal' },
+    { id: 'navygold', name: 'Navy & Gold', category: 'normal' },
+    { id: 'watercolor', name: 'Watercolor Rose', category: 'normal' },
+    { id: 'traditional', name: 'Traditional Arch', category: 'normal' },
+    { id: 'botanical', name: 'Botanical Minimal', category: 'normal' },
+    { id: 'blue-classic', name: 'Ice Blue Classic', category: 'normal' },
+    { id: 'olive-arch', name: 'Olive Green Arch', category: 'normal' },
+    { id: 'blue-splash', name: 'Blue Watercolor Splash', category: 'normal' },
+    { id: 'red-elegant', name: 'Deep Red Elegance', category: 'normal' },
+    { id: 'pink-floral', name: 'Pink Floral Border', category: 'normal' },
+    { id: 'gold-mandala', name: 'Golden Mandala', category: 'normal' },
+    { id: 'teal-laser', name: 'Teal Laser Cut', category: 'normal' },
+    { id: 'peach-splash', name: 'Peach Splash', category: 'normal' },
+    { id: 'navy-gold-leaf', name: 'Navy Gold Leaf', category: 'normal' },
+    { id: 'photo-timeline', name: 'Photo Timeline', category: 'normal' },
+    { id: 'rose-garden', name: 'Rose Garden', category: 'normal' },
+    { id: 'eucalyptus', name: 'Eucalyptus Wreath', category: 'normal' },
+    { id: 'lotus', name: 'Lotus Elegance', category: 'normal' },
+    // Premium Templates
+    { id: 'premium-blue-floral', name: 'Blue Floral Elegance', category: 'premium' },
+    { id: 'premium-pink-vine', name: 'Vintage Pink Vine', category: 'premium' },
+    { id: 'premium-vintage-ribbon', name: 'Classic Ribbon', category: 'premium' },
+    { id: 'premium-indian-traditional', name: 'Royal Indian', category: 'premium' },
+    { id: 'premium-teal-floral', name: 'Teal 3D Floral', category: 'premium' }
   ];
+
+  get normalTemplates() {
+    return this.templates.filter(t => t.category === 'normal');
+  }
+
+  get premiumTemplates() {
+    return this.templates.filter(t => t.category === 'premium');
+  }
 
   fonts = [
     { id: 'Playfair Display', name: 'Playfair Display (Serif)' },
@@ -180,6 +196,8 @@ export class WeddingCardGeneratorComponent implements OnInit {
         this.toastService.show('Wedding Card Generated Successfully!', 'info');
         const origin = window.location.origin;
         this.generatedLink = `${origin}/wedding-card/${res.id}`;
+        // Using an external API for the QR code
+        this.qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(this.generatedLink)}`;
       },
       error: (err) => {
         this.loading = false;

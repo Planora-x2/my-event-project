@@ -22,7 +22,7 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [IsClientOrAdmin]
 
     def get_queryset(self):
-        queryset = Event.objects.all()
+        queryset = Event.objects.select_related('venue', 'client').prefetch_related('gallery_images', 'ratings')
         location = self.request.query_params.get('location')
         if location:
             from django.db.models import Q
@@ -67,7 +67,9 @@ class EventViewSet(viewsets.ModelViewSet):
         
         # Create detailed Enquiry record
         user = request.user if request.user.is_authenticated else None
-        Enquiry.objects.create(event=event, user=user)
+        name = request.data.get('name', '')
+        mobile_number = request.data.get('mobile_number', '')
+        Enquiry.objects.create(event=event, user=user, name=name, mobile_number=mobile_number)
         
         return Response({'message': 'Enquiry tracked successfully.', 'enquiry_count': event.enquiry_count})
 
@@ -138,10 +140,21 @@ class EnquiryViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Enquiry.objects.all()
+        queryset = Enquiry.objects.select_related(
+            'event', 'event__venue', 'event__client', 'user'
+        ).prefetch_related(
+            'event__gallery_images', 'event__ratings'
+        )
 
         if user.role == 'CLIENT':
             queryset = queryset.filter(event__client=user)
+        elif user.role == 'ADMIN':
+            pass
+        else:
+            if user.is_authenticated:
+                queryset = queryset.filter(user=user)
+            else:
+                return Enquiry.objects.none()
             
         client_id = self.request.query_params.get('client')
         if client_id and user.role == 'ADMIN':
@@ -152,6 +165,37 @@ class EnquiryViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(event_id=event_id)
             
         return queryset.order_by('-created_at')
+
+    @action(detail=True, methods=['post'], permission_classes=[IsClientOrAdmin])
+    def accept(self, request, pk=None):
+        enquiry = self.get_object()
+        if enquiry.status == Enquiry.Status.PENDING:
+            enquiry.status = Enquiry.Status.ACCEPTED
+            enquiry.save(update_fields=['status', 'updated_at'])
+            return Response({'message': 'Enquiry accepted.', 'status': enquiry.status})
+        return Response({'error': 'Enquiry is not pending.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], permission_classes=[IsClientOrAdmin])
+    def complete(self, request, pk=None):
+        enquiry = self.get_object()
+        if enquiry.status in [Enquiry.Status.PENDING, Enquiry.Status.ACCEPTED]:
+            enquiry.status = Enquiry.Status.COMPLETED
+            enquiry.save(update_fields=['status', 'updated_at'])
+            return Response({'message': 'Enquiry marked as completed.', 'status': enquiry.status})
+        return Response({'error': 'Enquiry cannot be completed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def reenquire(self, request, pk=None):
+        enquiry = self.get_object()
+        if enquiry.user != request.user:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("You can only reenquire about your own enquiries.")
+        
+        from django.utils import timezone
+        enquiry.created_at = timezone.now()
+        enquiry.status = Enquiry.Status.PENDING
+        enquiry.save()
+        return Response({'message': 'Reenquired successfully.', 'status': enquiry.status, 'created_at': enquiry.created_at})
 
 class WeddingCardViewSet(viewsets.ModelViewSet):
     queryset = WeddingCard.objects.all()
@@ -173,3 +217,13 @@ class WeddingCardViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
+    def rsvp(self, request, pk=None):
+        card = self.get_object()
+        from .serializers import RSVPSerializer
+        serializer = RSVPSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(wedding_card=card)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

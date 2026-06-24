@@ -17,6 +17,7 @@ export class NavbarComponent implements OnInit {
   notifications: any[] = [];
   unreadCount = 0;
   isNotificationsOpen = false;
+  isMobileMenuOpen = false;
 
   constructor(public authService: AuthService, private router: Router) {
     this.currentUser$ = this.authService.currentUser$;
@@ -56,7 +57,16 @@ export class NavbarComponent implements OnInit {
     if (notification.link) {
       this.router.navigateByUrl(notification.link);
       this.isNotificationsOpen = false;
+      this.isMobileMenuOpen = false;
     }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 
   logout() {

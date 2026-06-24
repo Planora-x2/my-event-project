@@ -206,7 +206,7 @@
           </div>
 
           <div class="booking-body">
-            <p class="text-muted" style="margin-bottom: 1rem; text-align: center;">
+            <p class="text-muted" style="margin-bottom: 1rem; text-align: center;" *ngIf="canMessage">
               Interested in this service? Contact the vendor directly for more details.
             </p>
 
@@ -217,6 +217,7 @@
             </div>
 
             <button 
+              *ngIf="canMessage"
               class="btn btn-primary w-100 book-btn" 
               (click)="toggleChat()">
               <span style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
@@ -290,9 +291,33 @@
   </ng-container>
 </div>
 
+<!-- ═══ ENQUIRY MODAL ═══ -->
+<div class="lightbox-overlay animate-fade-in" *ngIf="showEnquiryModal" (click)="closeEnquiryModal()" style="display: flex; align-items: center; justify-content: center;">
+  <div class="enquiry-modal" style="background: var(--surface); border-radius: 24px; max-width: 400px; width: 90%; padding: 1.5rem; box-shadow: var(--shadow-lg); z-index: 1000; border: 1px solid var(--border);" (click)="$event.stopPropagation()">
+    <div class="enquiry-modal-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+      <div>
+        <h4 style="margin: 0; font-size: 1.5rem; color: var(--text-main); font-family: var(--font-display);">Send Enquiry</h4>
+        <p class="text-muted" style="font-size:0.85rem; margin-top: 0.25rem;">Please provide your details so the vendor can contact you.</p>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem; min-width: auto;" (click)="closeEnquiryModal()">✕</button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div>
+        <label style="font-size: 0.85rem; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem; display: block;">Name</label>
+        <input type="text" class="input-field w-100" [(ngModel)]="enquiryName" placeholder="Your Name" style="background: var(--background);">
+      </div>
+      <div>
+        <label style="font-size: 0.85rem; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem; display: block;">Mobile Number</label>
+        <input type="text" class="input-field w-100" [(ngModel)]="enquiryMobile" placeholder="Your Mobile Number" style="background: var(--background);">
+      </div>
+      <button class="btn btn-primary w-100" style="margin-top: 0.5rem;" (click)="submitEnquiry()">Continue to Message</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ FLOATING CHAT (Attendees only) ═══ -->
 <ng-container *ngIf="event && !currentUser">
-  <button class="chat-fab" (click)="toggleChat()" id="chat-fab-btn" [class.chat-open]="isChatOpen">
+  <button class="chat-fab" (click)="toggleChat()" id="chat-fab-btn" [class.chat-open]="isChatOpen" *ngIf="canMessage">
     <span *ngIf="!isChatOpen" style="display: flex; align-items: center; justify-content: center;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </span>

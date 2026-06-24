@@ -197,3 +197,43 @@
 .empty-cell p { font-size: 0.92rem; }
 
 .text-muted { color: var(--text-muted); }
+
+/* iOS Style Buttons */
+.ios-btn {
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+.ios-btn:active {
+  opacity: 0.6;
+  transform: scale(0.96);
+}
+
+.ios-btn-primary {
+  background-color: #007AFF;
+  color: #ffffff;
+}
+
+.ios-btn-primary:hover {
+  background-color: #006ae0;
+}
+
+.ios-btn-secondary {
+  background-color: #F2F2F7;
+  color: #007AFF;
+}
+
+.ios-btn-secondary:hover {
+  background-color: #E5E5EA;
+}

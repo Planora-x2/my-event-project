@@ -13,6 +13,13 @@
         <input type="text" [(ngModel)]="card.bride_name" placeholder="Enter Bride's Name">
       </div>
 
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="card.is_save_the_date">
+          This is a Save-The-Date (Not a formal invitation)
+        </label>
+      </div>
+
       <div class="form-group">
         <label>Bride's Parents (Optional)</label>
         <input type="text" [(ngModel)]="card.bride_parents" placeholder="E.g. Mr. John & Mrs. Jane Doe">
@@ -84,10 +91,22 @@
       </div>
 
       <div class="form-group">
-        <label>Template Style</label>
+        <label>Normal Templates</label>
         <div class="template-selector">
-          <div *ngFor="let tmpl of templates" 
+          <div *ngFor="let tmpl of normalTemplates" 
                class="template-option" 
+               [class.active]="card.template_id === tmpl.id"
+               (click)="card.template_id = tmpl.id">
+            {{tmpl.name}}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group premium-group">
+        <label>Premium Templates <span class="premium-badge">👑 Premium</span></label>
+        <div class="template-selector premium-selector">
+          <div *ngFor="let tmpl of premiumTemplates" 
+               class="template-option premium-option" 
                [class.active]="card.template_id === tmpl.id"
                (click)="card.template_id = tmpl.id">
             {{tmpl.name}}
@@ -151,6 +170,10 @@
         <div class="link-box">
           <input type="text" [value]="generatedLink" readonly>
           <button (click)="copyLink()">Copy</button>
+        </div>
+        <div *ngIf="qrCodeUrl" class="qr-code-box">
+          <p>Scan to view invitation:</p>
+          <img [src]="qrCodeUrl" alt="QR Code">
         </div>
         <button class="btn-secondary" (click)="viewCard()">View Public Card</button>
       </div>

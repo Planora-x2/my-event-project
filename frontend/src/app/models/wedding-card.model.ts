@@ -37,4 +37,6 @@ export interface WeddingCard {
   
   created_at?: string;
   updated_at?: string;
+  is_save_the_date?: boolean;
+  rsvps?: any[];
 }

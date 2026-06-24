@@ -47,4 +47,8 @@ export class WeddingCardService {
   deleteCard(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
+
+  submitRSVP(id: string, rsvpData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}${id}/rsvp/`, rsvpData);
+  }
 }

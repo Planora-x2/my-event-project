@@ -35,7 +35,7 @@ export class ChatbotComponent implements OnInit {
     // Initial greeting
     setTimeout(() => {
       this.messages.push({
-        text: "Hi there! I'm your AI Wedding Assistant. Need help finding a venue or checking prices?",
+        text: "Hi there! I'm your AI Wedding Assistant. Need help finding a venue or exploring event themes?",
         sender: 'bot',
         timestamp: new Date()
       });

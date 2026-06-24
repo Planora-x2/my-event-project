@@ -6,7 +6,7 @@
  *               the same origin, so relative URLs like /api/... work directly.
  *
  * To switch environments just change the value here before building:
- *   Development build (ng serve):   API_BASE = 'http://localhost:8000'
+ *   Development build (ng serve):   API_BASE = 'http://localhost:8001'
  *   Production build (ng build):    API_BASE = ''
  */
 

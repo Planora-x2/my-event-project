@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/users/', include(users_router.urls)),
     path('api/admin/', include(admin_router.urls)),
     path('api/tours/', include('tours.urls')),
+    path('api/planning/', include('planning.urls')),
 ]
 
 # Media files:

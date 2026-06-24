@@ -36,6 +36,11 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   isChatOpen: boolean = false;
   @ViewChild('chatScroll') private chatScrollContainer!: ElementRef;
 
+  // Enquiry Modal State
+  showEnquiryModal: boolean = false;
+  enquiryName: string = '';
+  enquiryMobile: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
@@ -65,12 +70,21 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     this.interactionService.disconnectChat();
   }
 
+  canMessage: boolean = true;
+
   checkRoleAndInitialize() {
+    if (this.currentUser) {
+      if (this.currentUser.role === 'CLIENT' || this.currentUser.role === 'ADMIN') {
+        this.canMessage = false;
+      }
+    }
     if (this.event && this.currentUser) {
       this.isOrganizer = (this.event.client === this.currentUser.id);
-      if (!this.isOrganizer) {
+      if (!this.isOrganizer && this.canMessage) {
         this.initializeChat();
       }
+    } else if (this.event && !this.currentUser) {
+      this.canMessage = true; // Guests can message (via enquiry modal)
     }
   }
 
@@ -120,21 +134,27 @@ export class EventDetailComponent implements OnInit, OnDestroy {
     
     this.map = L.map('event-map').setView([lat, lng], 13);
     
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+    // Google Maps style colorful street map
+    L.tileLayer('http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Maps',
+      maxZoom: 20
     }).addTo(this.map);
 
-    // Use default icon
-    const icon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41]
+    // Custom modern marker matching brand theme
+    const icon = L.divIcon({
+      className: 'custom-map-marker',
+      html: `<div class="marker-pin"></div><div class="marker-pulse"></div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -32]
     });
 
+    // Modern popup configuration
     L.marker([lat, lng], { icon }).addTo(this.map)
-      .bindPopup(this.event.title)
+      .bindPopup(`<div class="custom-popup"><strong>${this.event.title}</strong><br>${this.event.venue_details?.address || ''}</div>`, {
+        closeButton: false,
+        className: 'elegant-popup'
+      })
       .openPopup();
       
     setTimeout(() => {
@@ -228,16 +248,31 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   }
 
   toggleChat() {
-    this.isChatOpen = !this.isChatOpen;
-    if (this.isChatOpen) {
-      this.trackEnquiry();
-      this.scrollToBottom();
+    if (!this.isChatOpen) {
+      this.showEnquiryModal = true;
+    } else {
+      this.isChatOpen = false;
     }
+  }
+
+  submitEnquiry() {
+    if (!this.enquiryName.trim() || !this.enquiryMobile.trim()) {
+      this.toastService.show('Please provide your name and mobile number', 'warning');
+      return;
+    }
+    this.showEnquiryModal = false;
+    this.isChatOpen = true;
+    this.trackEnquiry();
+    this.scrollToBottom();
+  }
+
+  closeEnquiryModal() {
+    this.showEnquiryModal = false;
   }
 
   trackEnquiry() {
     if (this.event) {
-      this.eventService.trackEnquiry(this.event.id).subscribe({
+      this.eventService.trackEnquiry(this.event.id, this.enquiryName, this.enquiryMobile).subscribe({
         next: (res) => {
           this.event.enquiry_count = res.enquiry_count;
         },

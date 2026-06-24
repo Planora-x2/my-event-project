@@ -86,8 +86,11 @@
           <tr>
             <th>Event Name</th>
             <th>Date & Time</th>
-            <th>User</th>
+            <th>User Account</th>
+            <th>Name</th>
+            <th>Mobile Number</th>
             <th>Email</th>
+            <th>Status / Action</th>
           </tr>
         </thead>
         <tbody>
@@ -111,11 +114,27 @@
               </div>
             </td>
             <td class="text-muted" style="font-size:0.85rem">
+              {{ eq.name || '—' }}
+            </td>
+            <td class="text-muted" style="font-size:0.85rem">
+              {{ eq.mobile_number || '—' }}
+            </td>
+            <td class="text-muted" style="font-size:0.85rem">
               {{ eq.user_details?.email || '—' }}
+            </td>
+            <td>
+              <button class="ios-btn ios-btn-primary" *ngIf="eq.status === 'PENDING'" (click)="acceptEnquiry(eq)">Accept Enquiry</button>
+              <div *ngIf="eq.status === 'ACCEPTED'" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+                <span class="badge badge-green" style="border-radius: 999px;">Accepted</span>
+                <button class="ios-btn ios-btn-secondary" (click)="completeEnquiry(eq)">Set as Completed</button>
+              </div>
+              <span class="badge badge-gold" *ngIf="eq.status === 'RESPONDED' || eq.status === 'SCHEDULED' || eq.status === 'QUOTE'" style="border-radius: 999px;">{{ eq.status }}</span>
+              <span class="badge badge-rose" *ngIf="eq.status === 'CONFIRMED'" style="border-radius: 999px;">Confirmed</span>
+              <span class="badge badge-green" *ngIf="eq.status === 'COMPLETED'" style="border-radius: 999px;">Completed</span>
             </td>
           </tr>
           <tr *ngIf="filteredEnquiries.length === 0">
-            <td colspan="4" class="empty-row">
+            <td colspan="7" class="empty-row">
               <div class="empty-cell">
                 <span>💌</span>
                 <p>No enquiries found for the selected filters.</p>

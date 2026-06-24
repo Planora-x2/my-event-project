@@ -12,6 +12,9 @@
     <button class="tab-btn" [class.active]="activeTab === 'liked'" (click)="switchTab('liked')">
       Liked (<span class="count">{{ likedEvents.length }}</span>)
     </button>
+    <button class="tab-btn" [class.active]="activeTab === 'collections'" (click)="switchTab('collections')">
+      Collections (<span class="count">{{ collections.length }}</span>)
+    </button>
   </div>
 
   <!-- Loading -->
@@ -116,6 +119,32 @@
           <p class="card-venue text-muted" *ngIf="event.venue_details" style="font-size: 0.85rem; margin-top: 0.25rem;">
             {{ event.venue_details.name }}
           </p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Collections Tab -->
+  <ng-container *ngIf="!loading && activeTab === 'collections'">
+    <div style="margin-bottom: 2rem; display: flex; gap: 1rem;">
+      <input type="text" [(ngModel)]="newCollectionTitle" placeholder="New Collection (e.g. Dream Venues)" style="padding: 0.5rem; flex: 1; border-radius: 4px; border: 1px solid #ccc;">
+      <button class="btn btn-primary" (click)="createCollection()">Create Collection</button>
+    </div>
+
+    <div *ngIf="collections.length === 0" class="empty-state">
+      <h3>No collections yet</h3>
+      <p class="text-muted">Create collections to organize your saved vendors into categories.</p>
+    </div>
+
+    <div class="collections-list">
+      <div *ngFor="let collection of collections" class="collection-card" style="margin-bottom: 2rem; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <h3>{{ collection.title }}</h3>
+        <p class="text-muted" *ngIf="!collection.items || collection.items.length === 0">No items in this collection.</p>
+        
+        <div class="event-grid" *ngIf="collection.items && collection.items.length > 0">
+          <div *ngFor="let item of collection.items" class="event-card" [routerLink]="['/event', item.event.id]">
+            <h4 style="padding: 1rem;">{{ item.event.title || 'Event' }}</h4>
+          </div>
         </div>
       </div>
     </div>

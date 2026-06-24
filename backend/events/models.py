@@ -72,9 +72,22 @@ class EventGalleryImage(models.Model):
         return f"Gallery Image for {self.event.title}"
 
 class Enquiry(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Inquiry Sent'
+        RESPONDED = 'RESPONDED', 'Vendor Responded'
+        ACCEPTED = 'ACCEPTED', 'Enquiry Accepted'
+        SCHEDULED = 'SCHEDULED', 'Meeting Scheduled'
+        QUOTE = 'QUOTE', 'Quote Received'
+        CONFIRMED = 'CONFIRMED', 'Booking Confirmed'
+        COMPLETED = 'COMPLETED', 'Enquiry Completed'
+
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='enquiries')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='enquiries')
+    name = models.CharField(max_length=255, blank=True, null=True)
+    mobile_number = models.CharField(max_length=20, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Enquiry for {self.event.title} by {self.user.username if self.user else 'Unknown User'}"
@@ -107,9 +120,36 @@ class WeddingCard(models.Model):
     background_color = models.CharField(max_length=20, default='#FFFFFF')
     font_family = models.CharField(max_length=100, default='Playfair Display')
     cover_image = models.ImageField(upload_to='wedding_cards/', null=True, blank=True)
+    is_save_the_date = models.BooleanField(default=False)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Wedding Card for {self.bride_name} & {self.groom_name} by {self.user.username}"
+
+class RSVP(models.Model):
+    wedding_card = models.ForeignKey(WeddingCard, on_delete=models.CASCADE, related_name='rsvps')
+    guest_name = models.CharField(max_length=255)
+    guest_email = models.EmailField()
+    is_attending = models.BooleanField(default=True)
+    dietary_restrictions = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        status = "Attending" if self.is_attending else "Not Attending"
+        return f"RSVP from {self.guest_name} for {self.wedding_card.bride_name}'s Wedding ({status})"
+
+class VendorAvailability(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='availabilities')
+    date = models.DateField()
+    is_booked = models.BooleanField(default=True)
+    notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('event', 'date')
+        verbose_name_plural = 'Vendor Availabilities'
+
+    def __str__(self):
+        status = "Booked" if self.is_booked else "Available"
+        return f"{self.event.title} - {self.date} ({status})"

@@ -11,9 +11,12 @@ import { UserProfileComponent } from './components/user-profile/user-profile';
 import { SupportChatComponent } from './components/support-chat/support-chat';
 import { SavedVendorsComponent } from './components/saved-vendors/saved-vendors';
 import { PilgrimageComponent } from './components/pilgrimage/pilgrimage';
+import { PlanningDashboardComponent } from './components/planning-dashboard/planning-dashboard';
 
 import { WeddingCardGeneratorComponent } from './components/wedding-card-generator/wedding-card-generator.component';
 import { WeddingCardViewComponent } from './components/wedding-card-view/wedding-card-view.component';
+import { InspirationGalleryComponent } from './components/inspiration-gallery/inspiration-gallery';
+import { AiAssistantComponent } from './components/ai-assistant/ai-assistant';
 
 export const routes: Routes = [
   { path: '', component: EventListComponent },
@@ -28,7 +31,10 @@ export const routes: Routes = [
   { path: 'support', component: SupportChatComponent },
   { path: 'saved', component: SavedVendorsComponent },
   { path: 'pilgrimage', component: PilgrimageComponent },
+  { path: 'planning', component: PlanningDashboardComponent },
   { path: 'wedding-card/generate', component: WeddingCardGeneratorComponent },
   { path: 'wedding-card/:id', component: WeddingCardViewComponent },
+  { path: 'inspiration', component: InspirationGalleryComponent },
+  { path: 'ai-assistant', component: AiAssistantComponent },
   { path: '**', redirectTo: '' }
 ];

@@ -76,5 +76,64 @@
         </iframe>
       </div>
     </div>
+
+    <!-- RSVP Section -->
+    <div *ngIf="!card.is_save_the_date && !isOwner" class="rsvp-section card-content" style="margin-top: 2rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2rem;">
+      <h3 [ngStyle]="{'color': card.primary_color}">RSVP</h3>
+      <div *ngIf="!rsvpSubmitted" class="rsvp-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="rsvpData.guest_name" placeholder="Your Name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="rsvpData.guest_email" placeholder="Your Email">
+        </div>
+        <div class="form-group checkbox-group" style="margin: 1rem 0;">
+          <label>
+            <input type="checkbox" [(ngModel)]="rsvpData.is_attending">
+            I will be attending
+          </label>
+        </div>
+        <div class="form-group" *ngIf="rsvpData.is_attending">
+          <label>Dietary Restrictions</label>
+          <input type="text" [(ngModel)]="rsvpData.dietary_restrictions" placeholder="E.g. Vegetarian, Nut Allergy">
+        </div>
+        <button class="btn-primary" (click)="submitRSVP()" [ngStyle]="{'background-color': card.primary_color, 'color': '#fff'}">Submit RSVP</button>
+      </div>
+      <div *ngIf="rsvpSubmitted" class="success-message">
+        <p>Thank you for your RSVP!</p>
+      </div>
+    </div>
+
+    <!-- RSVP Dashboard (Owner Only) -->
+    <div *ngIf="!card.is_save_the_date && isOwner" class="rsvp-dashboard card-content" style="margin-top: 2rem; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 2rem;">
+      <h3 [ngStyle]="{'color': card.primary_color}">RSVP Dashboard</h3>
+      <p *ngIf="!card.rsvps || card.rsvps.length === 0">No RSVPs yet.</p>
+      
+      <table *ngIf="card.rsvps && card.rsvps.length > 0" class="rsvp-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid #eee;">
+            <th style="padding: 0.5rem;">Name</th>
+            <th style="padding: 0.5rem;">Attending</th>
+            <th style="padding: 0.5rem;">Dietary Restrictions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rsvp of card.rsvps" style="border-bottom: 1px solid #eee;">
+            <td style="padding: 0.5rem;">
+              {{ rsvp.guest_name }}<br>
+              <small style="color: #666;">{{ rsvp.guest_email }}</small>
+            </td>
+            <td style="padding: 0.5rem;">
+              <span *ngIf="rsvp.is_attending" style="color: green; font-weight: bold;">Yes</span>
+              <span *ngIf="!rsvp.is_attending" style="color: red;">No</span>
+            </td>
+            <td style="padding: 0.5rem;">{{ rsvp.dietary_restrictions || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>

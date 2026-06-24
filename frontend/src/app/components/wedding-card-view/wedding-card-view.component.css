@@ -523,3 +523,158 @@
 .template-lotus .name, .template-lotus h3, .template-lotus p, .template-lotus .ampersand {
   color: #8b008b !important;
 }
+
+/* ═════ PREMIUM TEMPLATES ═════ */
+.template-premium-blue-floral {
+  background: #f4f8fb url('https://images.unsplash.com/photo-1572621481541-e9ee46061324?auto=format&fit=crop&w=1920&q=80') top/cover no-repeat !important;
+  border: 15px double #b8860b;
+}
+.template-premium-blue-floral .card-content {
+  background: rgba(255,255,255,0.85);
+  margin: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+.template-premium-blue-floral .name {
+  font-family: 'Great Vibes', cursive !important;
+  color: #2b6cb0 !important;
+  font-size: 5rem;
+  text-shadow: 1px 1px 2px white;
+}
+.template-premium-blue-floral .ampersand {
+  color: #2b6cb0 !important;
+  font-size: 3.5rem;
+}
+.template-premium-blue-floral .invitation-text, .template-premium-blue-floral .date-section, .template-premium-blue-floral .venue-section {
+  color: #2c5282 !important;
+}
+
+.template-premium-pink-vine {
+  background: #fdfbf7;
+  border: 40px solid transparent;
+  border-image: url('https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80') 80 round;
+}
+.template-premium-pink-vine .card-content {
+  background: transparent;
+  padding: 4rem;
+}
+.template-premium-pink-vine .name {
+  font-family: 'Playfair Display', serif !important;
+  color: #4a3028 !important;
+  font-size: 4.5rem;
+}
+.template-premium-pink-vine .ampersand {
+  color: #4a3028 !important;
+  font-weight: 300;
+}
+.template-premium-pink-vine .invitation-text, .template-premium-pink-vine .date-section, .template-premium-pink-vine .venue-section {
+  color: #5c433c !important;
+}
+
+.template-premium-vintage-ribbon {
+  background: #ffffff;
+  border: 8px solid #cbd5e1;
+  position: relative;
+}
+.template-premium-vintage-ribbon .card-content {
+  background: transparent;
+  padding-top: 6rem;
+}
+.template-premium-vintage-ribbon::before {
+  content: "JOIN US FOR THE WEDDING";
+  display: block;
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  color: #38b2ac;
+  text-align: center;
+  margin-top: 4rem;
+  font-weight: 600;
+}
+.template-premium-vintage-ribbon .name {
+  font-family: 'Georgia', serif !important;
+  font-style: italic;
+  color: #2d3748 !important;
+  font-size: 4.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+.template-premium-vintage-ribbon .ampersand {
+  color: #a0aec0 !important;
+  font-size: 2rem;
+  background: white;
+  padding: 0 1rem;
+  position: relative;
+  top: -20px;
+}
+.template-premium-vintage-ribbon .invitation-text, .template-premium-vintage-ribbon .date-section, .template-premium-vintage-ribbon .venue-section {
+  color: #4a5568 !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.template-premium-indian-traditional {
+  background: #800000;
+  border: 20px solid #d4af37;
+  border-radius: 40px 40px 0 0;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+  position: relative;
+}
+.template-premium-indian-traditional::before {
+  content: "ॐ";
+  display: block;
+  font-size: 4rem;
+  color: #d4af37;
+  text-align: center;
+  margin-top: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+.template-premium-indian-traditional .card-content {
+  background: rgba(253, 246, 227, 0.95);
+  border-radius: 200px 200px 0 0;
+  margin: 1rem 3rem 3rem 3rem;
+  border: 4px double #d4af37;
+  padding-top: 6rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.template-premium-indian-traditional .name {
+  font-family: 'Playfair Display', serif !important;
+  color: #a52a2a !important;
+  font-size: 4rem;
+}
+.template-premium-indian-traditional .ampersand {
+  color: #d4af37 !important;
+}
+.template-premium-indian-traditional .invitation-text, .template-premium-indian-traditional .date-section, .template-premium-indian-traditional .venue-section {
+  color: #5c0000 !important;
+  font-weight: 500;
+}
+
+.template-premium-teal-floral {
+  background: #008080;
+  box-shadow: inset 40px 0 60px rgba(255,255,255,0.15);
+  border-left: 60px solid #e6f2f2; /* Simulates the white 3D floral left edge */
+  border-right: 20px solid #006666;
+  border-top: 20px solid #006666;
+  border-bottom: 20px solid #006666;
+}
+.template-premium-teal-floral .card-content {
+  background: transparent;
+  padding-left: 4rem;
+}
+.template-premium-teal-floral .name {
+  font-family: 'Great Vibes', cursive !important;
+  color: white !important;
+  font-size: 5.5rem;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  line-height: 1.1;
+}
+.template-premium-teal-floral .ampersand {
+  color: #e6f2f2 !important;
+  font-size: 4rem;
+  font-style: italic;
+}
+.template-premium-teal-floral .invitation-text, .template-premium-teal-floral .date-section, .template-premium-teal-floral .venue-section {
+  color: #e6f2f2 !important;
+  letter-spacing: 1.5px;
+}

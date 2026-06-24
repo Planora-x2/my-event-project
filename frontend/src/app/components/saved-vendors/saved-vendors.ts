@@ -3,23 +3,28 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SavedVendorService } from '../../services/saved-vendor/saved-vendor';
 import { EventService } from '../../services/event/event';
+import { PlanningService, Collection } from '../../services/planning/planning.service';
+import { FormsModule } from '@angular/forms';
 import { API_BASE } from '../../constants';
 
 @Component({
   selector: 'app-saved-vendors',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './saved-vendors.html',
   styleUrl: './saved-vendors.css'
 })
 export class SavedVendorsComponent implements OnInit {
-  activeTab: 'liked' | 'saved' = 'saved';
+  activeTab: 'liked' | 'saved' | 'collections' = 'saved';
   likedEvents: any[] = [];
   savedEvents: any[] = [];
+  collections: Collection[] = [];
+  newCollectionTitle = '';
   loading = true;
 
   constructor(
     private savedVendorService: SavedVendorService,
-    private eventService: EventService
+    private eventService: EventService,
+    private planningService: PlanningService
   ) {}
 
   ngOnInit(): void {
@@ -50,9 +55,33 @@ export class SavedVendorsComponent implements OnInit {
         this.loading = false;
       }
     });
+    this.fetchCollections();
   }
 
-  switchTab(tab: 'liked' | 'saved'): void {
+  fetchCollections(): void {
+    this.planningService.getCollections().subscribe({
+      next: (res) => {
+        this.collections = res;
+      }
+    });
+  }
+
+  createCollection(): void {
+    if (!this.newCollectionTitle.trim()) return;
+    this.planningService.createCollection({ title: this.newCollectionTitle }).subscribe(() => {
+      this.newCollectionTitle = '';
+      this.fetchCollections();
+    });
+  }
+
+  addToCollection(collectionId: number, eventId: number): void {
+    this.planningService.addToCollection(collectionId, eventId).subscribe(() => {
+      this.fetchCollections();
+      alert('Added to collection!');
+    });
+  }
+
+  switchTab(tab: 'liked' | 'saved' | 'collections'): void {
     this.activeTab = tab;
   }
 

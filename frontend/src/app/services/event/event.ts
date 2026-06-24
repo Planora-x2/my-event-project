@@ -73,8 +73,9 @@ export class EventService {
     return this.http.post<any>(`${this.apiUrl}/events/${eventId}/rate/`, { stars });
   }
 
-  trackEnquiry(eventId: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/events/${eventId}/track_enquiry/`, {});
+  trackEnquiry(eventId: number, name?: string, mobileNumber?: string): Observable<any> {
+    const payload = { name, mobile_number: mobileNumber };
+    return this.http.post<any>(`${this.apiUrl}/events/${eventId}/track_enquiry/`, payload);
   }
 
   getEnquiries(clientId?: string, eventId?: string): Observable<any[]> {
@@ -82,5 +83,17 @@ export class EventService {
     if (clientId) params = params.set('client', clientId);
     if (eventId) params = params.set('event', eventId);
     return this.http.get<any[]>(`${this.apiUrl}/enquiries/`, { params });
+  }
+
+  acceptEnquiry(enquiryId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/enquiries/${enquiryId}/accept/`, {});
+  }
+
+  completeEnquiry(enquiryId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/enquiries/${enquiryId}/complete/`, {});
+  }
+
+  reenquire(enquiryId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/enquiries/${enquiryId}/reenquire/`, {});
   }
 }

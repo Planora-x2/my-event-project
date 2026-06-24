@@ -1,0 +1,27 @@
+<div class="gallery-container">
+  <div class="gallery-header">
+    <h1>Inspiration Gallery</h1>
+    <p>Discover ideas, themes, and styles for your next unforgettable event.</p>
+  </div>
+
+  <div class="category-filters">
+    <button 
+      *ngFor="let cat of categories" 
+      [class.active]="selectedCategory === cat"
+      (click)="setCategory(cat)">
+      {{ cat }}
+    </button>
+  </div>
+
+  <div class="masonry-grid">
+    <div class="masonry-item" *ngFor="let img of filteredImages" [ngClass]="img.heightClass">
+      <div class="image-wrapper">
+        <img [src]="img.url" [alt]="img.title">
+        <div class="overlay">
+          <h3>{{ img.title }}</h3>
+          <span class="category-badge">{{ img.category }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

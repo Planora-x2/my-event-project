@@ -99,6 +99,28 @@ export class EnquiryAnalyticsComponent implements OnInit {
     });
   }
 
+  acceptEnquiry(enquiry: any) {
+    if (!enquiry.id) return;
+    this.eventService.acceptEnquiry(enquiry.id).subscribe({
+      next: (res) => {
+        enquiry.status = res.status;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to accept enquiry', err)
+    });
+  }
+
+  completeEnquiry(enquiry: any) {
+    if (!enquiry.id) return;
+    this.eventService.completeEnquiry(enquiry.id).subscribe({
+      next: (res) => {
+        enquiry.status = res.status;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Failed to complete enquiry', err)
+    });
+  }
+
   applyFilters() {
     let result = this.enquiries;
 

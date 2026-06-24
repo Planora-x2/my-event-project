@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Venue, Event, Booking, EventGalleryImage, Enquiry, WeddingCard
+from .models import Venue, Event, Booking, EventGalleryImage, Enquiry, WeddingCard, RSVP
 from users.serializers import CustomUserDetailsSerializer
 
 class VenueSerializer(serializers.ModelSerializer):
@@ -33,14 +33,15 @@ class EventSerializer(serializers.ModelSerializer):
         return 0
         
     def get_rating_count(self, obj):
-        return obj.ratings.count()
+        return len(obj.ratings.all())
         
     def get_current_user_rating(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            rating = obj.ratings.filter(user=request.user).first()
-            if rating:
-                return rating.stars
+            # Avoid .filter() to hit the prefetched cache
+            for rating in obj.ratings.all():
+                if rating.user_id == request.user.id:
+                    return rating.stars
         return 0
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -61,9 +62,16 @@ class EnquirySerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('user', 'created_at')
 
+class RSVPSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RSVP
+        fields = '__all__'
+        read_only_fields = ('wedding_card', 'created_at')
+
 class WeddingCardSerializer(serializers.ModelSerializer):
     venue_details = VenueSerializer(source='venue', read_only=True)
     user_details = CustomUserDetailsSerializer(source='user', read_only=True)
+    rsvps = RSVPSerializer(many=True, read_only=True)
 
     class Meta:
         model = WeddingCard

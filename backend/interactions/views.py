@@ -139,20 +139,20 @@ class AIChatView(APIView):
         else:
             events = Event.objects.none()
             
-        if not events.exists() and 'price' in message:
-            events = Event.objects.all().order_by('price')
+        if not events.exists():
+            events = Event.objects.all().order_by('-created_at')
             
         if events.exists():
             results = events[:3]
             titles = ", ".join([e.title for e in results])
-            response = f"I found some great options for you: {titles}."
+            response = f"I found some great options that match your vibe: {titles}."
             
             for e in results:
                 vendor_data = {
                     "id": e.id,
                     "title": e.title,
                     "category": e.get_category_display(),
-                    "price": str(e.price)
+                    # Pricing removed as per requirement for AI to focus on inspiration
                 }
                 if e.image:
                     img_url = request.build_absolute_uri(e.image.url)
@@ -166,7 +166,7 @@ class AIChatView(APIView):
                 
                 vendors.append(vendor_data)
                 
-            response += " Here are the details and locations:"
+            response += " Let me know if you'd like to explore these styles further!"
         else:
             response = "I couldn't find any specific vendors matching your request. Try searching with different keywords like 'photography', 'beach', or 'catering'."
 
